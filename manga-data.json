@@ -1,0 +1,235 @@
+
+[
+  {
+    "id": 1,
+    "title": "Сага про Вінланд",
+    "description": "Історія про молодого вікінга на ім'я Торфінн, який прагне помститися за смерть свого батька. Його шлях веде його через поля битв та політичні інтриги середньовічної Європи.",
+    "coverImage": "https://picsum.photos/200/300?random=1",
+    "pageUrl": "#title?id=1",
+    "genres": ["історія", "пригоди", "драма", "бойовик"],
+    "latestUpdate": "2024-07-28T10:00:00Z",
+    "chapters": [
+      {
+        "id": 1,
+        "title": "Початок шляху",
+        "volume": 1,
+        "chapter": 1,
+        "date": "2024-01-15",
+        "pages": [
+          "https://files.catbox.moe/mzbmm7.jpg",
+          "https://files.catbox.moe/r42pbx.jpg",
+          "https://files.catbox.moe/5w7bta.jpg",
+          "https://files.catbox.moe/3qgpqk.jpg",
+          "https://files.catbox.moe/zwgxz3.jpg",
+          "https://files.catbox.moe/kqr1fr.jpg",
+          "https://files.catbox.moe/czypj4.jpg",
+          "https://files.catbox.moe/ree5c3.jpg",
+          "https://files.catbox.moe/1lq904.jpg"
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Перша битва",
+        "volume": 1,
+        "chapter": 2,
+        "date": "2024-01-22",
+        "pages": [
+          "https://picsum.photos/700/900?random=1",
+          "https://picsum.photos/700/900?random=2",
+          "https://picsum.photos/700/900?random=3",
+          "https://picsum.photos/700/900?random=4",
+          "https://picsum.photos/700/900?random=5",
+          "https://picsum.photos/700/900?random=6",
+          "https://picsum.photos/700/900?random=7",
+          "https://picsum.photos/700/900?random=8",
+          "https://picsum.photos/700/900?random=9"
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Новий розділ",
+        "volume": 2,
+        "chapter": 3,
+        "date": "2024-07-28",
+        "pages": [
+          "https://picsum.photos/700/900?random=1",
+          "https://picsum.photos/700/900?random=2",
+          "https://picsum.photos/700/900?random=3",
+          "https://picsum.photos/700/900?random=4",
+          "https://picsum.photos/700/900?random=5",
+          "https://picsum.photos/700/900?random=6",
+          "https://picsum.photos/700/900?random=7",
+          "https://picsum.photos/700/900?random=8",
+          "https://picsum.photos/700/900?random=9"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "title": "Атака Титанів",
+    "description": "Людство бореться за виживання проти гігантських людиноподібних істот, відомих як Титани. Головний герой, Ерен Єгер, приєднується до армії, щоб помститися за свою сім'ю.",
+    "coverImage": "https://picsum.photos/200/300?random=2",
+    "pageUrl": "#title?id=2",
+    "genres": ["фентезі", "бойовик", "жахи", "драма"],
+    "latestUpdate": "2024-07-27T18:30:00Z",
+    "chapters": [
+      {
+        "id": 4,
+        "title": "Падіння Шиганшини, частина 1",
+        "volume": 1,
+        "chapter": 1,
+        "date": "2024-02-01",
+        "pages": [
+          "https://picsum.photos/700/900?random=1",
+          "https://picsum.photos/700/900?random=2",
+          "https://picsum.photos/700/900?random=3",
+          "https://picsum.photos/700/900?random=4",
+          "https://picsum.photos/700/900?random=5",
+          "https://picsum.photos/700/900?random=6",
+          "https://picsum.photos/700/900?random=7",
+          "https://picsum.photos/700/900?random=8",
+          "https://picsum.photos/700/900?random=9"
+        ]
+      },
+      {
+        "id": 5,
+        "title": "Падіння Шиганшини, частина 2",
+        "volume": 1,
+        "chapter": 2,
+        "date": "2024-02-08",
+        "pages": [
+          "https://picsum.photos/700/900?random=1",
+          "https://picsum.photos/700/900?random=2",
+          "https://picsum.photos/700/900?random=3",
+          "https://picsum.photos/700/900?random=4",
+          "https://picsum.photos/700/900?random=5",
+          "https://picsum.photos/700/900?random=6",
+          "https://picsum.photos/700/900?random=7",
+          "https://picsum.photos/700/900?random=8",
+          "https://picsum.photos/700/900?random=9"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "Берсерк",
+    "description": "Темна фентезі-історія про найманця на ім'я Ґатс, який мандрує світом, сповненим демонів, корупції та магії. Його мета — помста тому, хто забрав у нього все.",
+    "coverImage": "https://picsum.photos/200/300?random=3",
+    "pageUrl": "#title?id=3",
+    "genres": ["темне фентезі", "жахи", "бойовик", "трагедія"],
+    "latestUpdate": "2024-07-26T12:00:00Z",
+    "chapters": [
+      {
+        "id": 6,
+        "title": "Чорний мечник",
+        "volume": 1,
+        "chapter": 1,
+        "date": "2024-03-10",
+        "pages": [
+          "https://picsum.photos/700/900?random=1",
+          "https://picsum.photos/700/900?random=2",
+          "https://picsum.photos/700/900?random=3",
+          "https://picsum.photos/700/900?random=4",
+          "https://picsum.photos/700/900?random=5",
+          "https://picsum.photos/700/900?random=6",
+          "https://picsum.photos/700/900?random=7",
+          "https://picsum.photos/700/900?random=8",
+          "https://picsum.photos/700/900?random=9"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "Сталевий Алхімік",
+    "description": "Двоє братів, Едвард і Альфонс Елріки, шукають філософський камінь, щоб відновити свої тіла після невдалої спроби алхімічної трансмутації.",
+    "coverImage": "https://picsum.photos/200/300?random=4",
+    "pageUrl": "#title?id=4",
+    "genres": ["фентезі", "пригоди", "стімпанк", "драма"],
+    "latestUpdate": "2024-07-25T21:00:00Z",
+    "chapters": [
+      {
+        "id": 7,
+        "title": "Два брати",
+        "volume": 1,
+        "chapter": 1,
+        "date": "2024-04-01",
+        "pages": [
+          "https://picsum.photos/700/900?random=1",
+          "https://picsum.photos/700/900?random=2",
+          "https://picsum.photos/700/900?random=3",
+          "https://picsum.photos/700/900?random=4",
+          "https://picsum.photos/700/900?random=5",
+          "https://picsum.photos/700/900?random=6",
+          "https://picsum.photos/700/900?random=7",
+          "https://picsum.photos/700/900?random=8",
+          "https://picsum.photos/700/900?random=9"
+        ]
+      },
+      {
+        "id": 8,
+        "title": "Ціна життя",
+        "volume": 1,
+        "chapter": 2,
+        "pages": [
+          "https://picsum.photos/700/900?random=1",
+          "https://picsum.photos/700/900?random=2",
+          "https://picsum.photos/700/900?random=3",
+          "https://picsum.photos/700/900?random=4",
+          "https://picsum.photos/700/900?random=5",
+          "https://picsum.photos/700/900?random=6",
+          "https://picsum.photos/700/900?random=7",
+          "https://picsum.photos/700/900?random=8",
+          "https://picsum.photos/700/900?random=9"
+        ]
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "Кохання — це ілюзія",
+    "description": "Двадцятирічний Кім Хесон все життя вважав себе альфою. Та одного дня все змінюється: у нього починається перша тічка і його визнають рецесивним омегою. Саме в цей момент, він зустрічає співака Пак Доджіна — багатого альфу, котрий ненавидить омег. Але на противагу цьому, омега стає музою для Доджіна, а сам Хесон всіма силами заперечує їх зв'язок. Коли фізичний потяг між ними призводить до помилки, життя обох перетворюються на справжнє випробування.",
+    "coverImage": "https://files.catbox.moe/qwq2lu.png",
+    "pageUrl": "#title?id=5",
+    "genres": ["Яой", "Драма", "Комедія", "Романтика", "Омегаверс", "Музика", "Дорослі стосунки"],
+    "latestUpdate": "2024-07-25T21:00:00Z",
+    "chapters": [
+      {
+        "id": 9,
+        "title": "Два брати",
+        "volume": 5,
+        "chapter": 99,
+        "date": "2025-10-29",
+        "pages": [
+          "https://files.catbox.moe/mzbmm7.jpg",
+          "https://files.catbox.moe/r42pbx.jpg",
+          "https://files.catbox.moe/5w7bta.jpg",
+          "https://files.catbox.moe/3qgpqk.jpg",
+          "https://files.catbox.moe/zwgxz3.jpg",
+          "https://files.catbox.moe/kqr1fr.jpg",
+          "https://files.catbox.moe/czypj4.jpg",
+          "https://files.catbox.moe/ree5c3.jpg",
+          "https://files.catbox.moe/1lq904.jpg",
+          "https://files.catbox.moe/34ucq7.jpg",
+          "https://files.catbox.moe/7b2kwf.jpg",
+          "https://files.catbox.moe/iivyr6.jpg",
+          "https://files.catbox.moe/o1whgb.jpg",
+          "https://files.catbox.moe/54tmg0.jpg",
+          "https://files.catbox.moe/wmu7eb.jpg",
+          "https://files.catbox.moe/142f1k.jpg",
+          "https://files.catbox.moe/yqtusr.jpg",
+          "https://files.catbox.moe/c54xlc.jpg",
+          "https://files.catbox.moe/s3x9wa.jpg",
+          "https://files.catbox.moe/l8l46r.jpg",
+          "https://files.catbox.moe/54lrct.jpg",
+          "https://files.catbox.moe/3i7gug.jpg",
+          "https://files.catbox.moe/9z7271.jpg",
+          "https://files.catbox.moe/qu0sol.jpg",
+          "https://files.catbox.moe/cqivls.jpg"
+        ]
+      }
+    ]
+  }
+]
