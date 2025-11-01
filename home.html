@@ -3,14 +3,22 @@
 
 <section class="featured-manga">
     <h2>Цікавинки</h2>
-    <div class="manga-banner-container">
-        <div class="manga-banner active" style="background-image: url('https://picsum.photos/800/350?random=1');"></div>
-        <div class="manga-banner" style="background-image: url('https://picsum.photos/800/350?random=2');"></div>
-        <div class="manga-banner" style="background-image: url('https://picsum.photos/800/350?random=3');"></div>
-        <div class="banner-nav">
-            <span class="banner-dot active" data-slide="0"></span>
-            <span class="banner-dot" data-slide="1"></span>
-            <span class="banner-dot" data-slide="2"></span>
+    <div class="carousel-container">
+        <div class="manga-banner-container">
+            <div class="manga-banners">
+                <!-- Banners will be dynamically loaded here -->
+            </div>
+        </div>
+        <div class="carousel-nav">
+            <button class="carousel-prev" aria-label="Previous slide">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+            </button>
+            <button class="carousel-next" aria-label="Next slide">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.59L10 18l6-6-6-6-1.41 1.41L13.17 12z"/></svg>
+            </button>
+        </div>
+        <div class="banner-dots">
+            <!-- Dots will be dynamically generated here -->
         </div>
     </div>
 </section>
@@ -18,18 +26,39 @@
 <section class="updates">
     <h2>Останні оновлення</h2>
     <ul class="update-list"></ul>
-    <a href="catalog.html" class="button">Всі оновлення</a>
+    <a href="#catalog" class="button">Всі оновлення</a>
 </section>
 
-<section class="telegram-links">
-    <h2>Наші посилання</h2>
-    <div class="button-group">
-        <a href="https://t.me/goku_raku" class="button">Перейти в тґк</a>
-        <a href="https://send.monobank.ua/jar/3okYS2E56P" class="button">Підтримати нас</a>
+<section class="social-links-card">
+    <div class="social-links-image">
+        <img src="https://files.catbox.moe/3jk2jw.webp" alt="Gokuraku social media banner">
+    </div>
+    <div class="social-links-content">
+        <h2>Слідкуйте за нами</h2>
+        <p>Приєднуйтесь до наших спільнот, щоб бути в курсі останніх оновлень та новин!</p>
+        <div class="main-links">
+            <a href="https://t.me/goku_raku" class="button">Telegram Канал</a>
+            <a href="https://send.monobank.ua/jar/3okYS2E56P" class="button button-secondary">Підтримати проєкт</a>
+        </div>
+        <div class="secondary-links-title">Наші ресурси:</div>
+        <div class="secondary-links">
+            <a href="https://www.tiktok.com/@gokuraku_translation/" aria-label="TikTok" class="social-icon" target="_blank">
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-2.43.05-4.84-.95-6.6-2.8-1.59-1.64-2.34-3.87-2.4-6.2.07-2.86 1.64-5.46 4.16-6.68 1.32-.63 2.8-.82 4.2-.77.57.02 1.14.07 1.7.18v4.02c-.44-.13-.89-.2-1.32-.2-1.05-.03-2.1.31-2.96 1.02-.86.75-1.31 1.85-1.31 2.96.01 1.74 1.31 3.21 3.02 3.45 1.74.23 3.39-.77 4.01-2.35.39-1.02.54-2.13.57-3.22.02-2.5.01-5 .01-7.5v-2.1z"/></svg>
+            </a>
+            <a href="https://bato.to/u/2690982-gokuraku/comics" aria-label="Bato.to" class="social-icon" target="_blank">
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 122.88"><path d="M17.89 0h88.9c8.85 0 16.1 7.24 16.1 16.1v90.68c0 8.85-7.24 16.1-16.1 16.1H16.1c-8.85 0-16.1-7.24-16.1-16.1v-88.9C0 8.05 8.05 0 17.89 0zm16.65 31.06h35.17c5.86 0 10.35 1.46 13.49 4.36 3.14 2.9 4.71 6.49 4.71 10.78 0 3.59-1.12 6.68-3.37 9.24-1.49 1.73-3.68 3.07-6.55 4.07 4.37 1.05 7.57 2.84 9.63 5.4 2.05 2.56 3.08 5.77 3.08 9.63 0 3.15-.74 5.98-2.19 8.5-1.47 2.52-3.48 4.5-6.01 5.97-1.58.91-3.96 1.57-7.14 1.98-4.23.55-7.03.83-8.42.83h-32.4V31.06zm18.92 23.85h8.19c2.93 0 4.98-.51 6.12-1.51 1.15-1.02 1.73-2.47 1.73-4.38 0-1.77-.58-3.15-1.73-4.14-1.15-1-3.15-1.5-6-1.5h-8.32v11.53h.01zm0 23.84h9.57c3.24 0 5.52-.58 6.85-1.73s1.99-2.67 1.99-4.61c0-1.8-.65-3.24-1.97-4.33-1.32-1.09-3.62-1.64-6.92-1.64h-9.53v12.31h.01z" fill-rule="evenodd" clip-rule="evenodd"/></svg>
+            </a>
+            <a href="https://manga.in.ua/xfsearch/perek/gokuraku/" aria-label="Manga.in.ua" class="social-icon" target="_blank">
+                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 122.88"><path d="M17.89 0h88.9c8.85 0 16.1 7.24 16.1 16.1v90.68c0 8.85-7.24 16.1-16.1 16.1H16.1c-8.85 0-16.1-7.24-16.1-16.1v-88.9C0 8.05 8.05 0 17.89 0zm9.39 31.06h24.77l9.43 36.97 9.46-36.97H95.6v60.76H80.24V45.5L68.38 91.82H54.47L42.64 45.5v46.32H27.28V31.06z" fill-rule="evenodd" clip-rule="evenodd"/></svg>
+            </a>
+        </div>
     </div>
 </section>
 
-<section class="about-me">
-    <h2>Блок про себе</h2>
-    <p>Тут буде якась інформація про мене або про проект.</p>
+<section class="about-us-card">
+    <img src="https://files.catbox.moe/245xxx.jpg" alt="Yaoi manga panel" class="about-us-image">
+    <div class="about-us-content">
+        <h2>Про нас</h2>
+        <p>Святиня перекладу, яка сповідує яой і прагне наблизити кожну душу до цього шляху, навіть грішну.</p>
+    </div>
 </section>
