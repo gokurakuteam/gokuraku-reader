@@ -13,11 +13,12 @@
       "Романтика",
       "Омегаверс",
       "Музика",
-      "Дорослі стосунки"
+      "Дорослі стосунки",
+      "Еротика"
     ],
     "type": "Манхва",
     "status": "Виходить",
-    "latestUpdate": "2025-11-01T19:54:30.055106Z",
+    "latestUpdate": "2025-11-01T20:21:12.497712Z",
     "chapters": [
       {
         "id": 1,
@@ -3548,6 +3549,40 @@
           "https://files.catbox.moe/v6rh4r.jpg",
           "https://files.catbox.moe/gwb43f.jpg"
         ]
+      },
+      {
+        "id": 102,
+        "title": "",
+        "volume": 5,
+        "chapter": 99.0,
+        "date": "2025-11-01",
+        "pages": [
+          "https://files.catbox.moe/mzbmm7.jpg",
+          "https://files.catbox.moe/r42pbx.jpg",
+          "https://files.catbox.moe/5w7bta.jpg",
+          "https://files.catbox.moe/3qgpqk.jpg",
+          "https://files.catbox.moe/zwgxz3.jpg",
+          "https://files.catbox.moe/kqr1fr.jpg",
+          "https://files.catbox.moe/czypj4.jpg",
+          "https://files.catbox.moe/ree5c3.jpg",
+          "https://files.catbox.moe/1lq904.jpg",
+          "https://files.catbox.moe/34ucq7.jpg",
+          "https://files.catbox.moe/7b2kwf.jpg",
+          "https://files.catbox.moe/iivyr6.jpg",
+          "https://files.catbox.moe/o1whgb.jpg",
+          "https://files.catbox.moe/54tmg0.jpg",
+          "https://files.catbox.moe/wmu7eb.jpg",
+          "https://files.catbox.moe/142f1k.jpg",
+          "https://files.catbox.moe/yqtusr.jpg",
+          "https://files.catbox.moe/c54xlc.jpg",
+          "https://files.catbox.moe/s3x9wa.jpg",
+          "https://files.catbox.moe/l8l46r.jpg",
+          "https://files.catbox.moe/54lrct.jpg",
+          "https://files.catbox.moe/3i7gug.jpg",
+          "https://files.catbox.moe/9z7271.jpg",
+          "https://files.catbox.moe/qu0sol.jpg",
+          "https://files.catbox.moe/cqivls.jpg"
+        ]
       }
     ]
   },
@@ -3570,6 +3605,65 @@
       "Шьонен-ай"
     ],
     "latestUpdate": "2025-11-01T12:44:27.178360Z",
+    "chapters": []
+  },
+  {
+    "id": 3,
+    "title": "Хлопець у мені",
+    "description": "У старшій школі Лінджень, Шен Сюй — відомий хуліган, а Джань Шао — шкільний геній, занурений у навчання. Дві протилежності, зустріч яких неодмінно призводить до проблем. Але все перевертається з ніг на голову, коли вони таємничим чином міняються тілами. Що вони дізнаються один про одного, поки намагатимуться зберегти власні іміджі? Проте чи можуть взагалі протилежності притягнутися, якщо хлопець, який тобі подобається це... ти сам?",
+    "type": "Маньхва",
+    "status": "Виходить",
+    "coverImage": "https://files.catbox.moe/zpwhw3.webp",
+    "backgroundImage": "https://files.catbox.moe/g0fh46.PNG",
+    "pageUrl": "#title?id=3",
+    "genres": [
+      "Яой",
+      "Драма",
+      "Шьонен-ай",
+      "Романтика",
+      "Фентезі",
+      "Школа"
+    ],
+    "latestUpdate": "2025-11-01T19:59:04.982849Z",
+    "chapters": []
+  },
+  {
+    "id": 4,
+    "title": "Форма симпатії",
+    "description": "Одне весілля, два розбитих серця. На заручинах свого нерозділеного кохання, Юрі зустрічає колишнього класного керівника Сонву, який, здається, так само розбитий горем через цей союз. Проте він навіть не здогадується, що сльози Сонву призначені не нареченій, а нареченому...",
+    "type": "Манхва",
+    "status": "Виходить",
+    "coverImage": "https://files.catbox.moe/u3qcxk.jpg",
+    "backgroundImage": "https://files.catbox.moe/bawfag.webp",
+    "pageUrl": "#title?id=4",
+    "genres": [
+      "Яой",
+      "Драма",
+      "Шьонен-ай",
+      "Школа"
+    ],
+    "latestUpdate": "2025-11-01T20:03:02.514469Z",
+    "chapters": []
+  },
+  {
+    "id": 5,
+    "title": "Солодке собаче життя",
+    "description": "Сакураба — студент коледжу, хоча з його низьким зростом та дитячим личком цього не скажеш. Поліцейський Амасава подумав, що Сакураба неповнолітній, і майже затримав його за те, що він повертався додому занадто пізно, та ще й п'яний. Але в хлопцеві є щось дивно знайоме, і між ними зав’язується дивний зв’язок…",
+    "type": "Манґа",
+    "status": "Завершено",
+    "coverImage": "https://files.catbox.moe/335rgs.jpg",
+    "backgroundImage": "https://files.catbox.moe/ox67ns.jpg",
+    "pageUrl": "#title?id=5",
+    "genres": [
+      "Яой",
+      "Кулінарія",
+      "Поліція",
+      "Буденність",
+      "Шьонен-ай",
+      "Школа",
+      "Еротика"
+    ],
+    "latestUpdate": "2025-11-01T20:09:20.050714Z",
     "chapters": []
   }
 ]
