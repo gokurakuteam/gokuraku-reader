@@ -1,0 +1,33 @@
+
+[
+  {
+    "imageUrl": "https://picsum.photos/1800/700?random=10",
+    "caption": "Епічна сага про вікінгів, що шукають нову землю.",
+    "mangaUrl": "#title?id=1"
+  },
+  {
+    "imageUrl": "https://picsum.photos/1800/700?random=11",
+    "caption": "Людство проти гігантських титанів у боротьбі за виживання.",
+    "mangaUrl": "#title?id=2"
+  },
+  {
+    "imageUrl": "https://picsum.photos/1800/700?random=12",
+    "caption": "Темна історія про помсту у світі, повному демонів.",
+    "mangaUrl": "#title?id=3"
+  },
+  {
+    "imageUrl": "https://picsum.photos/1800/700?random=13",
+    "caption": "Брати-алхіміки шукають філософський камінь.",
+    "mangaUrl": "#title?id=4"
+  },
+  {
+    "imageUrl": "https://picsum.photos/1800/700?random=14",
+    "caption": "Складні стосунки у світі альф та омег.",
+    "mangaUrl": "#title?id=5"
+  },
+  {
+    "imageUrl": "https://picsum.photos/1800/700?random=15",
+    "caption": "Найслабший мисливець стає найсильнішим.",
+    "mangaUrl": "#title?id=6"
+  }
+]

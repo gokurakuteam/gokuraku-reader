@@ -1,5 +1,19 @@
 import { loadMangaData, getAllManga, getMangaById, getLatestUpdates, getChapterById } from './data-manager.js';
-import { getBookmarks, isBookmarked, addBookmark, removeBookmark, getHistory, addChapterToHistory } from './storage-manager.js';
+import { getBookmarks, isBookmarked, addBookmark, removeBookmark, getHistory, addChapterToHistory, isChapterRead, removeChapterFromHistory, addAllChaptersToHistory } from './storage-manager.js';
+import { initCatalog } from './catalog.js';
+
+function getStatusClass(status) {
+    switch (status) {
+        case 'Виходить':
+            return 'status-ongoing';
+        case 'Завершено':
+            return 'status-completed';
+        case 'Заморожено':
+            return 'status-frozen';
+        default:
+            return '';
+    }
+}
 
 class AppHeader extends HTMLElement {
     constructor() {
@@ -141,58 +155,121 @@ class MangaCard extends HTMLElement {
         const name = this.getAttribute('name');
         const image = this.getAttribute('image');
         const url = this.getAttribute('url');
+        const type = this.getAttribute('type');
+        const lastChapter = this.getAttribute('last-chapter');
+        const status = this.getAttribute('status');
+        const statusClass = getStatusClass(status);
 
-        if (this.shadowRoot.innerHTML !== '') return; // Avoid re-rendering
+        if (this.shadowRoot.innerHTML !== '') return;
 
         this.shadowRoot.innerHTML = `
             <style>
+                :host {
+                    display: block;
+                    height: 100%;
+                }
                 .card {
+                    position: relative;
                     background-color: var(--card-background);
-                    border-radius: 10px;
-                    text-align: center;
-                    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+                    border-radius: 12px;
                     overflow: hidden;
-                    transition: transform 0.3s ease, box-shadow 0.3s ease;
                     text-decoration: none;
                     color: var(--text-light);
+                    height: 100%;
                     display: flex;
                     flex-direction: column;
-                    height: 100%;
+                    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+                    transition: transform 0.3s ease, box-shadow 0.3s ease;
                 }
                 .card:hover {
                     transform: translateY(-5px);
-                    box-shadow: 0 12px 25px rgba(0,0,0,0.7);
+                    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 15px var(--glow-color);
                 }
                 .card-image-container {
                     width: 100%;
                     aspect-ratio: 2 / 3;
-                    overflow: hidden;
+                    position: relative;
                 }
                 img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
+                    transition: transform 0.4s ease;
+                }
+                .card:hover img {
+                    transform: scale(1.05);
+                }
+                .card-overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(to top, rgba(0,0,0,0.85) 20%, transparent 60%);
+                }
+                .card-info {
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    right: 0;
+                    padding: 1rem;
+                    text-align: left;
                 }
                 h3 {
-                    margin: 1rem 0.5rem;
-                    font-size: 1rem;
+                    margin: 0;
+                    font-size: 1.05rem;
                     font-weight: 600;
-                    flex-grow: 1;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
+                    line-height: 1.3;
+                    text-shadow: 0 2px 5px rgba(0,0,0,0.8);
                 }
+                 .last-chapter {
+                    font-size: 0.9rem;
+                    color: var(--secondary-text);
+                    margin: 0.25rem 0 0 0;
+                 }
+                .card-meta {
+                    position: absolute;
+                    top: 0.75rem;
+                    left: 0.75rem;
+                    right: 0.75rem;
+                    display: flex;
+                    justify-content: space-between;
+                    gap: 0.5rem;
+                }
+                .meta-tag {
+                    background-color: rgba(20, 20, 20, 0.8);
+                    backdrop-filter: blur(5px);
+                    color: var(--text-light);
+                    padding: 0.3rem 0.6rem;
+                    border-radius: 8px;
+                    font-size: 0.8rem;
+                    font-weight: 500;
+                    text-transform: capitalize;
+                }
+                .status-tag {
+                    color: white;
+                }
+                .status-ongoing { background-color: #28a745; }
+                .status-completed { background-color: #007bff; }
+                .status-frozen { background-color: #6c757d; }
             </style>
             <a href="${url}" class="card">
                 <div class="card-image-container">
                     <img src="${image}" alt="${name}">
+                    <div class="card-overlay"></div>
+                    <div class="card-meta">
+                         ${type ? `<span class="meta-tag">${type}</span>` : ''}
+                         ${status ? `<span class="meta-tag status-tag ${statusClass}">${status}</span>` : ''}
+                    </div>
+                    <div class="card-info">
+                        <h3>${name}</h3>
+                         ${lastChapter ? `<p class="last-chapter">${lastChapter}</p>` : ''}
+                    </div>
                 </div>
-                <h3>${name}</h3>
             </a>
         `;
     }
 }
-
 
 customElements.define('app-header', AppHeader);
 customElements.define('manga-card', MangaCard);
@@ -206,32 +283,117 @@ const routes = {
 };
 
 let currentSlide = 0;
+let slides = [];
+let dots = [];
+let carouselInterval;
+const slideWidth = 100;
 
-function showSlide(n) {
-    const slides = document.querySelectorAll('.manga-banner');
-    const dots = document.querySelectorAll('.banner-dot');
-    if (slides.length === 0) return;
+function showSlide(index) {
+    const numSlides = slides.length;
+    if (numSlides === 0) return;
 
-    slides.forEach(slide => slide.classList.remove('active'));
-    dots.forEach(dot => dot.classList.remove('active'));
+    currentSlide = (index + numSlides) % numSlides;
 
-    currentSlide = (n + slides.length) % slides.length;
+    const banners = document.querySelector('.manga-banners');
+    if (banners) {
+        banners.style.transform = `translateX(-${currentSlide * slideWidth}%)`;
+    }
 
-    slides[currentSlide].classList.add('active');
-    dots[currentSlide].classList.add('active');
+    slides.forEach((slide, i) => {
+        const isActive = i === currentSlide;
+        slide.classList.toggle('active', isActive);
+        slide.style.transform = `translateX(${i * 100}%)`;
+    });
+
+    dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === currentSlide);
+    });
 }
 
-function setupCarousel() {
-    const dots = document.querySelectorAll('.banner-dot');
+function setupCarouselControls() {
+    const prevButton = document.querySelector('.carousel-prev');
+    const nextButton = document.querySelector('.carousel-next');
+
+    if (prevButton && nextButton) {
+        prevButton.addEventListener('click', () => {
+            showSlide(currentSlide - 1);
+            resetCarouselInterval();
+        });
+
+        nextButton.addEventListener('click', () => {
+            showSlide(currentSlide + 1);
+            resetCarouselInterval();
+        });
+    }
+
     dots.forEach(dot => {
         dot.addEventListener('click', () => {
             showSlide(parseInt(dot.dataset.slide));
+            resetCarouselInterval();
         });
     });
 
-    setInterval(() => {
+    resetCarouselInterval();
+}
+
+function resetCarouselInterval() {
+    if (carouselInterval) clearInterval(carouselInterval);
+    carouselInterval = setInterval(() => {
         showSlide(currentSlide + 1);
     }, 10000);
+}
+
+async function setupDynamicCarousel() {
+    try {
+        const response = await fetch('site-data.json');
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+        const carouselItems = await response.json();
+
+        const randomItems = carouselItems.sort(() => 0.5 - Math.random()).slice(0, 5);
+
+        const bannersContainer = document.querySelector('.manga-banners');
+        const dotsContainer = document.querySelector('.banner-dots');
+
+        if (!bannersContainer || !dotsContainer) return;
+
+        bannersContainer.innerHTML = '';
+        dotsContainer.innerHTML = '';
+
+        slides = [];
+        dots = [];
+
+        randomItems.forEach((item, index) => {
+            const banner = document.createElement('a');
+            banner.href = item.mangaUrl;
+            banner.className = 'manga-banner';
+            banner.style.transform = `translateX(${index * 100}%)`;
+            banner.innerHTML = `
+                <img src="${item.imageUrl}" alt="${item.caption}">
+                <div class="banner-caption">
+                    <h3>${item.caption}</h3>
+                    <p>${item.description || ''}</p>
+                </div>
+            `;
+            bannersContainer.appendChild(banner);
+            slides.push(banner);
+
+            const dot = document.createElement('div');
+            dot.className = 'banner-dot';
+            dot.dataset.slide = index;
+            dotsContainer.appendChild(dot);
+            dots.push(dot);
+        });
+
+        if (randomItems.length > 0) {
+            showSlide(0);
+            setupCarouselControls();
+        }
+
+    } catch (error) {
+        console.error('Failed to load carousel data:', error);
+        const bannersContainer = document.querySelector('.manga-banners');
+        if(bannersContainer) bannersContainer.innerHTML = '<p class="error-message">Не вдалося завантажити цікавинки. Спробуйте оновити сторінку.</p>';
+    }
 }
 
 function setupTabs() {
@@ -266,18 +428,78 @@ function timeAgo(date) {
     return "Щойно";
 }
 
+let chapterSortOrder = 'desc'; // 'asc' or 'desc'
+
+function renderChapterList(manga, sortOrder) {
+    const chapterList = document.querySelector('.chapter-list ul');
+    if (!chapterList || !manga.chapters || manga.chapters.length === 0) return;
+
+    const sortedChapters = [...manga.chapters].sort((a, b) => {
+        const chapterA = a.chapter;
+        const chapterB = b.chapter;
+        return sortOrder === 'asc' ? chapterA - chapterB : chapterB - chapterA;
+    });
+
+    chapterList.innerHTML = sortedChapters.map(ch => {
+        const isRead = isChapterRead(manga.id, ch.id);
+        return `
+            <li class="${isRead ? 'read-chapter' : ''}">
+                <a href="#reader?mangaId=${manga.id}&chapterId=${ch.id}">Том ${ch.volume}, Розділ ${ch.chapter}${ch.title ? `: ${ch.title}` : ''}</a>
+                <span class="chapter-meta">
+                    <svg class="eye-icon ${isRead ? 'read' : ''}" data-manga-id="${manga.id}" data-chapter-id="${ch.id}" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-134 0-244.5-72T61-462q-5-9-7.5-18.5T51-500q0-10 2.5-19.5T61-538q64-118 174.5-190T480-800q134 0 244.5 72T899-538q5 9 7.5 18.5T909-500q0 10-2.5 19.5T899-462q-64 118-174.5 190T480-200Z"/></svg>
+                    ${new Date(ch.date).toLocaleDateString()}
+                </span>
+            </li>
+        `;
+    }).join('');
+
+    chapterList.querySelectorAll('.eye-icon').forEach(icon => {
+        icon.addEventListener('click', (e) => {
+            e.stopPropagation(); 
+            const mangaId = parseInt(icon.dataset.mangaId);
+            const chapterId = parseInt(icon.dataset.chapterId);
+            const chapterItem = icon.closest('li');
+
+            if (icon.classList.contains('read')) {
+                removeChapterFromHistory(mangaId, chapterId);
+                icon.classList.remove('read');
+                chapterItem.classList.remove('read-chapter');
+            } else {
+                addChapterToHistory(mangaId, chapterId);
+                icon.classList.add('read');
+                chapterItem.classList.add('read-chapter');
+            }
+            updateReadButton(manga);
+        });
+    });
+}
+
+function updateReadButton(manga) {
+    const readButton = document.querySelector('.read-button');
+    if (!readButton || !manga.chapters || manga.chapters.length === 0) return;
+
+    const sortedChapters = [...manga.chapters].sort((a,b) => a.chapter - b.chapter);
+    let firstUnreadChapter = sortedChapters.find(ch => !isChapterRead(manga.id, ch.id));
+
+    if (!firstUnreadChapter) {
+        firstUnreadChapter = sortedChapters[0]; 
+    }
+
+    readButton.href = `#reader?mangaId=${manga.id}&chapterId=${firstUnreadChapter.id}`;
+}
+
 async function loadPage(page, params) {
     const main = document.querySelector('main');
     const response = await fetch(routes[page]);
     const content = await response.text();
     main.innerHTML = content;
 
-
     if (page === 'home') {
-        setupCarousel();
+        await setupDynamicCarousel();
         const updatesList = main.querySelector('.update-list');
         const latestUpdates = getLatestUpdates(5);
         updatesList.innerHTML = latestUpdates.map(manga => {
+            if (!manga.chapters || manga.chapters.length === 0) return '';
             const latestChapter = manga.chapters[manga.chapters.length - 1];
             return `
                 <li>
@@ -293,51 +515,88 @@ async function loadPage(page, params) {
             `;
         }).join('');
     } else if (page === 'catalog') {
-        const mangaGrid = main.querySelector('.manga-grid');
         const allManga = getAllManga();
-        allManga.forEach(manga => {
-            const card = document.createElement('manga-card');
-            card.setAttribute('name', manga.title);
-            card.setAttribute('image', manga.coverImage);
-            card.setAttribute('url', manga.pageUrl);
-            mangaGrid.appendChild(card);
-        });
+        let genres = params ? params.get('genres') : null;
+        initCatalog(allManga, genres ? genres.split(',') : []);
+// ... (попередній код)
+} else if (page === 'title') {
+    const mangaId = parseInt(params.get('id'));
+    const manga = getMangaById(mangaId);
 
-    } else if (page === 'title') {
-        const mangaId = parseInt(params.get('id'));
-        const manga = getMangaById(mangaId);
-        if (manga) {
-            main.querySelector('.title-cover img').src = manga.coverImage;
-            main.querySelector('.title-info h1').textContent = manga.title;
-            main.querySelector('.title-info p').textContent = manga.description;
-            main.querySelector('.genres').innerHTML = manga.genres.map(g => `<span>${g}</span>`).join('');
-            
-            const readButton = main.querySelector('.read-button');
-            if (manga.chapters && manga.chapters.length > 0) {
-                readButton.href = `#reader?mangaId=${manga.id}&chapterId=${manga.chapters[0].id}`;
-            } else {
-                readButton.style.display = 'none';
-            }
-
-            const chapterList = main.querySelector('.chapter-list ul');
-            chapterList.innerHTML = manga.chapters.map(ch => `
-                 <li>
-                    <a href="#reader?mangaId=${manga.id}&chapterId=${ch.id}">Том ${ch.volume}, Розділ ${ch.chapter}: ${ch.title}</a>
-                    <span>${new Date(ch.date).toLocaleDateString()}</span>
-                </li>
-            `).join('');
-
-            const bookmarkToggle = main.querySelector('#bookmark-toggle');
-            bookmarkToggle.checked = isBookmarked(manga.id);
-            bookmarkToggle.addEventListener('change', () => {
-                if (bookmarkToggle.checked) {
-                    addBookmark(manga.id);
-                } else {
-                    removeBookmark(manga.id);
-                }
-            });
+    if (manga) { // Якщо манґа з таким ID знайдена
+        if (manga.backgroundImage) {
+            main.querySelector('#background-image').style.backgroundImage = `url(${manga.backgroundImage})`;
         }
-    } else if (page === 'cabinet') {
+        main.querySelector('.title-cover img').src = manga.coverImage;
+        main.querySelector('.title-info h1').textContent = manga.title;
+        main.querySelector('.title-info p').textContent = manga.description;
+
+        const metaInfo = main.querySelector('.title-meta-info');
+        const statusClass = getStatusClass(manga.status);
+        metaInfo.innerHTML = `
+            <span class="meta-tag">${manga.type}</span>
+            <span class="meta-tag status-tag ${statusClass}">${manga.status}</span>
+        `;
+
+        main.querySelector('.genres').innerHTML = manga.genres.map(g => `<a href="#catalog?genres=${encodeURIComponent(g)}">${g}</a>`).join('');
+
+        const readButton = main.querySelector('.read-button');
+        const chapterActions = main.querySelector('.chapter-actions');
+        
+        if (manga.chapters && manga.chapters.length > 0) {
+            readButton.classList.remove('disabled');
+            readButton.style.display = 'flex';
+            if (chapterActions) chapterActions.style.display = 'flex';
+
+            updateReadButton(manga);
+            renderChapterList(manga, chapterSortOrder);
+
+            const sortButton = main.querySelector('#sort-chapters-btn');
+            sortButton.addEventListener('click', () => {
+                chapterSortOrder = chapterSortOrder === 'desc' ? 'asc' : 'desc';
+                sortButton.classList.toggle('asc', chapterSortOrder === 'asc');
+                renderChapterList(manga, chapterSortOrder);
+            });
+
+            const readAllButton = main.querySelector('#read-all-btn');
+            readAllButton.addEventListener('click', () => {
+                addAllChaptersToHistory(manga.id);
+                renderChapterList(manga, chapterSortOrder);
+                updateReadButton(manga);
+            });
+
+        } else {
+            // Ось зміни для випадку, коли розділів немає
+            readButton.classList.add('disabled');
+            readButton.href = 'javascript:void(0);';
+            readButton.style.display = 'flex';
+            if (chapterActions) chapterActions.style.display = 'none';
+            main.querySelector('.chapter-list').innerHTML = `
+                <ul>
+                    <li class="chapter-item-none">
+                        <div class="chapter-info-none">
+                            <span class="chapter-title-none">Розділів ще немає</span>
+                            <span class="chapter-date-none">Слідкуйте за оновленнями!</span>
+                        </div>
+                    </li>
+                </ul>
+            `;
+        }
+
+        const bookmarkToggle = main.querySelector('#bookmark-toggle');
+        bookmarkToggle.checked = isBookmarked(manga.id);
+        bookmarkToggle.addEventListener('change', () => {
+            if (bookmarkToggle.checked) {
+                addBookmark(manga.id);
+            } else {
+                removeBookmark(manga.id);
+            }
+        });
+    } else {
+        // Якщо манґа не знайдена, показуємо 404
+        await showNotFoundPage();
+    }
+} else if (page === 'cabinet') {
         setupTabs();
         const bookmarksGrid = main.querySelector('.bookmarks-grid');
         const bookmarkedIds = getBookmarks();
@@ -349,6 +608,11 @@ async function loadPage(page, params) {
                 card.setAttribute('name', manga.title);
                 card.setAttribute('image', manga.coverImage);
                 card.setAttribute('url', manga.pageUrl);
+                 card.setAttribute('type', manga.type);
+                 if(manga.chapters && manga.chapters.length > 0){
+                    card.setAttribute('last-chapter', `Розділ ${manga.chapters[manga.chapters.length - 1].chapter}`);
+                 }
+                card.setAttribute('status', manga.status);
                 bookmarksGrid.appendChild(card);
             });
         } else {
@@ -389,7 +653,7 @@ async function loadPage(page, params) {
             addChapterToHistory(mangaId, chapterId);
 
             main.querySelector('.back-button').href = `#title?id=${mangaId}`;
-            main.querySelector('.chapter-title').textContent = `Том ${chapter.volume}, Розділ ${chapter.chapter}: ${chapter.title}`;
+            main.querySelector('.chapter-title').textContent = `Том ${chapter.volume}, Розділ ${chapter.chapter}${chapter.title ? `: ${chapter.title}` : ''}`;
             const readerContent = main.querySelector('.reader-content');
             readerContent.innerHTML = chapter.pages.map(pageUrl => `<img src="${pageUrl}" alt="Сторінка розділу">`).join('');
 
@@ -452,9 +716,30 @@ async function handleNavigation() {
             }
         });
     } else {
-        window.location.hash = 'home';
+        await showNotFoundPage();
     }
 }
+
+async function showNotFoundPage() {
+    try {
+        const response = await fetch('404.html');
+        if (!response.ok) throw new Error('404.html not found');
+        const html = await response.text();
+        document.getElementById('app').innerHTML = html;
+        document.title = "404 - Сторінку не знайдено";
+    } catch (error) {
+        console.error("Could not load 404 page:", error);
+        document.getElementById('app').innerHTML = `
+            <div class="not-found-container" style="text-align: center; padding: 50px;">
+                <h1>404</h1>
+                <p>Сторінку не знайдено.</p>
+            </div>
+        `;
+    }
+}
+
+
+
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadMangaData(); 
@@ -472,3 +757,4 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     });
 });
+

@@ -1,3 +1,5 @@
+import { getMangaById } from './data-manager.js';
+
 const BOOKMARKS_KEY = 'mangaBookmarks';
 const HISTORY_KEY = 'mangaHistory';
 
@@ -42,10 +44,47 @@ export function addChapterToHistory(mangaId, chapterId) {
     // Add new entry to the beginning of the array
     history.unshift({ mangaId, chapterId, timestamp: new Date().toISOString() });
     // Optional: Limit history size
-    if (history.length > 100) { // Keep last 100 read chapters
+    if (history.length > 200) { // Keep last 200 read chapters
         history.pop();
     }
     localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
+
+export function addAllChaptersToHistory(mangaId) {
+    const manga = getMangaById(mangaId);
+    if (!manga || !manga.chapters || manga.chapters.length === 0) return;
+
+    let history = getHistory();
+    // Filter out any existing history for this manga to avoid duplicates
+    history = history.filter(item => item.mangaId !== mangaId);
+
+    const chaptersToAdd = manga.chapters.map(ch => ({
+        mangaId: mangaId,
+        chapterId: ch.id,
+        timestamp: new Date().toISOString()
+    }));
+
+    // Add all chapters for this manga to the beginning of the history
+    const updatedHistory = [...chaptersToAdd, ...history];
+
+    // Optional: Limit history size
+    if (updatedHistory.length > 200) {
+        updatedHistory.length = 200;
+    }
+
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(updatedHistory));
+}
+
+
+export function removeChapterFromHistory(mangaId, chapterId) {
+    let history = getHistory();
+    history = history.filter(item => !(item.mangaId === mangaId && item.chapterId === chapterId));
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+}
+
+export function isChapterRead(mangaId, chapterId) {
+    const history = getHistory();
+    return history.some(item => item.mangaId === mangaId && item.chapterId === chapterId);
 }
 
 export function getLatestChapterForManga(mangaId) {

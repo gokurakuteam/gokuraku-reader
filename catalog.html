@@ -1,10 +1,24 @@
 
 <section class="catalog">
-    <div class="filters">
-        <input type="search" placeholder="Пошук за назвою...">
-        <div class="view-toggle">
-            <span>...</span>
+    <div class="filters-container">
+        <div class="search-filter">
+            <input type="search" id="search-input" placeholder="Пошук за назвою...">
+        </div>
+        <div class="dropdown-filters">
+            <div class="dropdown">
+                <button class="dropdown-toggle" data-dropdown="genre-dropdown">Жанри</button>
+                <div id="genre-dropdown" class="dropdown-menu"></div>
+            </div>
+            <div class="dropdown">
+                <button class="dropdown-toggle" data-dropdown="type-dropdown">Тип</button>
+                <div id="type-dropdown" class="dropdown-menu"></div>
+            </div>
+            <div class="dropdown">
+                <button class="dropdown-toggle" data-dropdown="sort-dropdown">Сортувати</button>
+                <div id="sort-dropdown" class="dropdown-menu dropdown-menu-right"></div>
+            </div>
         </div>
     </div>
+    <div class="active-filters" id="active-filters"></div>
     <div class="manga-grid"></div>
 </section>
