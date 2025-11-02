@@ -18,7 +18,7 @@
     ],
     "type": "Манхва",
     "status": "Виходить",
-    "latestUpdate": "2025-11-01T20:21:12.497712Z",
+    "latestUpdate": "2025-11-02T17:25:23.265370Z",
     "chapters": [
       {
         "id": 1,
@@ -3582,6 +3582,20 @@
           "https://files.catbox.moe/9z7271.jpg",
           "https://files.catbox.moe/qu0sol.jpg",
           "https://files.catbox.moe/cqivls.jpg"
+        ]
+      },
+      {
+        "id": 103,
+        "title": "",
+        "volume": 5,
+        "chapter": 99.5,
+        "date": "2025-11-02",
+        "pages": [
+          "https://files.catbox.moe/0om37c.jpg",
+          "https://files.catbox.moe/wj2kia.jpg",
+          "https://files.catbox.moe/hwikaz.jpg",
+          "https://files.catbox.moe/otaajk.jpg",
+          "https://files.catbox.moe/ai2qms.jpg"
         ]
       }
     ]
