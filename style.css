@@ -1205,3 +1205,29 @@ h2 {
         display: none;
     }
 }
+
+#clear-history-btn {
+    margin: 1rem 0;
+}
+
+.chapter-meta {
+    gap: 0.5rem; /* Додаємо невеликий відступ між іконками */
+}
+
+.download-chapter-btn svg {
+    width: 22px; /* Трохи менша іконка для кращого вигляду */
+    height: 22px;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
