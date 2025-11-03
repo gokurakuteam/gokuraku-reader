@@ -448,30 +448,16 @@ function renderChapterList(manga, sortOrder) {
                 <span class="chapter-meta">
                     <svg class="eye-icon ${isRead ? 'read' : ''}" data-manga-id="${manga.id}" data-chapter-id="${ch.id}" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-134 0-244.5-72T61-462q-5-9-7.5-18.5T51-500q0-10 2.5-19.5T61-538q64-118 174.5-190T480-800q134 0 244.5 72T899-538q5 9 7.5 18.5T909-500q0 10-2.5 19.5T899-462q-64 118-174.5 190T480-200Z"/></svg>
                     ${new Date(ch.date).toLocaleDateString()}
+                    <button class="icon-button download-chapter-btn" title="Завантажити розділ у PDF" data-manga-id="${manga.id}" data-chapter-id="${ch.id}">
+                        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    </button>
                 </span>
             </li>
         `;
     }).join('');
 
-    chapterList.querySelectorAll('.eye-icon').forEach(icon => {
-        icon.addEventListener('click', (e) => {
-            e.stopPropagation(); 
-            const mangaId = parseInt(icon.dataset.mangaId);
-            const chapterId = parseInt(icon.dataset.chapterId);
-            const chapterItem = icon.closest('li');
-
-            if (icon.classList.contains('read')) {
-                removeChapterFromHistory(mangaId, chapterId);
-                icon.classList.remove('read');
-                chapterItem.classList.remove('read-chapter');
-            } else {
-                addChapterToHistory(mangaId, chapterId);
-                icon.classList.add('read');
-                chapterItem.classList.add('read-chapter');
-            }
-            updateReadButton(manga);
-        });
-    });
+    // Цей код більше не потрібен тут, ми перенесемо логіку в `loadPage`
+    // chapterList.querySelectorAll('.eye-icon').forEach(...) 
 }
 
 function updateReadButton(manga) {
@@ -550,6 +536,40 @@ async function loadPage(page, params) {
 
             updateReadButton(manga);
             renderChapterList(manga, chapterSortOrder);
+
+            const chapterListUl = main.querySelector('.chapter-list ul');
+        if (chapterListUl) {
+            chapterListUl.addEventListener('click', (e) => {
+                const target = e.target;
+                const eyeIcon = target.closest('.eye-icon');
+                const downloadBtn = target.closest('.download-chapter-btn');
+
+                if (eyeIcon) {
+                    e.stopPropagation();
+                    const mangaId = parseInt(eyeIcon.dataset.mangaId);
+                    const chapterId = parseInt(eyeIcon.dataset.chapterId);
+                    const chapterItem = eyeIcon.closest('li');
+                    
+                    if (eyeIcon.classList.contains('read')) {
+                        removeChapterFromHistory(mangaId, chapterId);
+                        eyeIcon.classList.remove('read');
+                        chapterItem.classList.remove('read-chapter');
+                    } else {
+                        addChapterToHistory(mangaId, chapterId);
+                        eyeIcon.classList.add('read');
+                        chapterItem.classList.add('read-chapter');
+                    }
+                    updateReadButton(manga);
+                }
+
+                if (downloadBtn) {
+                    e.stopPropagation();
+                    const mangaId = parseInt(downloadBtn.dataset.mangaId);
+                    const chapterId = parseInt(downloadBtn.dataset.chapterId);
+                    downloadChapterAsPdf(mangaId, chapterId, downloadBtn);
+                }
+            });
+        }
 
             const sortButton = main.querySelector('#sort-chapters-btn');
             sortButton.addEventListener('click', () => {
@@ -758,3 +778,155 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 });
 
+// Функція для завантаження одного зображення
+// ЗАМІНІТЬ СТАРУ ФУНКЦІЮ НА ЦЮ
+async function loadImage(url) {
+    try {
+        // Крок 1: Завантажуємо дані зображення за допомогою fetch
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`Помилка мережі: статус ${response.status} для ${url}`);
+        }
+        const blob = await response.blob();
+
+        // Крок 2: Конвертуємо blob у data URL (base64)
+        const dataUrl = await new Promise(resolve => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result);
+            reader.readAsDataURL(blob);
+        });
+        
+        // Крок 3: Створюємо об'єкт Image з data URL, щоб отримати його розміри
+        return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => resolve(img);
+            img.onerror = reject;
+            img.src = dataUrl;
+        });
+    } catch (error) {
+        // Якщо виникає помилка, ми її прокидаємо далі, щоб Promise.all її зловив
+        console.error(`Не вдалося обробити зображення з ${url}:`, error);
+        throw error;
+    }
+}
+
+
+// ЗАМІНІТЬ ПОПЕРЕДНЮ ВЕРСІЮ НА ЦЮ ФІНАЛЬНУ
+async function downloadChapterAsPdf(mangaId, chapterId, buttonElement) {
+    const originalIcon = buttonElement.innerHTML;
+    const loadingIcon = '<svg viewBox="0 0 24 24" class="spinner"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>';
+
+    try {
+        buttonElement.innerHTML = loadingIcon;
+        buttonElement.disabled = true;
+
+        const manga = getMangaById(mangaId);
+        const chapter = getChapterById(chapterId);
+        
+        console.log(`[PDF Generator] Розпочато завантаження розділу ${chapter.chapter} для '${manga.title}'.`);
+
+        if (!manga || !chapter || !chapter.pages || chapter.pages.length === 0) {
+            throw new Error('Не знайдено даних про розділ або сторінок у розділі.');
+        }
+        
+        console.log(`[PDF Generator] Знайдено ${chapter.pages.length} сторінок. Починаю завантаження зображень...`);
+
+        const imagePromises = chapter.pages.map((url, index) => 
+            loadImage(url).then(img => {
+                console.log(`[PDF Generator] Зображення ${index + 1}/${chapter.pages.length} завантажено успішно.`);
+                return img;
+            })
+        );
+
+        const results = await Promise.allSettled(imagePromises);
+        
+        const loadedImages = results
+            .filter(result => result.status === 'fulfilled')
+            .map(result => result.value);
+        
+        const failedCount = results.length - loadedImages.length;
+
+        console.log(`[PDF Generator] Успішно завантажено ${loadedImages.length} з ${chapter.pages.length} зображень.`);
+        if (failedCount > 0) {
+            console.warn(`[PDF Generator] Не вдалося завантажити ${failedCount} зображень.`);
+        }
+
+        if (loadedImages.length === 0) {
+            throw new Error("Не вдалося завантажити жодного зображення.");
+        }
+        
+        console.log("[PDF Generator] Розраховую максимальну ширину...");
+        
+        let maxWidth = 0;
+        loadedImages.forEach(img => {
+            if (img.width > maxWidth) {
+                maxWidth = img.width;
+            }
+        });
+
+        const MAX_PAGE_HEIGHT = 10000;
+        console.log(`[PDF Generator] Максимальна ширина: ${maxWidth}px. Ліміт висоти сторінки: ${MAX_PAGE_HEIGHT}px.`);
+        console.log("[PDF Generator] Створюю екземпляр jsPDF...");
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+            orientation: 'p',
+            unit: 'px',
+            format: [maxWidth, MAX_PAGE_HEIGHT]
+        });
+
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+
+        console.log("[PDF Generator] Додаю зображення до документа з нарізкою...");
+
+        let currentY = 0;
+        let pageCount = 1;
+        
+        for (let i = 0; i < loadedImages.length; i++) {
+            const img = loadedImages[i];
+            let sourceY = 0;
+
+            while (sourceY < img.height) {
+                let remainingOnPage = MAX_PAGE_HEIGHT - currentY;
+
+                if (remainingOnPage <= 1) { // Залишаємо 1px запасу для уникнення помилок
+                    doc.addPage();
+                    pageCount++;
+                    currentY = 0;
+                    remainingOnPage = MAX_PAGE_HEIGHT;
+                    console.log(`[PDF Generator] Створено нову сторінку ${pageCount}.`);
+                }
+
+                const sliceHeight = Math.min(img.height - sourceY, remainingOnPage);
+                
+                tempCanvas.width = img.width;
+                tempCanvas.height = sliceHeight;
+                tempCtx.drawImage(img, 0, sourceY, img.width, sliceHeight, 0, 0, img.width, sliceHeight);
+
+                // ОПТИМІЗАЦІЯ: Передаємо canvas напряму, без конвертації в DataURL
+                // Це швидше і зберігає якість краще.
+                doc.addImage(tempCanvas, 'JPEG', 0, currentY, img.width, sliceHeight);
+                
+                currentY += sliceHeight;
+                sourceY += sliceHeight;
+            }
+        }
+
+        // ВИПРАВЛЕННЯ: Більш надійний спосіб очищення назви файлу
+        const safeTitle = manga.title.replace(/[^a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9\s-]/g, '').trim().replace(/\s+/g, '_');
+        const fileName = `${safeTitle}_Розділ_${chapter.chapter}.pdf`;
+        
+        console.log(`[PDF Generator] Генерація завершена. Всього сторінок: ${pageCount}. Зберігаю файл: ${fileName}`);
+        doc.save(fileName);
+        
+        console.log("[PDF Generator] PDF успішно збережено!");
+
+    } catch (error) {
+        console.error("[PDF Generator] Загальна помилка при створенні PDF:", error);
+        alert("Не вдалося завантажити розділ. Деталі помилки дивіться в консолі розробника (F12).");
+    } finally {
+        buttonElement.innerHTML = originalIcon;
+        buttonElement.disabled = false;
+    }
+}

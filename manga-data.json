@@ -3,7 +3,7 @@
     "id": 1,
     "title": "Кохання — це ілюзія",
     "description": "Двадцятирічний Кім Хесон все життя вважав себе альфою. Та одного дня все змінюється: у нього починається перша тічка і його визнають рецесивним омегою. Саме в цей момент, він зустрічає співака Пак Доджіна — багатого альфу, котрий ненавидить омег. Але на противагу цьому, омега стає музою для Доджіна, а сам Хесон всіма силами заперечує їх зв'язок. Коли фізичний потяг між ними призводить до помилки, життя обох перетворюються на справжнє випробування.",
-    "coverImage": "https://files.catbox.moe/cxbn9y.jpg",
+    "coverImage": "https://files.catbox.moe/bguhd2.webp",
     "backgroundImage": "https://files.catbox.moe/qwq2lu.png",
     "pageUrl": "#title?id=1",
     "genres": [
@@ -18,7 +18,7 @@
     ],
     "type": "Манхва",
     "status": "Виходить",
-    "latestUpdate": "2025-11-02T17:25:23.265370Z",
+    "latestUpdate": "2025-11-03T19:48:19.935138Z",
     "chapters": [
       {
         "id": 1,
@@ -3596,6 +3596,35 @@
           "https://files.catbox.moe/hwikaz.jpg",
           "https://files.catbox.moe/otaajk.jpg",
           "https://files.catbox.moe/ai2qms.jpg"
+        ]
+      },
+      {
+        "id": 104,
+        "title": "",
+        "volume": 6,
+        "chapter": 100.0,
+        "date": "2025-11-03",
+        "pages": [
+          "https://files.catbox.moe/1dd3gf.jpg",
+          "https://files.catbox.moe/2qodv7.jpg",
+          "https://files.catbox.moe/0x3u1b.jpg",
+          "https://files.catbox.moe/at17tb.jpg",
+          "https://files.catbox.moe/vvjfo7.jpg",
+          "https://files.catbox.moe/94eulf.jpg",
+          "https://files.catbox.moe/bzh602.jpg",
+          "https://files.catbox.moe/m3metg.jpg",
+          "https://files.catbox.moe/xsjth3.jpg",
+          "https://files.catbox.moe/4ygv05.jpg",
+          "https://files.catbox.moe/p1f4h2.jpg",
+          "https://files.catbox.moe/q4h3pa.jpg",
+          "https://files.catbox.moe/er0b4y.jpg",
+          "https://files.catbox.moe/4hn6v3.jpg",
+          "https://files.catbox.moe/nfqyf7.jpg",
+          "https://files.catbox.moe/7k1492.jpg",
+          "https://files.catbox.moe/8uz8m7.jpg",
+          "https://files.catbox.moe/yqebyv.jpg",
+          "https://files.catbox.moe/b5mnfr.jpg",
+          "https://files.catbox.moe/dkutb3.jpg"
         ]
       }
     ]
