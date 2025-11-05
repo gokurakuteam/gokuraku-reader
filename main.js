@@ -764,6 +764,20 @@ async function showNotFoundPage() {
 document.addEventListener('DOMContentLoaded', async () => {
     await loadMangaData(); 
 
+    // --- ПОЧАТОК КОДУ ДЛЯ РЕЄСТРАЦІЇ SERVICE WORKER ---
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('ServiceWorker registration successful: ', registration.scope);
+                })
+                .catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+        });
+    }
+    // --- КІНЕЦЬ КОДУ ДЛЯ РЕЄСТРАЦІЇ SERVICE WORKER ---
+
     window.addEventListener('hashchange', handleNavigation);
 
     await handleNavigation();
