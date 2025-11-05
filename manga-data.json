@@ -18,7 +18,7 @@
     ],
     "type": "Манхва",
     "status": "Виходить",
-    "latestUpdate": "2025-11-04T20:32:40.422859Z",
+    "latestUpdate": "2025-11-05T19:22:48.230359Z",
     "chapters": [
       {
         "id": 1,
@@ -3656,6 +3656,39 @@
           "https://files.catbox.moe/24xdud.webp",
           "https://files.catbox.moe/uuhsdf.webp"
         ]
+      },
+      {
+        "id": 106,
+        "title": "",
+        "volume": 6,
+        "chapter": 102.0,
+        "date": "2025-11-05",
+        "pages": [
+          "https://files.catbox.moe/ppngjb.jpg",
+          "https://files.catbox.moe/e3iz9a.jpg",
+          "https://files.catbox.moe/0c9ubh.jpg",
+          "https://files.catbox.moe/4ms66n.jpg",
+          "https://files.catbox.moe/kl9ys9.jpg",
+          "https://files.catbox.moe/n3u5jy.jpg",
+          "https://files.catbox.moe/xo8xi4.jpg",
+          "https://files.catbox.moe/f93auv.jpg",
+          "https://files.catbox.moe/rm2d7o.jpg",
+          "https://files.catbox.moe/qu9dfu.jpg",
+          "https://files.catbox.moe/3rrhz4.jpg",
+          "https://files.catbox.moe/184ltg.jpg",
+          "https://files.catbox.moe/zwof7p.jpg",
+          "https://files.catbox.moe/n840y3.jpg",
+          "https://files.catbox.moe/mmqc0i.jpg",
+          "https://files.catbox.moe/d6z8np.jpg",
+          "https://files.catbox.moe/qdqrx2.jpg",
+          "https://files.catbox.moe/6grdwl.jpg",
+          "https://files.catbox.moe/nm1mr3.jpg",
+          "https://files.catbox.moe/5fsrj9.jpg",
+          "https://files.catbox.moe/58rg76.jpg",
+          "https://files.catbox.moe/4jz7yk.jpg",
+          "https://files.catbox.moe/toy6c6.jpg",
+          "https://files.catbox.moe/dkbnyg.jpg"
+        ]
       }
     ]
   },
@@ -3737,6 +3770,215 @@
       "Еротика"
     ],
     "latestUpdate": "2025-11-01T20:09:20.050714Z",
+    "chapters": []
+  },
+  {
+    "id": 6,
+    "title": "Мій кіт трохи інший",
+    "description": "Повсякденне життя кота та його молодого власника.",
+    "type": "Маньхва",
+    "status": "Завершено",
+    "coverImage": "https://files.catbox.moe/ftcjz4.webp",
+    "backgroundImage": "https://files.catbox.moe/wcsx2d.webp",
+    "pageUrl": "#title?id=6",
+    "genres": [
+      "Побут",
+      "Тварини",
+      "Комедія"
+    ],
+    "latestUpdate": "2025-11-05T19:03:22.293385Z",
+    "chapters": []
+  },
+  {
+    "id": 7,
+    "title": "Гра в кохання",
+    "description": "Ви коли-небудь чули фразу «прикидайся, доки не вийде»? Коул і Макс — двоє шкільних приятелів, які виводять цю цитату на новий рівень, вдаючи із себе пару для соціального проекту, щоб з'ясувати, чи може «вдавання» призвести до справжнього кохання. Але що станеться після завершення проекту? Вони повернуться до дружби чи «вдавання» стане реальністю?",
+    "type": "Комікс",
+    "status": "Заморожено",
+    "coverImage": "https://files.catbox.moe/umjngg.webp",
+    "backgroundImage": "https://files.catbox.moe/umjngg.webp",
+    "pageUrl": "#title?id=7",
+    "genres": [
+      "Школа",
+      "Дорослі відносини",
+      "Комедія",
+      "Шьонен-Ай"
+    ],
+    "latestUpdate": "2025-11-05T19:06:04.497120Z",
+    "chapters": []
+  },
+  {
+    "id": 8,
+    "title": "Відьма Ічі",
+    "description": "У світі, де лише жінки можуть бути відьмами, один нічого не підозрюючий хлопець здобуває їхню силу. Тут відьми мусять вполювати свою магію! Там, у непроглядній гущавині лісу, жахливий володар магії та найсильніша відьма зійшлися у смертельному двобої. Аж раптом у цю запеклу сутичку вривається юний хлопчина. Його ім'я — Ічі, і він лише мисливець. Та саме йому судилося перевернути світ магії догори дригом у цій епічній сазі про полювання на чари!",
+    "type": "Манґа",
+    "status": "Виходить",
+    "coverImage": "https://files.catbox.moe/6keh8l.webp",
+    "backgroundImage": "https://files.catbox.moe/10lgh1.webp",
+    "pageUrl": "#title?id=8",
+    "genres": [
+      "Шьонен",
+      "Пригоди",
+      "Екшн",
+      "Комедія",
+      "Фентезі",
+      "Магія"
+    ],
+    "latestUpdate": "2025-11-05T19:07:33.052774Z",
+    "chapters": []
+  },
+  {
+    "id": 9,
+    "title": "Історія про те, як я освідчився «нормальному» хлопцю і отримав несподівану відповідь",
+    "description": "Аомі освідчується у почуттях хлопцю зі свого гурту, але йому відмовляють. Тому він швидко відкладає це та намагається жити далі. Проте коли Юума, хлопець якому зізналися, дає неочікувано відповідь, як слід Аомі вчинити?",
+    "type": "Манґа",
+    "status": "Завершено",
+    "coverImage": "https://files.catbox.moe/gokisx.webp",
+    "backgroundImage": "https://files.catbox.moe/gokisx.webp",
+    "pageUrl": "#title?id=9",
+    "genres": [
+      "Яой",
+      "Романтика",
+      "Епізод життя",
+      "Ваншот"
+    ],
+    "latestUpdate": "2025-11-05T19:09:34.338958Z",
+    "chapters": []
+  },
+  {
+    "id": 10,
+    "title": "Кон-кон Тон-тон",
+    "description": "Манґа, в якій нічого не відбувається, оскільки жоден персонаж не може піддатися іншому.",
+    "type": "Манґа",
+    "status": "Завершено",
+    "coverImage": "https://files.catbox.moe/c2d0y2.webp",
+    "backgroundImage": "https://files.catbox.moe/6v5ttv.webp",
+    "pageUrl": "#title?id=10",
+    "genres": [
+      "Ваншот",
+      "Яой",
+      "Романтика",
+      "Шьонен-ай"
+    ],
+    "latestUpdate": "2025-11-05T19:10:57.265861Z",
+    "chapters": []
+  },
+  {
+    "id": 11,
+    "title": "Магічна битва: Присвячується тобі",
+    "description": "У світі багато дурнів які вважають тебе чистим злом, але я відтепер і до кінця часів, буду присвячувати тобі слова...",
+    "type": "Манґа",
+    "status": "Завершено",
+    "coverImage": "https://files.catbox.moe/0dokd8.webp",
+    "backgroundImage": "https://files.catbox.moe/0dokd8.webp",
+    "pageUrl": "#title?id=11",
+    "genres": [
+      "Яой",
+      "Еротика",
+      "Додзінші",
+      "Романтика",
+      "Драма",
+      "Ваншот"
+    ],
+    "latestUpdate": "2025-11-05T19:12:43.748728Z",
+    "chapters": []
+  },
+  {
+    "id": 12,
+    "title": "Той, хто подобається",
+    "description": "Сьогодні я поговорю з Цукіоко... Треба... Просто! Але цей Казамі постійно плутається під ногами! Що йому треба? Він що, спеціально?.. Стривайте-но. Чому він так дивиться на мене? Невже... ТОЙ ХТО ЙОМУ ПОДОБАЄТЬСЯ ЦЕ Я?!",
+    "type": "Манґа",
+    "status": "Завершено",
+    "coverImage": "https://files.catbox.moe/l3zu8b.webp",
+    "backgroundImage": "https://files.catbox.moe/n5skzs.webp",
+    "pageUrl": "#title?id=12",
+    "genres": [
+      "Ваншот",
+      "Яой",
+      "Романтика",
+      "Шьонен-ай",
+      "Школа"
+    ],
+    "latestUpdate": "2025-11-05T19:13:17.794158Z",
+    "chapters": []
+  },
+  {
+    "id": 13,
+    "title": "Мій однокласник Рен трохи страшний",
+    "description": "Квітучі стосунки між цими хлопчаками занадто милі, щоб їх можна було витримати!.. Агресивний Рен і серйозний Тадаомі нерозлучні ще з початкової школи. І хоча Рен трохи страшний, він миттєво тане, коли поруч Тадаомі. Всі навколо знають, що вони відчувають одне до одного... окрім них самих! Не пропустіть цю BL-комедію!",
+    "type": "Манґа",
+    "status": "Завершено",
+    "coverImage": "https://files.catbox.moe/vfytum.webp",
+    "backgroundImage": "https://files.catbox.moe/e6ok4w.webp",
+    "pageUrl": "#title?id=13",
+    "genres": [
+      "Яой",
+      "Романтика",
+      "Шьонен-ай",
+      "Школа",
+      "Комедія"
+    ],
+    "latestUpdate": "2025-11-05T19:13:35.201274Z",
+    "chapters": []
+  },
+  {
+    "id": 14,
+    "title": "Хаскі та його вчитель білий кіт",
+    "description": "Імператор світу культивації Мо Вейю обманув старійшин та винищив предків, скоївши всі можливі злочини та гріхи. Після того, як обірвав власне життя, він переродився, повернувшись до моменту, коли вперше став учнем. В подобі юнака ховалася вже стара та стомлена душа. Після повернення до життя, істина за істиною до цього приховані у минулому житті, почали виринати на поверхню. З-поміж усіх одкровень, найбільше його вразило те, що вчитель, якого він колись до глибини душі ненавидів, завжди непомітно оберігав його… Людське серце здатне змінитися і навіть демони та потвори можуть стати співчутливими та чинити добро. Але чи здатен грішник коли-небудь змити кров зі своїх рук?",
+    "type": "Маньхва",
+    "status": "Заморожено",
+    "coverImage": "https://files.catbox.moe/lzyeyc.webp",
+    "backgroundImage": "https://files.catbox.moe/jonszb.webp",
+    "pageUrl": "#title?id=14",
+    "genres": [
+      "Бойовик",
+      "Драма",
+      "Надприродне",
+      "Психологія",
+      "Романтика",
+      "Фентезі",
+      "Яой"
+    ],
+    "latestUpdate": "2025-11-05T19:13:56.969287Z",
+    "chapters": []
+  },
+  {
+    "id": 15,
+    "title": "Лиходій хоче жити",
+    "description": "Бос із середини ААА-гри моєї компанії — Декулейн, лиходій, який помирає в 999 проходженні з 1000. І тепер я в його тілі...",
+    "type": "Роман",
+    "status": "Заморожено",
+    "coverImage": "https://files.catbox.moe/36d5ct.webp",
+    "backgroundImage": "https://files.catbox.moe/36d5ct.webp",
+    "pageUrl": "#title?id=15",
+    "genres": [
+      "Школа",
+      "Екшн",
+      "Комедія",
+      "Фентезі",
+      "Шьонен",
+      "Ісекай",
+      "Романтика"
+    ],
+    "latestUpdate": "2025-11-05T19:15:03.627037Z",
+    "chapters": []
+  },
+  {
+    "id": 16,
+    "title": "Після мого відходу король не міг знайти в собі сили жити",
+    "description": "Сліпа любов Бай Лво обертається жорстокою зневагою Чі Яна, змушуючи його тікати через біль, що веде до пізнього, відчайдушного каяття мучителя.",
+    "type": "Роман",
+    "status": "Заморожено",
+    "coverImage": "https://files.catbox.moe/ovt480.webp",
+    "backgroundImage": "https://files.catbox.moe/ovt480.webp",
+    "pageUrl": "#title?id=16",
+    "genres": [
+      "Драма",
+      "Шьонен-ай",
+      "Романтика",
+      "Трагедія"
+    ],
+    "latestUpdate": "2025-11-05T19:16:09.681570Z",
     "chapters": []
   }
 ]
