@@ -1,0 +1,283 @@
+.tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+    gap: 1rem;
+}
+
+.tab-link {
+    background: none;
+    border: 1px solid transparent;
+    color: var(--secondary-text);
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.tab-link.active {
+    color: var(--background-dark);
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    box-shadow: 0 0 15px var(--glow-color);
+}
+
+.tab-content {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+#clear-history-btn {
+    margin: 1rem 0;
+}
+
+/* Category Manager */
+#category-manager {
+    background-color: var(--card-background);
+    padding: 1.5rem;
+    border-radius: 15px;
+    margin-bottom: 2rem;
+}
+
+#category-manager h3 {
+    margin-top: 0;
+    text-align: center;
+}
+
+.category-actions {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+#new-category-name {
+    flex-grow: 1;
+    padding: 0.8rem 1.2rem;
+    border-radius: 25px;
+    border: 1px solid var(--border-color);
+    background-color: var(--background-dark);
+    color: var(--text-light);
+    font-size: 1rem;
+}
+
+#category-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+#category-list li {
+    display: flex;
+    align-items: center;
+    background-color: var(--background-dark);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+}
+
+#category-list button {
+    background: none;
+    border: none;
+    color: var(--secondary-text);
+    margin-left: 0.5rem;
+    cursor: pointer;
+    font-size: 1.2rem;
+    line-height: 1;
+}
+
+/* Category Tabs for Bookmarks */
+.category-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+}
+
+.category-tab {
+    padding: 0.75rem 1.25rem;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    color: var(--secondary-text);
+    transition: all 0.3s ease;
+}
+
+.category-tab.active {
+    color: var(--accent-color);
+    border-bottom-color: var(--accent-color);
+}
+
+.category-content {
+    display: none;
+}
+
+.category-content.active {
+    display: block;
+}
+
+
+@media (max-width: 768px) {
+    .tabs {
+        flex-wrap: wrap;
+    }
+
+    .tab-link {
+        padding: 0.8rem 1rem;
+        font-size: 1rem;
+    }
+}
+
+#bookmarks-container {
+    margin-top: 1rem;
+}
+
+.category-tabs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.category-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.category-tab {
+    padding: 0.75rem 1rem;
+    cursor: pointer;
+    color: var(--secondary-text);
+    font-weight: 500;
+    position: relative;
+    border-bottom: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.category-tab:hover {
+    color: var(--text-light);
+}
+
+.category-tab.active {
+    color: var(--accent-color);
+    border-bottom-color: var(--accent-color);
+}
+
+.category-content {
+    display: none;
+}
+
+.category-content.active {
+    display: block;
+}
+
+.empty-category-message {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--secondary-text);
+    background-color: var(--card-background);
+    border-radius: 15px;
+    border: 1px dashed var(--border-color);
+}
+
+.empty-category-message p {
+    font-size: 1.2rem;
+    margin: 0;
+}
+
+/* Стилі для модального вікна керування категоріями */
+.category-manager-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.category-manager-modal {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 450px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.category-manager-modal h3 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+.add-category-form {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+#new-category-input {
+    flex-grow: 1;
+    padding: 0.7rem 1rem;
+    border-radius: 20px;
+    border: 1px solid var(--border-color);
+    background-color: var(--background-dark);
+    color: var(--text-light);
+    font-size: 1rem;
+}
+
+#add-new-category-btn {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.category-manager-list {
+    list-style: none;
+    padding: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.category-manager-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    transition: background-color 0.2s ease;
+}
+
+.category-manager-list li:hover {
+    background-color: #2a2a2a;
+}
+
+.category-text {
+    font-weight: 500;
+}
+
+.category-item-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.category-item-actions .icon-button {
+    color: var(--secondary-text);
+}
