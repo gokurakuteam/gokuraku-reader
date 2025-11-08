@@ -1,3 +1,5 @@
+import { MangaCard } from './js/components.js';
+
 export function initCatalog(mangaData, initialGenres = []) {
     const allGenres = [...new Set(mangaData.flatMap(m => m.genres))];
     const allTypes = [...new Set(mangaData.map(m => m.type))];

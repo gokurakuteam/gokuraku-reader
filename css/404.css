@@ -1,0 +1,39 @@
+.not-found-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 80vh;
+    padding: 20px;
+}
+
+.not-found-container h1 {
+    font-size: 8rem;
+    font-weight: 900;
+    color: #e5e5ea;
+    margin: 0;
+    line-height: 1;
+}
+
+.not-found-container p {
+    font-size: 1.2rem;
+    color: #aeaebe;
+    margin: 10px 0 30px;
+}
+
+.not-found-container .button-primary {
+    display: inline-block;
+    padding: 12px 24px;
+    background-color: #ff9500;
+    color: white;
+    text-decoration: none;
+    border-radius: 12px;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.not-found-container .button-primary:hover {
+    background-color: #ffac33;
+    transform: translateY(-2px);
+}

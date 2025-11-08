@@ -4,10 +4,20 @@
 </div>
 
 <div id="bookmarks" class="tab-content active">
-    <h2>Збережені тайтли</h2>
-    <div class="manga-grid bookmarks-grid">
-        <!-- Bookmarked manga will be dynamically inserted here -->
+    <div id="bookmarks-container">
+        <div class="category-tabs-header">
+            <div class="category-tabs">
+                <!-- Вкладки категорій будуть динамічно вставлені сюди -->
+            </div>
+            <button id="manage-categories-btn" class="icon-button" title="Керувати категоріями">
+                <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+            </button>
+        </div>
+        <div class="category-content-container">
+            <!-- Вміст категорій (манґа) буде динамічно вставлений сюди -->
+        </div>
     </div>
+    
     <p class="empty-list-message" style="display: none;">Ваш список збереженого порожній.</p>
 </div>
 
