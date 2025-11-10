@@ -18,7 +18,7 @@
     ],
     "type": "Манхва",
     "status": "Виходить",
-    "latestUpdate": "2025-11-09T20:03:51.405933Z",
+    "latestUpdate": "2025-11-10T20:35:05.713583Z",
     "chapters": [
       {
         "id": 1,
@@ -3804,6 +3804,35 @@
           "https://files.catbox.moe/lynob4.webp",
           "https://files.catbox.moe/46yok2.webp",
           "https://files.catbox.moe/hp04hg.webp"
+        ]
+      },
+      {
+        "id": 111,
+        "title": "",
+        "volume": 6,
+        "chapter": 107.0,
+        "date": "2025-11-10",
+        "pages": [
+          "https://files.catbox.moe/z44iht.webp",
+          "https://files.catbox.moe/6ag5dm.webp",
+          "https://files.catbox.moe/hc4hb8.webp",
+          "https://files.catbox.moe/vzcke8.webp",
+          "https://files.catbox.moe/9w2zy8.webp",
+          "https://files.catbox.moe/qayufp.webp",
+          "https://files.catbox.moe/7tqvgt.webp",
+          "https://files.catbox.moe/c22wq7.webp",
+          "https://files.catbox.moe/kmzawb.webp",
+          "https://files.catbox.moe/qe80f2.webp",
+          "https://files.catbox.moe/q120mg.webp",
+          "https://files.catbox.moe/tqmiw9.webp",
+          "https://files.catbox.moe/3bjz4s.webp",
+          "https://files.catbox.moe/68sob8.webp",
+          "https://files.catbox.moe/vmkrer.webp",
+          "https://files.catbox.moe/dbginc.webp",
+          "https://files.catbox.moe/bsu9nf.webp",
+          "https://files.catbox.moe/kp3ry3.webp",
+          "https://files.catbox.moe/def3u2.webp",
+          "https://files.catbox.moe/lpr4vb.webp"
         ]
       }
     ]
