@@ -1,143 +1,143 @@
 import { getMangaById, getChapterById } from '../data-manager.js';
 
-async function loadImage(url) {
+/**
+ * Завантажує зображення та повертає його як Data URL.
+ * @param {string} url - URL зображення.
+ * @returns {Promise<string>} - Promise, що повертає Data URL.
+ */
+async function loadImageAsDataURL(url) {
     try {
-        const response = await fetch(url);
+        const response = await fetch(url, { mode: 'cors' }); // Додано CORS для кращої сумісності
         if (!response.ok) {
             throw new Error(`Помилка мережі: статус ${response.status} для ${url}`);
         }
         const blob = await response.blob();
-
-        const dataUrl = await new Promise(resolve => {
+        return await new Promise((resolve, reject) => {
             const reader = new FileReader();
             reader.onloadend = () => resolve(reader.result);
+            reader.onerror = reject;
             reader.readAsDataURL(blob);
         });
-        
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => resolve(img);
-            img.onerror = reject;
-            img.src = dataUrl;
-        });
     } catch (error) {
-        console.error(`Не вдалося обробити зображення з ${url}:`, error);
+        console.error(`Не вдалося завантажити зображення з ${url}:`, error);
         throw error;
     }
 }
 
-export async function downloadChapterAsPdf(mangaId, chapterId, buttonElement) {
-    const originalIcon = buttonElement.innerHTML;
-    const loadingIcon = '<svg viewBox="0 0 24 24" class="spinner"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/></svg>';
+/**
+ * Стискає зображення за допомогою Canvas.
+ * @param {string} dataUrl - Data URL оригінального зображення.
+ * @returns {Promise<string>} - Promise, що повертає стиснутий Data URL у форматі JPEG.
+ */
+async function compressImage(dataUrl) {
+    const MAX_WIDTH = 1000; // Максимальна ширина для стиснутих зображень
+    const QUALITY = 0.7;    // Якість JPEG (0.0 - 1.0)
 
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => {
+            let { width, height } = img;
+
+            // Зменшуємо розмір, якщо ширина більша за максимальну
+            if (width > MAX_WIDTH) {
+                height = (height * MAX_WIDTH) / width;
+                width = MAX_WIDTH;
+            }
+
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            resolve(canvas.toDataURL('image/jpeg', QUALITY));
+        };
+        img.onerror = reject;
+        img.src = dataUrl;
+    });
+}
+
+
+export async function downloadChapterAsPdf(mangaId, chapterId, { quality = 'original', onProgress = () => {} }) {
     try {
-        buttonElement.innerHTML = loadingIcon;
-        buttonElement.disabled = true;
+        onProgress(0, 'Починаємо...');
 
         const manga = getMangaById(mangaId);
         const chapter = getChapterById(chapterId);
-        
-        console.log(`[PDF Generator] Розпочато завантаження розділу ${chapter.chapter} для '${manga.title}'.`);
 
         if (!manga || !chapter || !chapter.pages || chapter.pages.length === 0) {
             throw new Error('Не знайдено даних про розділ або сторінок у розділі.');
         }
-        
-        console.log(`[PDF Generator] Знайдено ${chapter.pages.length} сторінок. Починаю завантаження зображень...`);
 
-        const imagePromises = chapter.pages.map((url, index) => 
-            loadImage(url).then(img => {
-                console.log(`[PDF Generator] Зображення ${index + 1}/${chapter.pages.length} завантажено успішно.`);
-                return img;
-            })
-        );
-
-        const results = await Promise.allSettled(imagePromises);
+        const imageUrls = chapter.pages;
+        const totalImages = imageUrls.length;
+        const processedImages = [];
         
-        const loadedImages = results
-            .filter(result => result.status === 'fulfilled')
-            .map(result => result.value);
-        
-        const failedCount = results.length - loadedImages.length;
+        onProgress(2, 'Завантаження зображень...');
 
-        console.log(`[PDF Generator] Успішно завантажено ${loadedImages.length} з ${chapter.pages.length} зображень.`);
-        if (failedCount > 0) {
-            console.warn(`[PDF Generator] Не вдалося завантажити ${failedCount} зображень.`);
+        // Завантаження та обробка зображень
+        for (let i = 0; i < totalImages; i++) {
+            const url = imageUrls[i];
+            try {
+                let dataUrl = await loadImageAsDataURL(url);
+                if (quality === 'compressed') {
+                    dataUrl = await compressImage(dataUrl);
+                }
+                processedImages.push(dataUrl);
+            } catch (error) {
+                console.warn(`Пропуск пошкодженого або недоступного зображення: ${url}`);
+            }
+            // Оновлення прогресу в циклі
+            const progress = 2 + ((i + 1) / totalImages) * 88; // Прогрес від 2% до 90%
+            onProgress(progress, quality === 'compressed' ? 'Стиснення...' : 'Завантаження...');
         }
-
-        if (loadedImages.length === 0) {
+        
+        if (processedImages.length === 0) {
             throw new Error("Не вдалося завантажити жодного зображення.");
         }
         
-        console.log("[PDF Generator] Розраховую максимальну ширину...");
-        
-        let maxWidth = 0;
-        loadedImages.forEach(img => {
-            if (img.width > maxWidth) {
-                maxWidth = img.width;
-            }
-        });
-
-        const MAX_PAGE_HEIGHT = 10000;
-        console.log(`[PDF Generator] Максимальна ширина: ${maxWidth}px. Ліміт висоти сторінки: ${MAX_PAGE_HEIGHT}px.`);
-        console.log("[PDF Generator] Створюю екземпляр jsPDF...");
+        onProgress(90, 'Створення PDF...');
 
         const { jsPDF } = window.jspdf;
+        
+        // Визначаємо розмір першої сторінки
+        const firstImgProps = await new Promise(resolve => {
+            const img = new Image();
+            img.onload = () => resolve({ width: img.width, height: img.height });
+            img.src = processedImages[0];
+        });
+
         const doc = new jsPDF({
             orientation: 'p',
             unit: 'px',
-            format: [maxWidth, MAX_PAGE_HEIGHT]
+            format: [firstImgProps.width, firstImgProps.height]
         });
+        doc.deletePage(1);
 
-        const tempCanvas = document.createElement('canvas');
-        const tempCtx = tempCanvas.getContext('2d');
+        // Додавання сторінок до PDF
+        for (let i = 0; i < processedImages.length; i++) {
+            const dataUrl = processedImages[i];
+             const imgProps = await new Promise(resolve => {
+                const img = new Image();
+                img.onload = () => resolve({ width: img.width, height: img.height });
+                img.src = dataUrl;
+            });
 
-        console.log("[PDF Generator] Додаю зображення до документа з нарізкою...");
-
-        let currentY = 0;
-        let pageCount = 1;
-        
-        for (let i = 0; i < loadedImages.length; i++) {
-            const img = loadedImages[i];
-            let sourceY = 0;
-
-            while (sourceY < img.height) {
-                let remainingOnPage = MAX_PAGE_HEIGHT - currentY;
-
-                if (remainingOnPage <= 1) {
-                    doc.addPage();
-                    pageCount++;
-                    currentY = 0;
-                    remainingOnPage = MAX_PAGE_HEIGHT;
-                    console.log(`[PDF Generator] Створено нову сторінку ${pageCount}.`);
-                }
-
-                const sliceHeight = Math.min(img.height - sourceY, remainingOnPage);
-                
-                tempCanvas.width = img.width;
-                tempCanvas.height = sliceHeight;
-                tempCtx.drawImage(img, 0, sourceY, img.width, sliceHeight, 0, 0, img.width, sliceHeight);
-
-                doc.addImage(tempCanvas, 'JPEG', 0, currentY, img.width, sliceHeight);
-                
-                currentY += sliceHeight;
-                sourceY += sliceHeight;
-            }
+            doc.addPage([imgProps.width, imgProps.height]);
+            doc.addImage(dataUrl, 'JPEG', 0, 0, imgProps.width, imgProps.height, undefined, 'FAST');
+            
+            const progress = 90 + ((i + 1) / processedImages.length) * 9; // Прогрес від 90% до 99%
+            onProgress(progress, 'Компонування сторінок...');
         }
 
         const safeTitle = manga.title.replace(/[^a-zA-Zа-яА-ЯіІїЇєЄґҐ0-9\s-]/g, '').trim().replace(/\s+/g, '_');
-        const fileName = `${safeTitle}_Розділ_${chapter.chapter}.pdf`;
+        const fileName = `${safeTitle}_Розділ_${chapter.chapter}_(${quality}).pdf`;
         
-        console.log(`[PDF Generator] Генерація завершена. Всього сторінок: ${pageCount}. Зберігаю файл: ${fileName}`);
+        onProgress(100, 'Збереження файлу...');
         doc.save(fileName);
-        
-        console.log("[PDF Generator] PDF успішно збережено!");
 
     } catch (error) {
-        console.error("[PDF Generator] Загальна помилка при створенні PDF:", error);
-        alert("Не вдалося завантажити розділ. Деталі помилки дивіться в консолі розробника (F12).");
-    } finally {
-        buttonElement.innerHTML = originalIcon;
-        buttonElement.disabled = false;
+        console.error("[PDF Generator] Помилка при створенні PDF:", error);
+        throw error; // Передаємо помилку для обробки в UI
     }
 }
