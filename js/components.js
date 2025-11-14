@@ -4,7 +4,7 @@ function getStatusClass(status) {
             return 'status-ongoing';
         case 'Завершено':
             return 'status-completed';
-        case 'Заморожено':
+        case 'Закинуто':
             return 'status-frozen';
         default:
             return '';

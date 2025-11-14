@@ -412,3 +412,138 @@
     font-size: 0.9rem;
     margin-top: 1rem;
 }
+
+/* --- Download Options Modal --- */
+.download-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1002;
+}
+
+.download-modal {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.download-modal h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+}
+
+.download-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.download-options .button {
+    width: 100%;
+    box-sizing: border-box; /* Ensures padding is included in width */
+}
+
+.download-note {
+    font-size: 0.8rem;
+    color: var(--secondary-text);
+    margin-top: 1.5rem;
+}
+
+.progress-container {
+    display: none; /* Hidden by default */
+    width: 100%;
+    text-align: left;
+}
+
+.progress-label {
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.progress-bar-container {
+    width: 100%;
+    background-color: var(--background-dark);
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    height: 20px;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background-color: var(--accent-color);
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+/* --- Batch Download Modal --- */
+.batch-download-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1002;
+}
+
+.batch-download-modal {
+    background-color: var(--card-background);
+    padding: 2rem;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 450px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.batch-download-modal h3 {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.batch-download-modal .view {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.batch-download-modal .view.hidden {
+    display: none;
+}
+
+.batch-download-modal .button {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#batch-progress-overall-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+#batch-progress-current-container .progress-label {
+    font-size: 0.9rem;
+    color: var(--secondary-text);
+}

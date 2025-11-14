@@ -81,7 +81,7 @@ export function getStatusClass(status) {
     switch (status) {
         case 'Виходить': return 'status-ongoing';
         case 'Завершено': return 'status-completed';
-        case 'Заморожено': return 'status-frozen';
+        case 'Закинуто': return 'status-frozen';
         default: return '';
     }
 }
@@ -157,6 +157,7 @@ export function updateReadButton(manga) {
     readButton.href = `#reader?mangaId=${manga.id}&chapterId=${firstUnreadChapter.id}`;
 }
 
+// ЗАМІНІТЬ ЦЮ ФУНКЦІЮ ПОВНІСТЮ
 export function handleChapterListClicks(manga) {
     const chapterListUl = document.querySelector('.chapter-list ul');
     if (chapterListUl) {
@@ -189,7 +190,7 @@ export function handleChapterListClicks(manga) {
                 e.stopPropagation();
                 const mangaId = parseInt(downloadBtn.dataset.mangaId);
                 const chapterId = parseInt(downloadBtn.dataset.chapterId);
-                downloadChapterAsPdf(mangaId, chapterId, downloadBtn);
+                showDownloadOptionsModal(mangaId, chapterId);
             }
         });
     }
@@ -200,6 +201,14 @@ export function handleChapterListClicks(manga) {
             chapterSortOrder = chapterSortOrder === 'desc' ? 'asc' : 'desc';
             sortButton.classList.toggle('asc', chapterSortOrder === 'asc');
             renderChapterList(manga, chapterSortOrder);
+        });
+    }
+    
+    // Додаємо обробник для нової кнопки
+    const batchDownloadBtn = document.querySelector('#batch-download-btn');
+    if(batchDownloadBtn) {
+        batchDownloadBtn.addEventListener('click', () => {
+            showBatchDownloadModal(manga);
         });
     }
 
@@ -218,6 +227,125 @@ export function handleChapterListClicks(manga) {
             updateReadButton(manga);
         });
     }
+}
+
+
+// ДОДАЙТЕ ЦІ ДВІ НОВІ ФУНКЦІЇ ПІСЛЯ handleChapterListClicks
+
+async function startBatchDownload(mangaId, chapters, quality, uiElements) {
+    const { overallLabel, currentLabel, currentBar, modal } = uiElements;
+
+    for (let i = 0; i < chapters.length; i++) {
+        const chapter = chapters[i];
+        overallLabel.textContent = `Розділ ${i + 1} з ${chapters.length} (Розділ ${chapter.chapter})`;
+
+        try {
+            const onProgress = (percent, status) => {
+                currentLabel.textContent = `${status}: ${Math.round(percent)}%`;
+                currentBar.style.width = `${percent}%`;
+            };
+
+            await downloadChapterAsPdf(mangaId, chapter.id, { quality, onProgress });
+        } catch (error) {
+            overallLabel.textContent = `Помилка при завантаженні розділу ${chapter.chapter}. Пропускаємо...`;
+            await new Promise(resolve => setTimeout(resolve, 2000)); // Пауза, щоб користувач побачив помилку
+        }
+    }
+
+    overallLabel.textContent = 'Усі завантаження завершено!';
+    setTimeout(() => modal.remove(), 2000);
+}
+
+
+function showBatchDownloadModal(manga) {
+    const existingModal = document.querySelector('.batch-download-modal-overlay');
+    if (existingModal) existingModal.remove();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'batch-download-modal-overlay';
+    overlay.innerHTML = `
+        <div class="batch-download-modal">
+            <!-- View 1: Batch Selection -->
+            <div id="batch-selection-view" class="view">
+                <h3>Завантажити...</h3>
+                <button class="button" data-batch="5">Останні 5 розділів</button>
+                <button class="button" data-batch="10">Останні 10 розділів</button>
+                <button class="button" data-batch="15">Останні 15 розділів</button>
+                <button class="button" data-batch="unread">Всі непрочитані</button>
+            </div>
+
+            <!-- View 2: Quality Selection -->
+            <div id="quality-selection-view" class="view hidden">
+                <h3>Виберіть якість</h3>
+                <button class="button" data-quality="compressed">Стиснутий (менший розмір)</button>
+                <button class="button" data-quality="original">Оригінал (вища якість)</button>
+            </div>
+
+            <!-- View 3: Progress -->
+            <div id="progress-view" class="view hidden">
+                 <p id="batch-progress-overall-label">Підготовка...</p>
+                 <div id="batch-progress-current-container" class="progress-container" style="display: block;">
+                    <p class="progress-label" id="batch-progress-current-label">Поточний розділ: 0%</p>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="batch-progress-current-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    let chaptersToDownload = [];
+    
+    const batchSelectionView = overlay.querySelector('#batch-selection-view');
+    const qualitySelectionView = overlay.querySelector('#quality-selection-view');
+    const progressView = overlay.querySelector('#progress-view');
+
+    overlay.addEventListener('click', e => {
+        if (e.target === overlay) overlay.remove();
+    });
+
+    batchSelectionView.addEventListener('click', e => {
+        const batchType = e.target.dataset.batch;
+        if (!batchType) return;
+        
+        const sortedChapters = [...manga.chapters].sort((a, b) => b.chapter - a.chapter);
+        
+        if (batchType === 'unread') {
+            chaptersToDownload = [...manga.chapters]
+                .filter(ch => !isChapterRead(manga.id, ch.id))
+                .sort((a,b) => a.chapter - b.chapter); // Завантажувати непрочитані по порядку
+        } else {
+            const count = parseInt(batchType, 10);
+            chaptersToDownload = sortedChapters.slice(0, count).reverse(); // reverse, щоб завантажувати від старішого до новішого
+        }
+
+        if (chaptersToDownload.length === 0) {
+            alert('Немає розділів для завантаження за цим критерієм.');
+            overlay.remove();
+            return;
+        }
+
+        batchSelectionView.classList.add('hidden');
+        qualitySelectionView.classList.remove('hidden');
+    });
+
+    qualitySelectionView.addEventListener('click', e => {
+        const quality = e.target.dataset.quality;
+        if (!quality) return;
+
+        qualitySelectionView.classList.add('hidden');
+        progressView.classList.remove('hidden');
+
+        const uiElements = {
+            overallLabel: overlay.querySelector('#batch-progress-overall-label'),
+            currentLabel: overlay.querySelector('#batch-progress-current-label'),
+            currentBar: overlay.querySelector('#batch-progress-current-bar'),
+            modal: overlay
+        };
+        
+        startBatchDownload(manga.id, chaptersToDownload, quality, uiElements);
+    });
 }
 
 // === НОВА ФУНКЦІЯ ДЛЯ КЕРУВАННЯ КАТЕГОРІЯМИ ===
@@ -322,3 +450,66 @@ export function showCategoryManagerModal(onUpdateCallback) {
         }
     });
 }
+
+// Вставте цю нову функцію у файл ui.js
+function showDownloadOptionsModal(mangaId, chapterId) {
+    const existingModal = document.querySelector('.download-modal-overlay');
+    if (existingModal) existingModal.remove();
+
+    const overlay = document.createElement('div');
+    overlay.className = 'download-modal-overlay';
+    overlay.innerHTML = `
+        <div class="download-modal">
+            <h3>Завантажити розділ</h3>
+            <div class="download-options">
+                <button class="button" data-quality="compressed">Стиснутий (менший розмір)</button>
+                <button class="button" data-quality="original">Оригінал (вища якість)</button>
+            </div>
+            <div class="progress-container">
+                <p class="progress-label">Завантаження: 0%</p>
+                <div class="progress-bar-container">
+                    <div class="progress-bar"></div>
+                </div>
+            </div>
+            <p class="download-note">Завантаження розділу через телеграм може не працювати</p>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const optionsDiv = overlay.querySelector('.download-options');
+    const progressContainer = overlay.querySelector('.progress-container');
+    const progressBar = overlay.querySelector('.progress-bar');
+    const progressLabel = overlay.querySelector('.progress-label');
+
+    overlay.addEventListener('click', e => {
+        if (e.target === overlay) {
+            overlay.remove();
+        }
+    });
+
+    optionsDiv.addEventListener('click', e => {
+        const quality = e.target.dataset.quality;
+        if (!quality) return;
+
+        optionsDiv.style.display = 'none';
+        progressContainer.style.display = 'block';
+
+        const onProgress = (percent, status) => {
+            const p = Math.round(percent);
+            progressBar.style.width = `${p}%`;
+            progressLabel.textContent = `${status}: ${p}%`;
+        };
+
+        downloadChapterAsPdf(mangaId, chapterId, { quality, onProgress })
+            .then(() => {
+                progressLabel.textContent = 'Завершено!';
+                setTimeout(() => overlay.remove(), 1500);
+            })
+            .catch(err => {
+                progressLabel.textContent = 'Помилка!';
+                console.error(err);
+                setTimeout(() => overlay.remove(), 3000);
+            });
+    });
+}
+
