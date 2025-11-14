@@ -2,7 +2,7 @@
   "name": "Gokuraku",
   "short_name": "Gokuraku",
   "description": "Святиня перекладу манґи українською.",
-  "start_url": "/",
+  "start_url": "gokuraku-reader/",
   "display": "standalone",
   "background_color": "#121212",
   "theme_color": "#1e1e1e",
@@ -22,3 +22,4 @@
   ]
 
 }
+
