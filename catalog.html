@@ -1,24 +1,36 @@
-
-<section class="catalog">
-    <div class="filters-container">
-        <div class="search-filter">
-            <input type="search" id="search-input" placeholder="Пошук за назвою...">
+<section class="catalog-page">
+    <!-- Основний контент (пошук та сітка) -->
+    <div class="main-content">
+        <div class="main-content-header">
+            <div class="search-filter">
+                <input type="search" id="search-input" placeholder="Пошук...">
+            </div>
+             <button class="mobile-filter-trigger">
+                <svg viewBox="0 0 24 24"><path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"/></svg>
+                <span>Фільтр</span>
+            </button>
         </div>
-        <div class="dropdown-filters">
-            <div class="dropdown">
-                <button class="dropdown-toggle" data-dropdown="genre-dropdown">Жанри</button>
-                <div id="genre-dropdown" class="dropdown-menu"></div>
-            </div>
-            <div class="dropdown">
-                <button class="dropdown-toggle" data-dropdown="type-dropdown">Тип</button>
-                <div id="type-dropdown" class="dropdown-menu"></div>
-            </div>
-            <div class="dropdown">
-                <button class="dropdown-toggle" data-dropdown="sort-dropdown">Сортувати</button>
-                <div id="sort-dropdown" class="dropdown-menu dropdown-menu-right"></div>
-            </div>
+        <div class="active-filters" id="active-filters"></div>
+        <div class="manga-grid"></div>
+    </div>
+
+    <!-- Бічна панель для фільтрів (ПК) -->
+    <aside class="sidebar">
+        <div class="sidebar-content">
+            <!-- Фільтри будуть вставлені сюди -->
+        </div>
+    </aside>
+</section>
+
+<!-- Панель фільтрів для мобільних пристроїв (прихована) -->
+<div class="mobile-filters-panel-overlay">
+    <div class="mobile-filters-panel">
+        <div class="mobile-filters-header">
+            <h3>Фільтри та сортування</h3>
+            <button class="close-filters-btn">&times;</button>
+        </div>
+        <div class="mobile-filters-content">
+             <!-- Фільтри будуть вставлені сюди -->
         </div>
     </div>
-    <div class="active-filters" id="active-filters"></div>
-    <div class="manga-grid"></div>
-</section>
+</div>
