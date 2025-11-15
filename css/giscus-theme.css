@@ -36,7 +36,7 @@
     border-radius: 8px 8px 0 0 !important;
     background-color: transparent !important;
     border-color: transparent !important;
-    border-bottom-width: none !important;
+    border-bottom-width: 0 !important;
     color: var(--giscus-secondary-text-color) !important;
 }
 
@@ -148,7 +148,126 @@ a.color-text-primary.underline:hover {
     text-decoration: underline !important;
 }
 
-form-control{
+.gsc-comment-box-textarea-extras {
+    display: none !important;
+}
+
+#__next > main > div > div.gsc-comments > div.gsc-header > div > em {
     display: none !important;
 }
 /* --- END OF FILE css/giscus-theme.css --- */
+
+/* --- ДОДАТКОВІ СТИЛІ (v2) --- */
+
+/* --- Стилі для вже існуючих коментарів --- */
+
+/* Робимо зовнішній контейнер коментаря прозорим */
+.gsc-timeline > .gsc-comment-anchor > .gsc-comment {
+    background-color: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin-bottom: 1.5rem !important;
+}
+
+/* А ось внутрішній блок робимо схожим на картку, як на вашому сайті */
+.gsc-comment > .color-bg-primary.border {
+    background-color: var(--giscus-card-background) !important;
+    border: 1px solid var(--giscus-border-color) !important;
+    border-radius: 15px !important;
+    padding: 1rem 1.5rem !important;
+}
+
+/* Заголовок коментаря (автор, час) */
+.gsc-comment-header {
+    margin-bottom: 1rem !important;
+}
+
+.gsc-comment-author span.font-semibold {
+    font-weight: 600 !important; /* Робимо ім'я автора жирнішим */
+}
+
+/* Статус "Власник" */
+.gsc-comment-header span[class*="border-box-border-info"] {
+    background-color: rgba(0, 255, 153, 0.1) !important;
+    color: var(--giscus-accent-color) !important;
+    border-color: var(--giscus-accent-color) !important;
+    font-weight: 600 !important;
+}
+
+/* --- Стилі для кнопок сортування ("Старіші" / "Новіші") --- */
+
+.gsc-right-header .btn {
+    background-color: transparent !important;
+    border: 1px solid var(--giscus-border-color) !important;
+    color: var(--giscus-secondary-text-color) !important;
+    padding: 0.3rem 0.8rem !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+}
+
+.gsc-right-header .btn:hover {
+    border-color: var(--giscus-accent-color) !important;
+    color: var(--giscus-accent-color) !important;
+}
+
+.gsc-right-header .BtnGroup-item--selected .btn {
+    background-color: rgba(0, 255, 153, 0.1) !important;
+    color: var(--giscus-accent-color) !important;
+    border-color: rgba(0, 0, 0, 0) !important;
+    font-weight: bold;
+}
+
+/* --- Футер коментаря (реакції, відповіді) --- */
+
+/* Кнопка "Upvote" (Стрілочка вгору) */
+.gsc-upvote-button {
+    color: var(--giscus-secondary-text-color) !important;
+    transition: color 0.2s ease !important;
+}
+.gsc-upvote-button:hover {
+    color: var(--giscus-accent-color) !important;
+}
+.gsc-upvote-button.has-reacted {
+    color: var(--giscus-accent-color) !important;
+}
+
+/* Кнопка "Написати відповідь" */
+.gsc-reply-box button {
+    background-color: var(--giscus-input-background) !important;
+    border: 1px solid var(--giscus-border-color) !important;
+    border-radius: 10px !important;
+    color: var(--giscus-secondary-text-color) !important;
+    text-align: left !important;
+    transition: all 0.3s ease;
+    margin-top: 1rem !important;
+}
+
+.gsc-reply-box button:hover {
+    border-color: var(--giscus-accent-color) !important;
+    color: var(--giscus-text-color) !important;
+}
+
+/* --- Стилі для форми відповіді --- */
+
+/* Форма відповіді має трохи інший клас */
+.gsc-comment-box-is-reply {
+    margin-top: 1rem !important;
+    border-radius: 15px !important;
+    background-color: var(--giscus-card-background) !important;
+    border: 1px solid var(--giscus-border-color) !important;
+}
+
+/* Кнопка "Скасувати" у формі відповіді */
+.gsc-comment-box-is-reply .btn:not(.btn-primary) {
+    background-color: transparent !important;
+    color: var(--giscus-secondary-text-color) !important;
+    border-color: var(--giscus-border-color) !important;
+    border-radius: 25px !important;
+    font-weight: bold !important;
+    padding: 0.5rem 1rem !important;
+}
+
+.gsc-comment-box-is-reply .btn:not(.btn-primary):hover {
+    border-color: var(--giscus-secondary-text-color) !important;
+    color: var(--giscus-text-color) !important;
+}

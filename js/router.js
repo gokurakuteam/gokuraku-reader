@@ -3,6 +3,7 @@ import { getBookmarks, isBookmarked, addBookmark, removeBookmark, getHistory, ad
 import { initCatalog } from '../catalog.js';
 import { setupDynamicCarousel } from './carousel.js';
 import { setupTabs, timeAgo, renderChapterList, updateReadButton, getStatusClass, handleChapterListClicks, showBookmarkModal, updateBookmarkButton, showCategoryManagerModal } from './ui.js';
+import { loadGiscusForPage } from './giscus-loader.js';
 
 const routes = {
     'home': 'home.html',
@@ -101,10 +102,11 @@ async function loadPage(page, params) {
                     showBookmarkModal(manga.id, () => updateBookmarkButton(manga.id));
                 });
             }
-
+            setupTabs();
         } else {
             await showNotFoundPage();
         }
+        loadGiscusForPage('title', mangaId);
     } else if (page === 'cabinet') {
         setupTabs();
         setupCabinetBookmarks();
@@ -179,49 +181,51 @@ async function loadPage(page, params) {
         } else {
             await showNotFoundPage();
         }
+        loadGiscusForPage('reader', mangaId, chapterId);
     }
 }
 
 function setupCabinetBookmarks() {
-    const bookmarks = getBookmarks();
+    const bookmarksData = getBookmarks();
     const tabsContainer = document.querySelector('.category-tabs');
     const contentContainer = document.querySelector('.category-content-container');
-    const emptyBookmarksMessage = document.querySelector('#bookmarks .empty-list-message');
     const bookmarksContainer = document.querySelector('#bookmarks-container');
 
-    if (!tabsContainer || !contentContainer) return;
+    if (!tabsContainer || !contentContainer || !bookmarksContainer) return;
 
     tabsContainer.innerHTML = '';
     contentContainer.innerHTML = '';
+    
+    // Завжди показуємо контейнер вкладок
+    bookmarksContainer.style.display = 'block';
+    
+    // Ховаємо загальне повідомлення про порожнечу, оскільки логіка тепер всередині кожної вкладки
+    const emptyAllBookmarksMessage = document.querySelector('#bookmarks .empty-list-message');
+    if (emptyAllBookmarksMessage) {
+        emptyAllBookmarksMessage.style.display = 'none';
+    }
 
-    const categories = Object.keys(bookmarks);
-    const totalBookmarks = Object.values(bookmarks).reduce((sum, arr) => sum + arr.length, 0);
-
-    if (totalBookmarks === 0) {
-        if(emptyBookmarksMessage) emptyBookmarksMessage.style.display = 'block';
-        if(bookmarksContainer) bookmarksContainer.style.display = 'none';
+    if (!bookmarksData.categories || bookmarksData.categories.length === 0) {
+        // Якщо категорій взагалі немає, показуємо повідомлення
+        contentContainer.innerHTML = `<div class="empty-category-message"><p>У вас ще немає категорій. Створіть одну!</p></div>`;
         return;
     }
 
-    if(emptyBookmarksMessage) emptyBookmarksMessage.style.display = 'none';
-    if(bookmarksContainer) bookmarksContainer.style.display = 'block';
-
-    categories.forEach((category, index) => {
+    bookmarksData.categories.forEach((category, index) => {
         const tab = document.createElement('div');
         tab.className = 'category-tab';
-        tab.textContent = category;
-        tab.dataset.category = category;
+        tab.textContent = category.name;
+        tab.dataset.category = category.name;
         tabsContainer.appendChild(tab);
 
         const content = document.createElement('div');
         content.className = 'category-content';
-        content.dataset.categoryContent = category;
+        content.dataset.categoryContent = category.name;
 
-        const mangaIds = bookmarks[category];
-        if (mangaIds.length > 0) {
+        if (category.mangaIds.length > 0) {
             const grid = document.createElement('div');
             grid.className = 'manga-grid';
-            mangaIds.forEach(id => {
+            category.mangaIds.forEach(id => {
                 const manga = getMangaById(id);
                 if (!manga) return;
                 const card = document.createElement('manga-card');
@@ -252,27 +256,27 @@ function setupCabinetBookmarks() {
         }
     });
 
-    tabsContainer.addEventListener('click', e => {
-        if (e.target.classList.contains('category-tab')) {
-            const categoryName = e.target.dataset.category;
-
-            tabsContainer.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
-            e.target.classList.add('active');
-
-            contentContainer.querySelectorAll('.category-content').forEach(c => c.classList.remove('active'));
-            contentContainer.querySelector(`[data-category-content="${categoryName}"]`).classList.add('active');
-        }
-    });
-
-    // === КОД, ЯКИЙ ПОТРІБНО ДОДАТИ ===
-    const manageBtn = document.querySelector('#manage-categories-btn');
-    if (manageBtn) {
-        manageBtn.addEventListener('click', () => {
-            showCategoryManagerModal(() => {
-                // Ця функція викличеться після будь-якої зміни в модальному вікні
-                setupCabinetBookmarks(); 
-            });
+    const parentTabsContainer = tabsContainer.parentNode;
+    if (!parentTabsContainer.hasAttribute('data-tabs-listener')) {
+        parentTabsContainer.addEventListener('click', e => {
+            if (e.target.classList.contains('category-tab')) {
+                const categoryName = e.target.dataset.category;
+                parentTabsContainer.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+                e.target.classList.add('active');
+                contentContainer.querySelectorAll('.category-content').forEach(c => c.classList.remove('active'));
+                const activeContent = contentContainer.querySelector(`[data-category-content="${categoryName}"]`);
+                if (activeContent) activeContent.classList.add('active');
+            }
         });
+        parentTabsContainer.setAttribute('data-tabs-listener', 'true');
+    }
+
+    const manageBtn = document.querySelector('#manage-categories-btn');
+    if (manageBtn && !manageBtn.hasAttribute('data-listener-added')) {
+        manageBtn.addEventListener('click', () => {
+            showCategoryManagerModal(setupCabinetBookmarks);
+        });
+        manageBtn.setAttribute('data-listener-added', 'true');
     }
 }
 

@@ -1,6 +1,6 @@
 import { isChapterRead, removeChapterFromHistory, addChapterToHistory, addAllChaptersToHistory, removeAllChaptersFromHistory, getBookmarks, getMangaCategory, addBookmark, removeBookmark } from '../storage-manager.js';
 import { downloadChapterAsPdf } from './pdf-generator.js';
-import { addCategory, renameCategory, deleteCategory } from '../storage-manager.js';
+import { addCategory, deleteCategory } from '../storage-manager.js';
 
 
 let chapterSortOrder = 'desc'; // 'asc' or 'desc'
@@ -13,23 +13,34 @@ export function updateBookmarkButton(mangaId) {
 
     const category = getMangaCategory(mangaId);
     const btnText = bookmarkBtn.querySelector('.text');
+    
+    // Скидаємо стилі перед застосуванням нових
+    bookmarkBtn.style.backgroundColor = '';
+    bookmarkBtn.style.borderColor = '';
+    bookmarkBtn.style.color = '';
+    bookmarkBtn.classList.remove('active');
 
     if (category) {
-        bookmarkBtn.classList.add('active'); // Використовуємо .active для стилізації
-        btnText.textContent = `В закладках (${category})`;
+        bookmarkBtn.classList.add('active');
+        btnText.textContent = category.name;
+        // Застосовуємо колір категорії
+        bookmarkBtn.style.backgroundColor = category.color;
+        bookmarkBtn.style.borderColor = category.color;
+        bookmarkBtn.style.color = 'var(--background-dark)'; // Для кращого контрасту
     } else {
-        bookmarkBtn.classList.remove('active');
-        btnText.textContent = 'В закладки';
+        btnText.textContent = 'Зберегти';
     }
 }
 
 export function showBookmarkModal(mangaId, onUpdateCallback) {
-    // Видаляємо старе вікно, якщо воно існує
     const existingModal = document.querySelector('.bookmark-modal-overlay');
     if (existingModal) existingModal.remove();
 
     const bookmarks = getBookmarks();
     const currentCategory = getMangaCategory(mangaId);
+    
+    // ЗАХИСНЕ ВИПРАВЛЕННЯ: Створюємо змінну categories і гарантуємо, що це завжди масив.
+    const categories = (bookmarks && Array.isArray(bookmarks.categories)) ? bookmarks.categories : [];
 
     const overlay = document.createElement('div');
     overlay.className = 'bookmark-modal-overlay';
@@ -37,32 +48,32 @@ export function showBookmarkModal(mangaId, onUpdateCallback) {
         <div class="bookmark-modal">
             <h3>Зберегти в...</h3>
             <div class="category-list">
-                ${Object.keys(bookmarks).map(category => `
-                    <button class="category-btn ${category === currentCategory ? 'active' : ''}" data-category="${category}">
-                        ${category}
+                ${categories.map(category => `
+                    <button class="category-btn ${currentCategory && category.name === currentCategory.name ? 'active' : ''}" 
+                            data-category="${category.name}"
+                            style="${currentCategory && category.name === currentCategory.name ? `background-color:${category.color}; border-color:${category.color}; color: var(--background-dark);` : ''}">
+                        ${category.name}
                     </button>
                 `).join('')}
             </div>
-            ${currentCategory ? '<button class="remove-bookmark-btn">Видалити з закладок</button>' : ''}
+            ${currentCategory ? '<button class="remove-bookmark-btn">Видалити із закладок</button>' : ''}
         </div>
     `;
     document.body.appendChild(overlay);
 
-    // Закриття по кліку на фон
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) {
             overlay.remove();
         }
     });
 
-    // Обробка кліків всередині модального вікна
     overlay.querySelector('.bookmark-modal').addEventListener('click', (e) => {
         e.stopPropagation();
         const target = e.target;
         
         if (target.classList.contains('category-btn')) {
-            const category = target.dataset.category;
-            addBookmark(mangaId, category);
+            const categoryName = target.dataset.category;
+            addBookmark(mangaId, categoryName);
             overlay.remove();
             onUpdateCallback();
         }
@@ -277,8 +288,22 @@ function showBatchDownloadModal(manga) {
             <!-- View 2: Quality Selection -->
             <div id="quality-selection-view" class="view hidden">
                 <h3>Виберіть якість</h3>
-                <button class="button" data-quality="compressed">Стиснутий (менший розмір)</button>
-                <button class="button" data-quality="original">Оригінал (вища якість)</button>
+                 <div class="download-options">
+                    <div class="download-quality-option" data-quality="compressed">
+                        <div class="quality-icon">
+                            <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                        </div>
+                        <p class="quality-text-main">Стиснутий</p>
+                        <p class="quality-text-secondary">Менший розмір</p>
+                    </div>
+                    <div class="download-quality-option" data-quality="original">
+                        <div class="quality-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>
+                        </div>
+                        <p class="quality-text-main">Оригінал</p>
+                        <p class="quality-text-secondary">Краща якість</p>
+                    </div>
+                </div>
             </div>
 
             <!-- View 3: Progress -->
@@ -331,8 +356,9 @@ function showBatchDownloadModal(manga) {
     });
 
     qualitySelectionView.addEventListener('click', e => {
-        const quality = e.target.dataset.quality;
-        if (!quality) return;
+        const qualityOption = e.target.closest('.download-quality-option');
+        if (!qualityOption) return;
+        const quality = qualityOption.dataset.quality;
 
         qualitySelectionView.classList.add('hidden');
         progressView.classList.remove('hidden');
@@ -348,31 +374,27 @@ function showBatchDownloadModal(manga) {
     });
 }
 
-// === НОВА ФУНКЦІЯ ДЛЯ КЕРУВАННЯ КАТЕГОРІЯМИ ===
+// === ПОВНІСТЮ ОНОВЛЕНА ФУНКЦІЯ КЕРУВАННЯ КАТЕГОРІЯМИ ===
 export function showCategoryManagerModal(onUpdateCallback) {
-    // Видаляємо старе модальне вікно, якщо воно є
     const existingModal = document.querySelector('.category-manager-overlay');
     if (existingModal) existingModal.remove();
 
     const bookmarks = getBookmarks();
-    const categories = Object.keys(bookmarks);
-    const baseCategories = ["Читаю", "В планах", "Прочитано"];
-
+    
     const overlay = document.createElement('div');
     overlay.className = 'category-manager-overlay';
 
-    let categoryListHTML = categories.map(cat => `
-        <li data-category-name="${cat}">
-            <span class="category-text">${cat}</span>
+    let categoryListHTML = bookmarks.categories.map(cat => `
+        <li data-category-name="${cat.name}">
+            <span class="color-swatch" style="background-color: ${cat.color};"></span>
+            <span class="category-text">${cat.name}</span>
             <div class="category-item-actions">
-                ${!baseCategories.includes(cat) ? `
-                    <button class="icon-button rename-cat-btn" title="Перейменувати">
-                        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                    </button>
-                    <button class="icon-button delete-cat-btn" title="Видалити">
-                        <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
-                    </button>
-                ` : ''}
+                <button class="icon-button edit-cat-btn" title="Редагувати">
+                    <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                </button>
+                <button class="icon-button delete-cat-btn" title="Видалити">
+                    <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                </button>
             </div>
         </li>
     `).join('');
@@ -381,7 +403,8 @@ export function showCategoryManagerModal(onUpdateCallback) {
         <div class="category-manager-modal">
             <h3>Керування категоріями</h3>
             <div class="add-category-form">
-                <input type="text" id="new-category-input" placeholder="Назва нової категорії...">
+                <input type="text" id="new-category-input" placeholder="Назва нової категорії..." required>
+                <input type="color" id="new-category-color" value="#333333">
                 <button id="add-new-category-btn" class="button">+</button>
             </div>
             <ul class="category-manager-list">${categoryListHTML}</ul>
@@ -390,63 +413,67 @@ export function showCategoryManagerModal(onUpdateCallback) {
 
     document.body.appendChild(overlay);
 
-    // --- Обробники подій ---
-    const modal = overlay.querySelector('.category-manager-modal');
     const list = overlay.querySelector('.category-manager-list');
-    const input = overlay.querySelector('#new-category-input');
+    const nameInput = overlay.querySelector('#new-category-input');
+    const colorInput = overlay.querySelector('#new-category-color');
 
-    // Закриття модального вікна
     overlay.addEventListener('click', e => {
         if (e.target === overlay) overlay.remove();
     });
 
-    // Додавання нової категорії
     overlay.querySelector('#add-new-category-btn').addEventListener('click', () => {
-        const newName = input.value.trim();
-        if (newName && !categories.includes(newName)) {
-            addCategory(newName);
-            onUpdateCallback(); // Оновлюємо кабінет
-            overlay.remove(); // Закриваємо вікно
+        const newName = nameInput.value.trim();
+        const newColor = colorInput.value;
+        if (newName && !bookmarks.categories.some(c => c.name === newName)) {
+            addCategory(newName, newColor);
+            onUpdateCallback();
+            overlay.remove();
         } else {
-            // Можна додати повідомлення про помилку
-            input.style.borderColor = 'red';
+            nameInput.style.borderColor = 'red';
         }
     });
 
-    // Обробка дій в списку (перейменування, видалення)
     list.addEventListener('click', e => {
-        const renameBtn = e.target.closest('.rename-cat-btn');
+        const editBtn = e.target.closest('.edit-cat-btn');
         const deleteBtn = e.target.closest('.delete-cat-btn');
 
-        if (renameBtn) {
-            const li = renameBtn.closest('li');
+        if (editBtn) {
+            const li = editBtn.closest('li');
             const oldName = li.dataset.categoryName;
-            const textSpan = li.querySelector('.category-text');
+            const currentCategory = bookmarks.categories.find(c => c.name === oldName);
             
-            const newName = prompt(`Перейменувати категорію "${oldName}":`, oldName);
+            const newName = prompt(`Введіть нову назву для "${oldName}":`, oldName);
             
-            if (newName && newName.trim() !== '' && oldName !== newName.trim() && !categories.includes(newName.trim())) {
-                renameCategory(oldName, newName.trim());
+            if (newName && newName.trim() !== '') {
+                 if (oldName !== newName.trim() && bookmarks.categories.some(c => c.name === newName.trim())) {
+                    alert("Помилка: Категорія з такою назвою вже існує.");
+                    return;
+                }
+                // Замість другого prompt, можна було б відкрити color picker, але це ускладнить код.
+                // Для простоти, залишимо як є, користувач може видалити і створити нову з іншим кольором.
+                updateCategory(oldName, newName.trim(), currentCategory.color);
                 onUpdateCallback();
                 overlay.remove();
-            } else if (newName) {
-                alert("Помилка: така назва вже існує або назва некоректна.");
             }
         }
 
         if (deleteBtn) {
             const li = deleteBtn.closest('li');
             const nameToDelete = li.dataset.categoryName;
-
-            if (confirm(`Ви впевнені, що хочете видалити категорію "${nameToDelete}"? Всі закладки з неї буде видалено.`)) {
-                // Важливо: логіка видалення закладок з категорії має бути в storage-manager
-                // Наша поточна функція deleteCategory просто видаляє категорію.
-                // Для кращого UX, варто було б запитати, куди перемістити закладки.
-                // Але за поточним планом - просто видаляємо.
-                deleteCategory(nameToDelete);
-                onUpdateCallback();
-                overlay.remove();
+            
+            if (bookmarks.categories.find(c => c.name === nameToDelete).mangaIds.length > 0) {
+                 if (!confirm(`Категорія "${nameToDelete}" не порожня. Ви впевнені, що хочете її видалити? Всі закладки з неї буде втрачено.`)) {
+                    return;
+                }
+            } else {
+                 if (!confirm(`Ви впевнені, що хочете видалити категорію "${nameToDelete}"?`)) {
+                    return;
+                }
             }
+            
+            deleteCategory(nameToDelete);
+            onUpdateCallback();
+            overlay.remove();
         }
     });
 }
@@ -462,8 +489,20 @@ function showDownloadOptionsModal(mangaId, chapterId) {
         <div class="download-modal">
             <h3>Завантажити розділ</h3>
             <div class="download-options">
-                <button class="button" data-quality="compressed">Стиснутий (менший розмір)</button>
-                <button class="button" data-quality="original">Оригінал (вища якість)</button>
+                <div class="download-quality-option" data-quality="compressed">
+                    <div class="quality-icon">
+                        <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                    </div>
+                    <p class="quality-text-main">Стиснутий</p>
+                    <p class="quality-text-secondary">Менший розмір</p>
+                </div>
+                <div class="download-quality-option" data-quality="original">
+                    <div class="quality-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>
+                    </div>
+                    <p class="quality-text-main">Оригінал</p>
+                    <p class="quality-text-secondary">Краща якість</p>
+                </div>
             </div>
             <div class="progress-container">
                 <p class="progress-label">Завантаження: 0%</p>
@@ -488,9 +527,11 @@ function showDownloadOptionsModal(mangaId, chapterId) {
     });
 
     optionsDiv.addEventListener('click', e => {
-        const quality = e.target.dataset.quality;
-        if (!quality) return;
+        const qualityOption = e.target.closest('.download-quality-option');
+        if (!qualityOption) return;
 
+        const quality = qualityOption.dataset.quality;
+        
         optionsDiv.style.display = 'none';
         progressContainer.style.display = 'block';
 

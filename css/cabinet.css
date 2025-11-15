@@ -250,6 +250,8 @@
 }
 
 .category-manager-list {
+    scrollbar-color: var(--border-color) var(--card-background);
+    scrollbar-width: thin;
     list-style: none;
     padding: 0;
     max-height: 300px;
@@ -280,4 +282,48 @@
 
 .category-item-actions .icon-button {
     color: var(--secondary-text);
+}
+
+/* Додаткові стилі для керування категоріями */
+.add-category-form {
+    align-items: center;
+}
+
+#new-category-color {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 44px;
+    height: 44px;
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: transparent;
+}
+
+#new-category-color::-webkit-color-swatch {
+    border-radius: 50%;
+    border: none;
+}
+
+#new-category-color::-moz-color-swatch {
+    border-radius: 50%;
+    border: none;
+}
+
+.category-manager-list li {
+    padding-left: 0.5rem; /* Зменшуємо відступ, щоб вирівняти з іконкою */
+}
+
+.color-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    margin-right: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    flex-shrink: 0;
+}
+
+.category-text {
+    flex-grow: 1;
 }
