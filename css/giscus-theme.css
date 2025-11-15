@@ -1,0 +1,97 @@
+/* --- START OF FILE css/giscus-theme.css --- */
+
+/* 
+   Цей файл перевизначає стандартні стилі Giscus.
+   Ми використовуємо змінні, щоб стилі відповідали вашому сайту.
+*/
+:root {
+    --giscus-main-background: transparent; /* Робимо фон прозорим */
+    --giscus-card-background: #1e1e1e;   /* Колір карток, як на сайті */
+    --giscus-input-background: #121212;   /* Колір поля вводу */
+    --giscus-border-color: #333333;      /* Колір рамок */
+    --giscus-text-color: #e0e0e0;         /* Основний колір тексту */
+    --giscus-secondary-text-color: #a0a0a0; /* Другорядний текст */
+    --giscus-accent-color: #00ff99;      /* Ваш акцентний колір */
+    --giscus-button-color: #121212;       /* Колір тексту на кнопках */
+}
+
+/* Загальний контейнер */
+.gsc-main {
+    font-family: 'Montserrat', sans-serif;
+    background-color: var(--giscus-main-background);
+}
+
+/* Контейнер коментаря */
+.gsc-comment {
+    background-color: var(--giscus-card-background);
+    border: 1px solid var(--giscus-border-color);
+    border-radius: 15px; /* Заокруглення як на вашому сайті */
+    margin-bottom: 1.5rem !important;
+}
+
+/* Поле вводу нового коментаря */
+.gsc-input {
+    background-color: var(--giscus-input-background);
+    border-radius: 15px;
+}
+
+.gsc-input textarea {
+    background-color: transparent;
+    border: 1px solid var(--giscus-border-color);
+    border-radius: 10px;
+    color: var(--giscus-text-color);
+    font-family: 'Montserrat', sans-serif;
+}
+
+.gsc-input textarea:focus {
+    border-color: var(--giscus-accent-color);
+    box-shadow: 0 0 8px rgba(0, 255, 153, 0.5);
+}
+
+/* Кнопки */
+.gsc-button {
+    background-color: var(--giscus-accent-color);
+    color: var(--giscus-button-color);
+    border: 1px solid var(--giscus-accent-color);
+    border-radius: 25px !important; /* Як ваші основні кнопки */
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.gsc-button:hover {
+    opacity: 0.9;
+    box-shadow: 0 0 10px rgba(0, 255, 153, 0.5);
+}
+
+/* Аватари */
+.gsc-avatar img {
+    border-radius: 50%;
+}
+
+/* Посилання всередині коментарів */
+.gsc-comment-content a {
+    color: var(--giscus-accent-color);
+}
+
+/* Кнопки реакцій */
+.gsc-reactions-button {
+    background-color: transparent !important;
+    border: 1px solid var(--giscus-border-color) !important;
+    border-radius: 20px !important;
+    color: var(--giscus-secondary-text-color) !important;
+    transition: all 0.3s ease;
+}
+
+.gsc-reactions-button:hover {
+    border-color: var(--giscus-accent-color) !important;
+    color: var(--giscus-accent-color) !important;
+}
+
+.gsc-reactions-button.active {
+    background-color: rgba(0, 255, 153, 0.1) !important;
+    border-color: var(--giscus-accent-color) !important;
+    color: var(--giscus-accent-color) !important;
+}
+
+/* --- END OF FILE css/giscus-theme.css --- */
