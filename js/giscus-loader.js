@@ -4,7 +4,7 @@ import { getMangaById, getChapterById } from '../data-manager.js';
 const GiscusConfig = {
     repo: 'gokurakuteam/gokuraku-reader',
     repoId: 'R_kgDOQLqvmQ', 
-    theme: 'https://gokurakuteam.github.io/gokuraku/css/giscus-theme.css', // Або будь-яка інша тема, яка вам подобається
+    theme: 'https://cdn.jsdelivr.net/gh/gokurakuteam/gokuraku@latest/css/giscus-theme.css', // Або будь-яка інша тема, яка вам подобається
     lang: 'uk',
     categories: {
         title: {
@@ -85,4 +85,5 @@ export function loadGiscusForPage(pageType, mangaId, chapterId = null) {
 
     container.appendChild(script);
 }
+
 // --- END OF FILE js/giscus-loader.js ---
