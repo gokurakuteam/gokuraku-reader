@@ -1,3 +1,4 @@
+/* ... існуючий код ... */
 .tabs {
     display: flex;
     justify-content: center;
@@ -16,6 +17,9 @@
     font-weight: 600;
     text-transform: uppercase;
     transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .tab-link.active {
@@ -25,305 +29,338 @@
     box-shadow: 0 0 15px var(--glow-color);
 }
 
-.tab-content {
-    display: none;
+/* Для світлої теми текст активної кнопки має бути білим */
+html[data-theme="light"] .tab-link.active {
+    color: #fff;
 }
 
-.tab-content.active {
-    display: block;
-}
+.icon-tab-link { padding: 0.5rem 1rem; }
+.tab-icon { width: 24px; height: 24px; fill: currentColor; }
 
-#clear-history-btn {
-    margin: 1rem 0;
-}
+#category-manager { background-color: var(--card-background); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; }
+#category-manager h3 { margin-top: 0; text-align: center; }
+.category-actions { display: flex; gap: 1rem; margin-bottom: 1rem; }
+#new-category-name { flex-grow: 1; padding: 0.8rem 1.2rem; border-radius: 25px; border: 1px solid var(--border-color); background-color: var(--background-dark); color: var(--text-light); font-size: 1rem; }
+#category-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.75rem; }
+#category-list li { display: flex; align-items: center; background-color: var(--background-dark); padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid var(--border-color); }
+#category-list button { background: none; border: none; color: var(--secondary-text); margin-left: 0.5rem; cursor: pointer; font-size: 1.2rem; line-height: 1; }
+.category-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem; }
+.category-tab { padding: 0.75rem 1.25rem; cursor: pointer; border-bottom: 2px solid transparent; color: var(--secondary-text); transition: all 0.3s ease; }
+.category-tab.active { color: var(--accent-color); border-bottom-color: var(--accent-color); }
+.category-content { display: none; }
+.category-content.active { display: block; }
+@media (max-width: 768px) { .tabs { flex-wrap: wrap; gap: 0.5rem; } .tab-link { padding: 0.6rem 1rem; font-size: 0.9rem; flex: 1 1 auto; text-align: center; } }
+#bookmarks-container { margin-top: 1rem; }
+.category-tabs-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.category-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.category-tab { padding: 0.75rem 1rem; cursor: pointer; color: var(--secondary-text); font-weight: 500; position: relative; border-bottom: 3px solid transparent; transition: all 0.3s ease; }
+.category-tab:hover { color: var(--text-light); }
+.category-tab.active { color: var(--accent-color); border-bottom-color: var(--accent-color); }
+.category-content { display: none; }
+.category-content.active { display: block; }
+.empty-category-message { text-align: center; padding: 4rem 2rem; color: var(--secondary-text); background-color: var(--card-background); border-radius: 15px; border: 1px dashed var(--border-color); }
+.empty-category-message p { font-size: 1.2rem; margin: 0; }
+.category-manager-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1001; }
+.category-manager-modal { background-color: var(--card-background); padding: 2rem; border-radius: 15px; width: 90%; max-width: 450px; border: 1px solid var(--border-color); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+.category-manager-modal h3 { text-align: center; margin-top: 0; margin-bottom: 1.5rem; }
+.add-category-form { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; align-items: center; }
+#new-category-input { flex-grow: 1; padding: 0.7rem 1rem; border-radius: 20px; border: 1px solid var(--border-color); background-color: var(--background-dark); color: var(--text-light); font-size: 1rem; }
+#add-new-category-btn { flex-shrink: 0; width: 44px; height: 44px; padding: 0; font-size: 1.5rem; line-height: 1; }
+.category-manager-list { scrollbar-color: var(--border-color) var(--card-background); scrollbar-width: thin; list-style: none; padding: 0; max-height: 300px; overflow-y: auto; }
+.category-manager-list li { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0.5rem; border-radius: 10px; transition: background-color 0.2s ease; }
+.category-manager-list li:hover { background-color: #2a2a2a; }
+.category-text { font-weight: 500; flex-grow: 1; }
+.category-item-actions { display: flex; gap: 0.5rem; }
+.category-item-actions .icon-button { color: var(--secondary-text); }
+#new-category-color { -webkit-appearance: none; -moz-appearance: none; appearance: none; width: 44px; height: 44px; border: 1px solid var(--border-color); border-radius: 50%; cursor: pointer; background-color: transparent; }
+#new-category-color::-webkit-color-swatch { border-radius: 50%; border: none; }
+#new-category-color::-moz-color-swatch { border-radius: 50%; border: none; }
+.color-swatch { width: 16px; height: 16px; border-radius: 50%; margin-right: 1rem; border: 1px solid rgba(255, 255, 255, 0.2); flex-shrink: 0; }
 
-/* Category Manager */
-#category-manager {
+
+/* --- THEME SWITCHER --- */
+.theme-mode-container {
     background-color: var(--card-background);
     padding: 1.5rem;
     border-radius: 15px;
     margin-bottom: 2rem;
-}
-
-#category-manager h3 {
-    margin-top: 0;
+    border: 1px solid var(--border-color);
     text-align: center;
 }
 
-.category-actions {
-    display: flex;
-    gap: 1rem;
+.theme-mode-container h3 {
+    margin-top: 0;
     margin-bottom: 1rem;
-}
-
-#new-category-name {
-    flex-grow: 1;
-    padding: 0.8rem 1.2rem;
-    border-radius: 25px;
-    border: 1px solid var(--border-color);
-    background-color: var(--background-dark);
-    color: var(--text-light);
-    font-size: 1rem;
-}
-
-#category-list {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-}
-
-#category-list li {
-    display: flex;
-    align-items: center;
-    background-color: var(--background-dark);
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    border: 1px solid var(--border-color);
-}
-
-#category-list button {
-    background: none;
-    border: none;
-    color: var(--secondary-text);
-    margin-left: 0.5rem;
-    cursor: pointer;
     font-size: 1.2rem;
-    line-height: 1;
+    color: var(--text-light);
 }
 
-/* Category Tabs for Bookmarks */
-.category-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 1.5rem;
-}
-
-.category-tab {
-    padding: 0.75rem 1.25rem;
-    cursor: pointer;
-    border-bottom: 2px solid transparent;
-    color: var(--secondary-text);
-    transition: all 0.3s ease;
-}
-
-.category-tab.active {
-    color: var(--accent-color);
-    border-bottom-color: var(--accent-color);
-}
-
-.category-content {
-    display: none;
-}
-
-.category-content.active {
-    display: block;
-}
-
-
-@media (max-width: 768px) {
-    .tabs {
-        flex-wrap: wrap;
-    }
-
-    .tab-link {
-        padding: 0.8rem 1rem;
-        font-size: 1rem;
-    }
-}
-
-#bookmarks-container {
-    margin-top: 1rem;
-}
-
-.category-tabs-header {
+.theme-switcher {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: 2rem;
-}
-
-.category-tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-}
-
-.category-tab {
-    padding: 0.75rem 1rem;
-    cursor: pointer;
-    color: var(--secondary-text);
-    font-weight: 500;
+    background-color: var(--background-dark);
+    border-radius: 30px;
+    padding: 5px;
     position: relative;
-    border-bottom: 3px solid transparent;
-    transition: all 0.3s ease;
+    border: 1px solid var(--border-color);
+    max-width: 400px;
+    margin: 0 auto;
+    /* Запобігаємо викривленню на малих екранах */
+    min-height: 50px;
 }
 
-.category-tab:hover {
-    color: var(--text-light);
-}
+.theme-switcher input[type="radio"] { display: none; }
 
-.category-tab.active {
-    color: var(--accent-color);
-    border-bottom-color: var(--accent-color);
-}
-
-.category-content {
-    display: none;
-}
-
-.category-content.active {
-    display: block;
-}
-
-.empty-category-message {
+.theme-switcher label {
+    flex: 1;
+    z-index: 2; /* Піднімаємо над слайдером */
+    padding: 10px;
+    cursor: pointer;
     text-align: center;
-    padding: 4rem 2rem;
+    font-weight: 600;
+    font-size: 0.9rem;
     color: var(--secondary-text);
-    background-color: var(--card-background);
-    border-radius: 15px;
-    border: 1px dashed var(--border-color);
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+.theme-switcher label svg { width: 20px; height: 20px; fill: currentColor; }
+
+/* Колір тексту активного перемикача */
+.theme-switcher input[type="radio"]:checked + label {
+    color: var(--background-dark);
+}
+/* Специфічно для світлої теми: коли активна, текст на пілюлі має бути білим для контрасту, 
+   якщо акцентний колір темний, або темним, якщо світлий. 
+   Оскільки accent-color зазвичай яскравий, краще залишити var(--background-dark), 
+   що в світлій темі дасть білий (ні, background-dark у світлій темі це фон).
+   Тому тут робимо фікс для тексту на пілюлі */
+html[data-theme="light"] .theme-switcher input[type="radio"]:checked + label {
+    color: #ffffff;
 }
 
-.empty-category-message p {
-    font-size: 1.2rem;
-    margin: 0;
+
+/* "Повзунок" фону (ВИПРАВЛЕНО) */
+.slider-bg {
+    position: absolute;
+    top: 5px;
+    bottom: 5px;
+    left: 5px;
+    /* Ширина: (100% - 10px (відступи зліва/справа)) / 3 */
+    width: calc((100% - 10px) / 3); 
+    background-color: var(--accent-color);
+    border-radius: 25px;
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    z-index: 1;
+    box-shadow: 0 2px 10px var(--glow-color);
 }
 
-/* Стилі для модального вікна керування категоріями */
-.category-manager-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
+/* Логіка переміщення: 0% -> 100% -> 200% від власної ширини */
+#theme-light:checked ~ .slider-bg { transform: translateX(0%); }
+#theme-system:checked ~ .slider-bg { transform: translateX(100%); }
+#theme-dark:checked ~ .slider-bg { transform: translateX(200%); }
+
+.cabinet-separator {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--border-color), transparent);
+    margin: 2rem 0;
+}
+
+/* --- CLICKER GAME --- */
+.clicker-game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 0;
     width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
+}
+
+.score-board {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    text-shadow: 0 0 15px var(--glow-color);
+    background-color: var(--card-background);
+    padding: 0.5rem 2rem;
+    border-radius: 50px;
+    border: 1px solid var(--accent-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+}
+
+.clicker-area {
+    position: relative;
+    width: 100%;
+    max-width: 280px;
+    aspect-ratio: 1 / 1;
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1001;
-}
-
-.category-manager-modal {
-    background-color: var(--card-background);
-    padding: 2rem;
-    border-radius: 15px;
-    width: 90%;
-    max-width: 450px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-}
-
-.category-manager-modal h3 {
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 1.5rem;
-}
-
-.add-category-form {
-    display: flex;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
-}
-
-#new-category-input {
-    flex-grow: 1;
-    padding: 0.7rem 1rem;
-    border-radius: 20px;
-    border: 1px solid var(--border-color);
-    background-color: var(--background-dark);
-    color: var(--text-light);
-    font-size: 1rem;
-}
-
-#add-new-category-btn {
-    flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    font-size: 1.5rem;
-    line-height: 1;
-}
-
-.category-manager-list {
-    scrollbar-color: var(--border-color) var(--card-background);
-    scrollbar-width: thin;
-    list-style: none;
-    padding: 0;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.category-manager-list li {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.75rem 1rem;
-    border-radius: 10px;
-    transition: background-color 0.2s ease;
-}
-
-.category-manager-list li:hover {
-    background-color: #2a2a2a;
-}
-
-.category-text {
-    font-weight: 500;
-}
-
-.category-item-actions {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.category-item-actions .icon-button {
-    color: var(--secondary-text);
-}
-
-/* Додаткові стилі для керування категоріями */
-.add-category-form {
-    align-items: center;
-}
-
-#new-category-color {
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    width: 44px;
-    height: 44px;
-    border: 1px solid var(--border-color);
-    border-radius: 50%;
     cursor: pointer;
-    background-color: transparent;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    margin: 0 auto;
 }
 
-#new-category-color::-webkit-color-swatch {
+.clicker-bg-glow {
+    position: absolute;
+    width: 80%;
+    height: 80%;
+    background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
     border-radius: 50%;
-    border: none;
+    animation: pulse 2s infinite;
+    z-index: 0;
+}
+@keyframes pulse {
+    0% { transform: scale(0.95); opacity: 0.5; }
+    50% { transform: scale(1.1); opacity: 0.8; }
+    100% { transform: scale(0.95); opacity: 0.5; }
 }
 
-#new-category-color::-moz-color-swatch {
-    border-radius: 50%;
-    border: none;
+.chibik-image {
+    width: 100%; 
+    height: 100%; 
+    object-fit: contain;
+    filter: drop-shadow(0 0 15px var(--glow-color));
+    z-index: 1;
+    transition: transform 0.1s ease;
 }
 
-.category-manager-list li {
-    padding-left: 0.5rem; /* Зменшуємо відступ, щоб вирівняти з іконкою */
+.chibik-image:active, .chibik-image.bounce {
+    transform: scale(0.95);
 }
 
-.color-swatch {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    margin-right: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+/* Хмаринка з текстом */
+.chibik-bubble {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--card-background);
+    color: var(--text-light);
+    border: 1px solid var(--accent-color);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 0.9rem;
+    pointer-events: none;
+    z-index: 100;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    white-space: nowrap;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    opacity: 0; 
+}
+.chibik-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 6px 6px 0;
+    border-style: solid;
+    border-color: var(--card-background) transparent transparent transparent;
+}
+
+/* --- SHOP & LISTS --- */
+.shop-container {
+    width: 100%;
+    background-color: var(--card-background);
+    border-radius: 15px;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    margin-top: 2rem;
+}
+
+.shop-items-row {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    scrollbar-color: var(--accent-color) var(--background-dark);
+    scrollbar-width: thin;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+.shop-item {
+    background-color: var(--background-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    min-width: 130px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
     flex-shrink: 0;
+    cursor: pointer; 
+    transition: transform 0.2s ease, border-color 0.3s ease;
 }
 
-.category-text {
-    flex-grow: 1;
+.active-character-card {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 10px var(--glow-color);
 }
+
+.shop-item.unlocked-item {
+    border-color: var(--accent-color);
+}
+
+.theme-preview {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    border: 2px solid #fff;
+    transform: rotate(45deg);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.5);
+}
+
+.chibik-preview {
+    width: 70px;
+    height: 70px;
+    object-fit: contain;
+}
+
+.shop-item-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    margin-top: 0.5rem;
+    white-space: normal;
+}
+
+.shop-btn {
+    background-color: var(--card-background);
+    color: var(--text-light);
+    border: 1px solid var(--border-color);
+    padding: 0.4rem 0.8rem;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    width: 100%;
+    margin-top: auto;
+}
+.shop-btn:hover { background-color: #333; }
+.shop-btn.active {
+    background-color: var(--accent-color);
+    color: var(--background-dark);
+    border-color: var(--accent-color);
+    cursor: default;
+    font-weight: bold;
+}
+
+/* Виправлення для світлої теми - щоб текст на активній кнопці був білий */
+html[data-theme="light"] .shop-btn.active {
+    color: #fff;
+}
+
+.shop-btn.unlocked { border-color: var(--accent-color); color: var(--accent-color); }
+.shop-btn.unlocked:hover { background-color: var(--accent-color); color: var(--background-dark); }

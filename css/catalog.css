@@ -5,7 +5,7 @@
 
 .main-content {
     flex-grow: 1;
-    width: 100%; /* Займає всю ширину на мобільних */
+    width: 100%; 
 }
 
 .main-content-header {
@@ -70,11 +70,12 @@
     transition: background-color 0.2s ease;
     position: relative;
     font-size: 0.95rem;
-    user-select: none; /* Prevent text selection on fast clicks */
+    user-select: none; 
 }
 
 .filter-options label:hover {
-    background-color: #2a2a2a;
+    /* ВИПРАВЛЕННЯ: Використовуємо var(--border-color) або світліший фон */
+    background-color: var(--border-color);
 }
 
 .custom-checkbox, .custom-radio {
@@ -206,11 +207,11 @@
 
 /* Mobile styles */
 .mobile-filter-trigger {
-    display: none; /* Hidden on desktop */
+    display: none; 
 }
 
 .mobile-filters-panel-overlay {
-    display: none; /* Hidden by default */
+    display: none; 
     position: fixed;
     top: 0;
     left: 0;
@@ -298,10 +299,6 @@
 }
 
 input[type="radio"] {
-  /* Hides the element visually */
   opacity: 0; 
-  /* Prevents it from taking up layout space */
   position: absolute; 
-  /* Ensures it doesn't interfere with mouse clicks on other elements */
-  
 }

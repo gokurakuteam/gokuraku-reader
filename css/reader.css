@@ -24,15 +24,17 @@
     margin: 0;
 }
 
+/* ВИПРАВЛЕННЯ: Використовуємо змінні, визначені в main.css для теми */
 .reader-alert {
     display: flex;
     align-items: center;
-    background-color: rgba(255, 235, 59, 0.1);
-    border: 1px solid rgba(255, 235, 59, 0.5);
-    color: #fff176;
+    background-color: var(--alert-bg);
+    border: 1px solid var(--alert-border);
+    color: var(--alert-text);
     padding: 1rem;
     border-radius: 10px;
     margin-bottom: 2rem;
+    transition: background-color 0.3s, color 0.3s, border-color 0.3s;
 }
 
 .alert-icon {
@@ -42,10 +44,11 @@
 
 .alert-text {
     font-size: 0.9rem;
+    line-height: 1.4;
 }
 
 .reader-content-wrapper {
-    background-color: #000;
+    background-color: #000; /* Завжди темний фон під сторінками манґи */
 }
 
 .reader-content {

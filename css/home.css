@@ -28,7 +28,7 @@
     transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+    box-shadow: 0 15px 50px rgba(0,0,0,0.2);
 }
 
 .manga-banner img {
@@ -47,24 +47,26 @@
     left: 0;
     right: 0;
     padding: 4rem 1.5rem 1.5rem;
-    background: linear-gradient(to top, rgba(0,0,0,0.9) 30%, transparent);
-    color: var(--text-light);
+    /* Градієнт банера адаптується під тему */
+    background: linear-gradient(to top, var(--overlay-color-start) 30%, var(--overlay-color-end));
+    /* Текст адаптується під градієнт */
+    color: var(--text-on-overlay);
     text-align: left;
-    transition: opacity 0.5s ease;
+    transition: opacity 0.5s ease, background 0.3s ease, color 0.3s ease;
 }
 
 .banner-caption h3 {
     font-size: 1.5rem;
     font-weight: 700;
     margin: 0 0 0.5rem 0;
-    text-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    text-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
 .banner-caption p {
     margin: 0;
     font-size: 1rem;
     font-weight: 400;
-    color: var(--secondary-text);
+    color: var(--text-secondary-on-overlay);
 }
 
 .banner-dots {
@@ -96,9 +98,10 @@
     top: 50%;
     transform: translateY(-50%);
     z-index: 20;
+    /* Кнопки навігації завжди темні напівпрозорі для контрасту з картинкою */
     background-color: rgba(28, 28, 28, 0.7);
-    color: var(--text-light);
-    border: 1px solid var(--border-color);
+    color: #e0e0e0; 
+    border: 1px solid rgba(255,255,255,0.2);
     border-radius: 50%;
     width: 44px;
     height: 44px;
@@ -113,7 +116,7 @@
 
 .carousel-nav button:hover {
     background-color: var(--accent-color);
-    color: var(--background-dark);
+    color: #121212;
     border-color: var(--accent-color);
     transform: translateY(-50%) scale(1.05);
 }
@@ -124,91 +127,10 @@
     fill: currentColor;
 }
 
-.carousel-prev {
-    left: 22px;
-}
+.carousel-prev { left: 22px; }
+.carousel-next { right: 22px; }
 
-.carousel-next {
-    right: 22px;
-}
-
-.update-list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 1.5rem 0;
-}
-
-.update-list li a {
-    display: flex;
-    align-items: center;
-    padding: 1rem;
-    background-color: var(--card-background);
-    border-radius: 10px;
-    margin-bottom: 1rem;
-    transition: background-color 0.3s ease;
-    text-decoration: none;
-    color: var(--text-light);
-}
-
-.update-list li a:hover {
-    background-color: #2a2a2a;
-}
-
-.update-list img {
-    width: 60px;
-    height: 90px;
-    object-fit: cover;
-    border-radius: 5px;
-    margin-right: 1rem;
-}
-
-.update-info {
-    flex-grow: 1;
-}
-
-.update-info h3 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
-}
-
-.update-info p {
-    margin: 0;
-    color: var(--secondary-text);
-}
-
-.update-time {
-    color: var(--secondary-text);
-    font-size: 0.9rem;
-    white-space: nowrap;
-}
-
-@media (max-width: 992px) {
-    .carousel-nav button {
-        width: 40px;
-        height: 40px;
-    }
-
-    .carousel-prev {
-        left: 10px;
-    }
-
-    .carousel-next {
-        right: 10px;
-    }
-}
-
-@media (max-width: 768px) {
-    .update-list img {
-        width: 45px;
-        height: 65px;
-    }
-
-    .update-info h3 {
-        font-size: 1rem;
-    }
-}
-
-/* --- СТИЛІ ДЛЯ СПИСКУ ОСТАННІХ ОНОВЛЕНЬ --- */
+/* --- Update list styles --- */
 .update-list {
     list-style: none;
     padding: 0;
@@ -225,10 +147,11 @@
     transition: background-color 0.3s ease, transform 0.2s ease;
     text-decoration: none;
     color: var(--text-light);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
 .update-list li a:hover {
-    background-color: #2a2a2a;
+    background-color: var(--border-color);
     transform: translateY(-2px);
 }
 
@@ -240,39 +163,24 @@
     margin-right: 1rem;
 }
 
-.update-info {
-    flex-grow: 1;
-}
-
-.update-info h3 {
-    margin: 0 0 0.5rem 0;
-    font-size: 1.1rem;
-}
-
-.update-info p {
-    margin: 0;
-    color: var(--secondary-text);
-}
-
-.update-time {
-    color: var(--secondary-text);
-    font-size: 0.9rem;
-    white-space: nowrap;
-    margin-left: 1rem;
-}
+.update-info { flex-grow: 1; }
+.update-info h3 { margin: 0 0 0.5rem 0; font-size: 1.1rem; }
+.update-info p { margin: 0; color: var(--secondary-text); }
+.update-time { color: var(--secondary-text); font-size: 0.9rem; white-space: nowrap; margin-left: 1rem; }
 
 
-/* --- СТИЛІ ДЛЯ КАРТКИ "СЛІДКУЙТЕ ЗА НАМИ" (ВИПРАВЛЕНО) --- */
+/* --- SOCIAL LINKS CARD --- */
 .social-links-card {
     display: flex;
     background-color: var(--card-background);
     border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
 }
 
 .social-links-image {
     flex: 1 1 40%;
+    position: relative;
 }
 
 .social-links-image img {
@@ -282,20 +190,31 @@
     display: block;
 }
 
+/* Затемнення/Освітлення картинки */
+.social-links-image::after {
+     content: '';
+     position: absolute;
+     top: 0; left: 0; width: 100%; height: 100%;
+     /* Адаптивний оверлей: темний в темній темі, світлий в світлій (але прозоріший) */
+     background-color: var(--overlay-color-start);
+     opacity: 0.3; /* Легка тональність */
+}
+
 .social-links-content {
     flex: 1 1 60%;
     padding: 2rem 3rem;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    color: var(--text-light);
 }
 
-.social-links-content h2 { text-align: left; }
+.social-links-content h2 { text-align: left; margin-top: 0; }
 .social-links-content p { color: var(--secondary-text); margin-bottom: 2rem; }
 
 .main-links {
     display: flex;
-    flex-wrap: wrap; /* Додано для кращої адаптивності */
+    flex-wrap: wrap;
     gap: 1rem;
     margin-bottom: 2rem;
 }
@@ -328,41 +247,21 @@
 }
 
 
-/* --- СТИЛІ ДЛЯ КАРТКИ "ПРО НАС" --- */
+/* --- ABOUT US CARD --- */
 .about-us-card {
     background-color: var(--card-background);
     border-radius: 15px;
     padding: 1.5rem;
-    justify-self: center;
     display: flex;
     flex-direction: column;
     gap: 1rem;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
     overflow: hidden;
 }
-
-.about-us-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    border-radius: 10px;
-    display: block;
-}
-
-.about-us-content {
-    text-align: center;
-}
-
-.about-us-content h2 {
-    margin-top: 0;
-    margin-bottom: 0.5rem;
-}
-
-.about-us-content p {
-    color: var(--secondary-text);
-    line-height: 1.6;
-    margin: 0;
-}
+.about-us-image { width: 100%; height: 200px; object-fit: cover; border-radius: 10px; display: block; }
+.about-us-content { text-align: center; }
+.about-us-content h2 { margin-top: 0; margin-bottom: 0.5rem; }
+.about-us-content p { color: var(--secondary-text); line-height: 1.6; margin: 0; }
 
 
 /* --- АДАПТИВНІСТЬ ДЛЯ КАРТКИ СОЦІАЛЬНИХ МЕРЕЖ --- */
@@ -387,43 +286,28 @@
         left: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(to top, var(--card-background) 35%, transparent 80%);
-        z-index: 1;
-    }
-
-    .social-links-content {
-        position: relative;
+        /* Градієнт поверх картинки на мобільному */
+        background: linear-gradient(to top, var(--overlay-color-start) 40%, rgba(0,0,0,0.1));
         z-index: 2;
-        padding: 2rem;
-        /* Градієнт став темнішим, щоб текст було легше читати */
-        background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.7));
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
     }
 
     .social-links-content {
         position: relative;
         z-index: 3;
-        padding: 2rem;
-        width: auto;
-        color: var(--text-light);
-        align-items: center;
+        padding: 3rem 1.5rem;
+        /* Текст на градієнті */
+        color: var(--text-on-overlay);
+        background: transparent;
     }
     
-    .social-links-content h2, .social-links-content p { text-align: center; }
+    .social-links-content h2 { text-align: center; color: var(--text-on-overlay); }
+    .social-links-content p { text-align: center; color: var(--text-secondary-on-overlay); }
     .main-links, .secondary-links { justify-content: center; }
+    .secondary-links-title { color: var(--text-secondary-on-overlay); }
+    .social-icon { color: var(--text-on-overlay); }
 }
 
-/* --- АДАПТИВНІСТЬ ДЛЯ СПИСКУ ОНОВЛЕНЬ --- */
 @media (max-width: 768px) {
-    .update-list img {
-        width: 45px;
-        height: 65px;
-    }
-
-    .update-info h3 {
-        font-size: 1rem;
-    }
+    .update-list img { width: 45px; height: 65px; }
+    .update-info h3 { font-size: 1rem; }
 }

@@ -1,13 +1,9 @@
 function getStatusClass(status) {
     switch (status) {
-        case 'Виходить':
-            return 'status-ongoing';
-        case 'Завершено':
-            return 'status-completed';
-        case 'Закинуто':
-            return 'status-frozen';
-        default:
-            return '';
+        case 'Виходить': return 'status-ongoing';
+        case 'Завершено': return 'status-completed';
+        case 'Закинуто': return 'status-frozen';
+        default: return '';
     }
 }
 
@@ -15,7 +11,6 @@ export class AppHeader extends HTMLElement {
     constructor() {
         super();
         const shadow = this.attachShadow({ mode: 'open' });
-
         const wrapper = document.createElement('div');
         wrapper.innerHTML = `
             <style>
@@ -136,7 +131,6 @@ export class AppHeader extends HTMLElement {
                 </nav>
             </header>
         `;
-
         shadow.appendChild(wrapper);
     }
 }
@@ -169,45 +163,48 @@ export class MangaCard extends HTMLElement {
                     border-radius: 12px;
                     overflow: hidden;
                     text-decoration: none;
-                    color: var(--text-light);
+                    color: var(--text-light); /* Колір за замовчуванням */
                     display: flex;
                     flex-direction: column;
                     height: 100%;
-                    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+                    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
                     transition: transform 0.3s ease, box-shadow 0.3s ease;
                 }
                 .card:hover {
                     transform: translateY(-5px);
-                    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.7), 0 0 15px var(--glow-color);
+                    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3), 0 0 15px var(--glow-color);
                 }
                 .card-image-container {
                     width: 100%;
                     aspect-ratio: 2 / 3;
                     position: relative;
-                    border-top-left-radius: 12px; /* Додано */
-                    border-top-right-radius: 12px; /* Додано */
-                    overflow: hidden; /* Додано для обрізки вмісту */
+                    border-top-left-radius: 12px;
+                    border-top-right-radius: 12px;
+                    overflow: hidden;
                 }
                 img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
                     transition: transform 0.4s ease;
-                    border-top-left-radius: 12px; /* Додано */
-                    border-top-right-radius: 12px; /* Додано */
+                    border-top-left-radius: 12px;
+                    border-top-right-radius: 12px;
                 }
                 .card:hover img {
                     transform: scale(1.05);
                 }
+                /* --- ГОЛОВНА ЗМІНА: ГРАДІЄНТ І ТЕКСТ --- */
                 .card-overlay {
                     position: absolute;
                     top: 0;
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    background: linear-gradient(to top, rgba(0,0,0,0.85) 25%, transparent 60%);
-                    border-top-left-radius: 12px; /* Додано */
-                    border-top-right-radius: 12px; /* Додано */
+                    /* Градієнт тепер залежить від теми (темний для темної, світлий для світлої) */
+                    background: linear-gradient(to top, var(--overlay-color-start) 25%, var(--overlay-color-end) 60%);
+                    border-top-left-radius: 12px;
+                    border-top-right-radius: 12px;
+                    transition: background 0.3s ease;
                 }
                 .card-info {
                     position: absolute;
@@ -222,20 +219,25 @@ export class MangaCard extends HTMLElement {
                     font-size: 1.05rem;
                     font-weight: 600;
                     line-height: 1.3;
-                    text-shadow: 0 2px 5px rgba(0,0,0,0.8);
+                    text-shadow: 0 2px 5px rgba(0,0,0,0.1);
                     display: -webkit-box;
                     -webkit-line-clamp: 2;
                     -webkit-box-orient: vertical;
                     overflow: hidden;
+                    /* Текст адаптується під градієнт (світлий на темному, темний на світлому) */
+                    color: var(--text-on-overlay); 
                 }
                  .last-chapter {
                     font-size: 0.9rem;
-                    color: var(--secondary-text);
+                    /* Вторинний текст також адаптується */
+                    color: var(--text-secondary-on-overlay); 
                     margin: 0;
                     white-space: nowrap;
                     overflow: hidden;
                     text-overflow: ellipsis;
                  }
+                /* -------------------------------------- */
+                
                 .card-meta {
                     position: absolute;
                     top: 0.75rem;
@@ -248,7 +250,7 @@ export class MangaCard extends HTMLElement {
                 .meta-tag {
                     background-color: rgba(20, 20, 20, 0.8);
                     backdrop-filter: blur(5px);
-                    color: var(--text-light);
+                    color: white; /* Мета-теги завжди темні з білим текстом для читабельності поверх картинки */
                     padding: 0.3rem 0.6rem;
                     border-radius: 8px;
                     font-size: 0.8rem;

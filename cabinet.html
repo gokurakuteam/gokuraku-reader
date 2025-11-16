@@ -1,30 +1,72 @@
 <div class="tabs">
     <button class="tab-link active" data-tab="bookmarks">Збережене</button>
     <button class="tab-link" data-tab="history">Історія</button>
+    <button class="tab-link icon-tab-link" data-tab="clicker" title="Налаштування та Клікер">
+        <svg viewBox="0 0 24 24" class="tab-icon"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.43-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>
+    </button>
 </div>
 
 <div id="bookmarks" class="tab-content active">
     <div id="bookmarks-container">
         <div class="category-tabs-header">
-            <div class="category-tabs">
-                <!-- Вкладки категорій будуть динамічно вставлені сюди -->
-            </div>
+            <div class="category-tabs"></div>
             <button id="manage-categories-btn" class="icon-button" title="Керувати категоріями">
                 <svg viewBox="0 0 24 24"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
             </button>
         </div>
-        <div class="category-content-container">
-            <!-- Вміст категорій (манґа) буде динамічно вставлений сюди -->
-        </div>
+        <div class="category-content-container"></div>
     </div>
-    
     <p class="empty-list-message" style="display: none;">Ваш список збереженого порожній.</p>
 </div>
 
 <div id="history" class="tab-content">
     <h2>Історія переглядів</h2>
-    <ul class="update-list history-list">
-        <!-- History items will be dynamically inserted here -->
-    </ul>
+    <ul class="update-list history-list"></ul>
     <p class="empty-list-message" style="display: none;">Ваша історія переглядів порожня.</p>
+</div>
+
+<div id="clicker" class="tab-content">
+    <!-- Перемикач Теми -->
+    <div class="theme-mode-container">
+        <h3>Режим відображення</h3>
+        <div class="theme-switcher">
+            <input type="radio" id="theme-light" name="theme-mode" value="light">
+            <label for="theme-light"><svg viewBox="0 0 24 24"><path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0s.39-1.03 0-1.41L5.99 4.58zm12.37 12.37c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.06 1.06c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.06-1.06zm1.06-10.96c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06zM7.05 18.36c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.06 1.06c-.39.39-.39 1.03 0 1.41s1.03.39 1.41 0l1.06-1.06z"/></svg>Світла</label>
+            <input type="radio" id="theme-system" name="theme-mode" value="system">
+            <label for="theme-system"><svg viewBox="0 0 24 24"><path d="M4 6h18V4H4c-1.1 0-2 .9-2 2v11H0v3h14v-3H4V6zm19 2h-6c-.55 0-1 .45-1 1v10c0 .55.45 1 1 1h6c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zm-1 9h-4v-7h4v7z"/></svg>Системна</label>
+            <input type="radio" id="theme-dark" name="theme-mode" value="dark">
+            <label for="theme-dark"><svg viewBox="0 0 24 24"><path d="M11.01 3.05C6.51 3.54 3 7.36 3 12c0 4.97 4.03 9 9 9 4.63 0 8.45-3.5 8.95-8.01-.25.03-.52.05-.78.05-5.52 0-10-4.47-10-9.99 0-.26.02-.53.05-.79z"/></svg>Темна</label>
+            <div class="slider-bg"></div>
+        </div>
+    </div>
+
+    <hr class="cabinet-separator">
+
+    <div class="clicker-game-container">
+        <div class="score-board">
+            <span id="clicker-score">0</span> 🪙
+        </div>
+        
+        <div class="clicker-area">
+            <div class="clicker-bg-glow"></div>
+            <img id="active-chibik" src="" alt="Chibik" class="chibik-image">
+        </div>
+        <h3 id="active-char-name" style="text-align: center; margin-top: 0.5rem;">Персонаж</h3>
+
+        <!-- Секції Магазину -->
+        <div class="shop-container">
+            <!-- 1. Теми (Акцентні кольори) -->
+            <div id="themes-list"></div>
+
+            <hr class="cabinet-separator" style="margin: 1.5rem 0;">
+
+            <!-- 2. Вибір Персонажа (Знизу) -->
+            <h3 class="shop-section-title">Вибір Персонажа</h3>
+            <div id="characters-list" class="shop-items-row"></div>
+
+            <!-- 3. Вибір Скіна (Під персонажем) -->
+            <h3 class="shop-section-title" style="margin-top: 1.5rem;">Скіни</h3>
+            <div id="skins-list" class="shop-items-row"></div>
+        </div>
+    </div>
 </div>
