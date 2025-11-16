@@ -1,11 +1,56 @@
+/* Глобальне налаштування розмірів */
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
 :root {
+    /* --- ТЕМНА ТЕМА (За замовчуванням) --- */
     --background-dark: #121212;
     --text-light: #e0e0e0;
-    --accent-color: #00ff99;
     --card-background: #1e1e1e;
-    --glow-color: rgba(0, 255, 153, 0.5);
     --secondary-text: #a0a0a0;
     --border-color: #333333;
+    
+    /* Градієнти для карток та банерів (Темна тема) */
+    /* Починається з темного, переходить у прозорий */
+    --overlay-color-start: rgba(18, 18, 18, 0.95); 
+    --overlay-color-end: transparent;
+    
+    /* Текст, що лежить на цьому градієнті */
+    --text-on-overlay: #e0e0e0; 
+    --text-secondary-on-overlay: #a0a0a0;
+
+    /* Акцентні (змінюються через JS) */
+    --accent-color: #00ff99;
+    --glow-color: rgba(0, 255, 153, 0.5);
+
+    /* Кольори сповіщень (Alerts) - Темна тема */
+    --alert-bg: rgba(255, 235, 59, 0.1);
+    --alert-border: rgba(255, 235, 59, 0.5);
+    --alert-text: #fff176;
+}
+
+/* --- СВІТЛА ТЕМА --- */
+html[data-theme="light"] {
+    --background-dark: #f2f4f7; /* Світлий фон сторінки */
+    --text-light: #1a1a1a;      /* Темний основний текст */
+    --card-background: #ffffff; /* Білі картки */
+    --secondary-text: #5f6368;  /* Сірий вторинний текст */
+    --border-color: #e0e0e0;    /* Світлі межі */
+
+    /* Градієнти для карток та банерів (Світла тема) */
+    /* Починається з білого, переходить у прозорий */
+    --overlay-color-start: rgba(255, 255, 255, 0.95);
+    --overlay-color-end: transparent;
+
+    /* Текст на світлому градієнті має бути темним */
+    --text-on-overlay: #1a1a1a;
+    --text-secondary-on-overlay: #5f6368;
+
+    /* Кольори сповіщень (Alerts) - Світла тема */
+    --alert-bg: #fff9c4;
+    --alert-border: #fbc02d;
+    --alert-text: #5f5200;
 }
 
 body {
@@ -13,11 +58,16 @@ body {
     color: var(--text-light);
     font-family: 'Montserrat', sans-serif;
     margin: 0;
-    background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%231a1a1a" fill-opacity="0.4" fill-rule="evenodd"%3E%3Cpath d="M0 60L60 0H30L0 30M60 60V30L30 60"/%3E%3C/g%3E%3C/svg%3E');
+    background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23808080" fill-opacity="0.05" fill-rule="evenodd"%3E%3Cpath d="M0 60L60 0H30L0 30M60 60V30L30 60"/%3E%3C/g%3E%3C/svg%3E');
+    overflow-x: hidden;
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 main {
     padding: 2rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 footer {
@@ -26,6 +76,7 @@ footer {
     margin-top: 2rem;
     background-color: var(--card-background);
     border-top: 1px solid var(--border-color);
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
 .button {
@@ -47,8 +98,13 @@ footer {
 
 .button:hover {
     background-color: var(--accent-color);
-    color: var(--background-dark);
+    /* У темній темі - темний текст, у світлій - білий текст для контрасту з яскравим фоном */
+    color: #121212; 
     box-shadow: 0 0 15px var(--glow-color);
+}
+
+html[data-theme="light"] .button:hover {
+    color: #ffffff;
 }
 
 .icon-button {
@@ -66,7 +122,7 @@ footer {
 
 .icon-button:hover {
     color: var(--accent-color);
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(128, 128, 128, 0.1);
 }
 
 .icon-button svg {
@@ -90,12 +146,11 @@ h2 {
 
 .manga-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
     gap: 1.5rem;
     margin-bottom: 1.5rem;
 }
 
-/* Global Status Colors */
 .status-tag {
     padding: 0.3em 0.6em;
     border-radius: 8px;
@@ -111,12 +166,8 @@ h2 {
 .status-frozen { background-color: #6c757d !important; }
 
 @keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .spinner {

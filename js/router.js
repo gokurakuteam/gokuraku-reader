@@ -4,6 +4,7 @@ import { initCatalog } from '../catalog.js';
 import { setupDynamicCarousel } from './carousel.js';
 import { setupTabs, timeAgo, renderChapterList, updateReadButton, getStatusClass, handleChapterListClicks, showBookmarkModal, updateBookmarkButton, showCategoryManagerModal } from './ui.js';
 import { loadGiscusForPage } from './giscus-loader.js';
+import { initClicker } from './clicker.js';
 
 const routes = {
     'home': 'home.html',
@@ -110,6 +111,9 @@ async function loadPage(page, params) {
     } else if (page === 'cabinet') {
         setupTabs();
         setupCabinetBookmarks();
+        
+        // Ініціалізація клікера
+        await initClicker();
         
         const historyList = main.querySelector('.history-list');
         const historyItems = getHistory();
