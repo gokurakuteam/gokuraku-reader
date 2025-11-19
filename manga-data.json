@@ -17,8 +17,8 @@
       "Еротика"
     ],
     "type": "Манхва",
-    "status": "Виходить",
-    "latestUpdate": "2025-11-18T19:43:18.685179Z",
+    "status": "Завершено",
+    "latestUpdate": "2025-11-19T20:12:33.792847Z",
     "chapters": [
       {
         "id": 1,
@@ -4080,6 +4080,50 @@
           "https://files.catbox.moe/4bn5pt.webp",
           "https://files.catbox.moe/m227bp.webp",
           "https://files.catbox.moe/rv68um.webp"
+        ]
+      },
+      {
+        "id": 200,
+        "title": "",
+        "volume": 7,
+        "chapter": 116.0,
+        "date": "2025-11-19",
+        "pages": [
+          "https://files.catbox.moe/d9eeq3.webp",
+          "https://files.catbox.moe/r085pg.webp",
+          "https://files.catbox.moe/quh9bn.webp",
+          "https://files.catbox.moe/v0wmjy.webp",
+          "https://files.catbox.moe/tpy1wz.webp",
+          "https://files.catbox.moe/w01eld.webp",
+          "https://files.catbox.moe/iq3t60.webp",
+          "https://files.catbox.moe/gs3hef.webp",
+          "https://files.catbox.moe/2yirzp.webp",
+          "https://files.catbox.moe/olwqim.webp",
+          "https://files.catbox.moe/bskhim.webp",
+          "https://files.catbox.moe/ep67km.webp",
+          "https://files.catbox.moe/ime3wu.webp",
+          "https://files.catbox.moe/eykz9m.webp",
+          "https://files.catbox.moe/lja3nl.webp",
+          "https://files.catbox.moe/ylh09h.webp",
+          "https://files.catbox.moe/ae5c8m.webp",
+          "https://files.catbox.moe/6lirx2.webp",
+          "https://files.catbox.moe/5uo2g6.webp",
+          "https://files.catbox.moe/yezb6y.webp",
+          "https://files.catbox.moe/1jy0bl.webp",
+          "https://files.catbox.moe/14zpzm.webp",
+          "https://files.catbox.moe/4rmzo0.webp",
+          "https://files.catbox.moe/ajfb4a.webp"
+        ]
+      },
+      {
+        "id": 201,
+        "title": "Кінець",
+        "volume": 7,
+        "chapter": 117.0,
+        "date": "2025-11-19",
+        "pages": [
+          "https://files.catbox.moe/zn81ij.webp",
+          "https://files.catbox.moe/olet0j.webp"
         ]
       }
     ]
