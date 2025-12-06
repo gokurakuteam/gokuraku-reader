@@ -22,18 +22,29 @@ collections:
         label: "Манґа"
         fields:
           - name: "manga"
-            label: "Список Манґи"
+            label: "Список Тайтлів"
             widget: "list"
             collapsed: true
-            summary: "{{title}}"
+            summary: "Example: {{title}} ({{status}}) - Розділів: {{chapters.length}}"
+            # --- НОВІ НАЛАШТУВАННЯ ---
+            sortable_fields: ["title", "latestUpdate", "status"] # Дозволяє сортувати кліком по заголовку
+            view_groups: # Додає вкладки для швидкого фільтру
+              - label: "За статусом"
+                field: "status"
+              - label: "За типом"
+                field: "type"
+            view_filters: # Швидкі фільтри
+              - label: "Тільки ті, що виходять"
+                field: "status"
+                pattern: "Виходить"
             fields:
               - {label: "ID (число)", name: "id", widget: "number", value_type: "int"}
               - {label: "Назва", name: "title", widget: "string"}
               - {label: "Опис", name: "description", widget: "text"}
               - {label: "Обкладинка", name: "coverImage", widget: "image"}
               - {label: "Фон", name: "backgroundImage", widget: "image"}
-              - {label: "Тип (Манхва/Манґа)", name: "type", widget: "string"}
-              - {label: "Статус", name: "status", widget: "select", options: ["Виходить", "Завершено", "Закинуто"]}
+              - {label: "Тип", name: "type", widget: "select", options: ["Манхва", "Манґа"], default: "Манхва"}
+              - {label: "Статус", name: "status", widget: "select", options: ["Виходить", "Завершено"], default: "Виходить"}
               - {label: "Жанри", name: "genres", widget: "list"}
               
               # Вкладений список розділів
@@ -47,7 +58,7 @@ collections:
                   - {label: "Том", name: "volume", widget: "number", value_type: "int", default: 1}
                   - {label: "Номер розділу", name: "chapter", widget: "number", value_type: "float"}
                   - {label: "Назва розділу (необов'язково)", name: "title", widget: "string", required: false}
-                  - {label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false}
+                  - {label: "Дата оновлення", name: "latestUpdate", widget: "datetime", default: ""}
                   
                   # Вкладений список сторінок (картинок)
                   - label: "Сторінки"
