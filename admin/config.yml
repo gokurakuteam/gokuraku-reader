@@ -50,8 +50,17 @@ collections:
                   - {label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false}
                   
                   # Вкладений список сторінок (картинок)
-                  - label: "Сторінки (Картинки)"
+                  - label: "Сторінки"
                     name: "pages"
                     widget: "list"
-                    summary: "{{fields.image}}"
-                    field: {label: "Зображення", name: "image", widget: "image"}
+                    collapsed: true # Згортає список, щоб не займав пів екрану
+                    minimize_collapsed: true # Робить список ще компактнішим
+                    summary: "{{fields.image}}" # ПОКРАЩЕННЯ: Показує мініатюру прямо в списку!
+                    field: # Увага: тут 'field' (однина), бо у нас тільки картинка всередині
+                      label: "Зображення"
+                      name: "image"
+                      widget: "image"
+                      # МАГІЯ ТУТ: Дозволяє вибрати багато файлів за раз
+                      media_library:
+                        config:
+                          multiple: true
