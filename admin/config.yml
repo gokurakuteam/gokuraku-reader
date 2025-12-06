@@ -1,0 +1,57 @@
+backend:
+  name: github
+  repo: gokurakuteam/gokuraku-reader # Твій репозиторій
+  branch: main # Гілка, в яку будуть зберігатися зміни
+
+# Налаштування для картинок
+media_library:
+  name: cloudinary
+  config:
+    cloud_name: dj2ojemoi
+    api_key: 914653754994184
+    default_transformations:
+      - [quality, auto] # Автоматична оптимізація якості
+      - [fetch_format, auto] # Автоматичний формат (webp/avif)
+
+collections:
+  - name: "data"
+    label: "База даних"
+    files:
+      - file: "manga-data.json"
+        name: "manga_db"
+        label: "Манґа"
+        fields:
+          - name: "manga"
+            label: "Список Манґи"
+            widget: "list"
+            collapsed: true
+            summary: "{{title}}"
+            fields:
+              - {label: "ID (число)", name: "id", widget: "number", value_type: "int"}
+              - {label: "Назва", name: "title", widget: "string"}
+              - {label: "Опис", name: "description", widget: "text"}
+              - {label: "Обкладинка", name: "coverImage", widget: "image"}
+              - {label: "Фон", name: "backgroundImage", widget: "image"}
+              - {label: "Тип (Манхва/Манґа)", name: "type", widget: "string"}
+              - {label: "Статус", name: "status", widget: "select", options: ["Виходить", "Завершено", "Закинуто"]}
+              - {label: "Жанри", name: "genres", widget: "list"}
+              
+              # Вкладений список розділів
+              - label: "Розділи"
+                name: "chapters"
+                widget: "list"
+                collapsed: true
+                summary: "Том {{volume}} - Розділ {{chapter}}"
+                fields:
+                  - {label: "ID Розділу (унікальне число)", name: "id", widget: "number", value_type: "int"}
+                  - {label: "Том", name: "volume", widget: "number", value_type: "int", default: 1}
+                  - {label: "Номер розділу", name: "chapter", widget: "number", value_type: "float"}
+                  - {label: "Назва розділу (необов'язково)", name: "title", widget: "string", required: false}
+                  - {label: "Дата", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false}
+                  
+                  # Вкладений список сторінок (картинок)
+                  - label: "Сторінки (Картинки)"
+                    name: "pages"
+                    widget: "list"
+                    summary: "{{fields.image}}"
+                    field: {label: "Зображення", name: "image", widget: "image"}
