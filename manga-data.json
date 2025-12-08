@@ -1,5 +1,4 @@
-{
-  "manga": [
+[
   {
     "id": 1,
     "title": "Кохання — це ілюзія",
@@ -6641,7 +6640,7 @@
       "Комедія",
       "Романтика"
     ],
-    "latestUpdate": "2025-12-01T17:52:44.475164Z",
+    "latestUpdate": "2025-12-08T17:48:08.545510Z",
     "chapters": [
       {
         "id": 202,
@@ -6728,6 +6727,48 @@
           "https://files.catbox.moe/7kac1x.webp",
           "https://files.catbox.moe/g2oo9n.webp",
           "https://files.catbox.moe/hmxqpv.webp"
+        ]
+      },
+      {
+        "id": 206,
+        "title": "",
+        "volume": 1,
+        "chapter": 3.0,
+        "date": "2025-12-08",
+        "pages": [
+          "https://files.catbox.moe/yyn926.webp",
+          "https://files.catbox.moe/wukez5.webp",
+          "https://files.catbox.moe/uaj5je.webp",
+          "https://files.catbox.moe/upv9jl.webp",
+          "https://files.catbox.moe/bejflg.webp",
+          "https://files.catbox.moe/n52spm.webp",
+          "https://files.catbox.moe/9ryts1.webp",
+          "https://files.catbox.moe/y1zb9y.webp",
+          "https://files.catbox.moe/2jzxh8.webp",
+          "https://files.catbox.moe/2fdd6w.webp",
+          "https://files.catbox.moe/qqbcqh.webp",
+          "https://files.catbox.moe/8p6gkw.webp",
+          "https://files.catbox.moe/s858o3.webp",
+          "https://files.catbox.moe/8v5saa.webp",
+          "https://files.catbox.moe/uk95ml.webp",
+          "https://files.catbox.moe/o4aelw.webp",
+          "https://files.catbox.moe/7kafzg.webp",
+          "https://files.catbox.moe/gtxqiy.webp",
+          "https://files.catbox.moe/wgscgu.webp",
+          "https://files.catbox.moe/7fl74w.webp",
+          "https://files.catbox.moe/a002hp.webp",
+          "https://files.catbox.moe/7jg0iu.webp",
+          "https://files.catbox.moe/lwqi5a.webp",
+          "https://files.catbox.moe/7e1d3j.webp",
+          "https://files.catbox.moe/kthedv.webp",
+          "https://files.catbox.moe/la0tyz.webp",
+          "https://files.catbox.moe/tvatrp.webp",
+          "https://files.catbox.moe/xle3xw.webp",
+          "https://files.catbox.moe/99qj47.webp",
+          "https://files.catbox.moe/mncb0g.webp",
+          "https://files.catbox.moe/1c41g2.webp",
+          "https://files.catbox.moe/k32cgy.webp",
+          "https://files.catbox.moe/pc8p05.webp"
         ]
       }
     ]
@@ -7318,8 +7359,70 @@
       "Привиди",
       "Надприродне"
     ],
-    "latestUpdate": "2025-12-05T18:09:24.201026Z",
-    "chapters": []
+    "latestUpdate": "2025-12-08T17:51:38.432509Z",
+    "chapters": [
+      {
+        "id": 207,
+        "title": "Персонажі",
+        "volume": 1,
+        "chapter": 0.0,
+        "date": "2025-12-08",
+        "pages": [
+          "https://files.catbox.moe/uuaris.webp"
+        ]
+      },
+      {
+        "id": 208,
+        "title": "Пролог",
+        "volume": 1,
+        "chapter": 0.5,
+        "date": "2025-12-08",
+        "pages": [
+          "https://files.catbox.moe/0m0vsv.webp",
+          "https://files.catbox.moe/4utdib.webp",
+          "https://files.catbox.moe/ph69yx.webp",
+          "https://files.catbox.moe/20plhk.webp",
+          "https://files.catbox.moe/1mjqr6.webp",
+          "https://files.catbox.moe/7kszyr.webp",
+          "https://files.catbox.moe/2twhjv.webp",
+          "https://files.catbox.moe/otrizi.webp"
+        ]
+      },
+      {
+        "id": 209,
+        "title": "",
+        "volume": 1,
+        "chapter": 1.0,
+        "date": "2025-12-08",
+        "pages": [
+          "https://files.catbox.moe/2j20t6.webp",
+          "https://files.catbox.moe/wnp5ck.webp",
+          "https://files.catbox.moe/wx9l18.webp",
+          "https://files.catbox.moe/mky6jt.webp",
+          "https://files.catbox.moe/momh25.webp",
+          "https://files.catbox.moe/zft3wa.webp",
+          "https://files.catbox.moe/la4bhj.webp",
+          "https://files.catbox.moe/44guhg.webp",
+          "https://files.catbox.moe/2dztqf.webp",
+          "https://files.catbox.moe/9wizbk.webp",
+          "https://files.catbox.moe/1sf9ao.webp",
+          "https://files.catbox.moe/0k5vur.webp",
+          "https://files.catbox.moe/oawx4t.webp",
+          "https://files.catbox.moe/3kqm9p.webp",
+          "https://files.catbox.moe/pjx55m.webp",
+          "https://files.catbox.moe/yi1zqr.webp",
+          "https://files.catbox.moe/brlddt.webp",
+          "https://files.catbox.moe/mya7r9.webp",
+          "https://files.catbox.moe/y214n5.webp",
+          "https://files.catbox.moe/dmhriw.webp",
+          "https://files.catbox.moe/4rqxgp.webp",
+          "https://files.catbox.moe/2pjyoi.webp",
+          "https://files.catbox.moe/pvtpje.webp",
+          "https://files.catbox.moe/gw20vc.webp",
+          "https://files.catbox.moe/3yfydq.webp",
+          "https://files.catbox.moe/2j20mg.webp"
+        ]
+      }
+    ]
   }
 ]
-}
