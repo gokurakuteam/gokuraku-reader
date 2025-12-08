@@ -1,43 +1,27 @@
-<!doctype html>
-<html>
+
+<!DOCTYPE html>
+<html lang="uk">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gokuraku Admin</title>
-  
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-  
-  <script src="https://unpkg.com/@sveltia/cms/dist/sveltia-cms.js"></script>
-
-  <style>
-    /* Глобальні налаштування шрифту */
-    :root {
-      --sveltia-cms-font-family: 'Montserrat', sans-serif;
-      --sveltia-cms-primary-color: #00ff99; /* Твій зелений */
-      --sveltia-cms-primary-color-dark: #00cc7a;
-    }
-
-    body {
-      font-family: 'Montserrat', sans-serif !important;
-    }
-
-    /* Робимо список більш компактним і стильним */
-    /* (Класи можуть відрізнятися в нових версіях, це приклад логіки) */
-    
-    /* Збільшуємо розмір мініатюр у списку */
-    img[role="presentation"] {
-      width: 80px !important; 
-      height: 80px !important;
-      object-fit: cover;
-      border-radius: 8px;
-    }
-
-    /* Якщо Sveltia дозволяє, це затемнить фон */
-    [data-theme="dark"] {
-      background-color: #121212 !important;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gokuraku</title>
+    <link rel="icon" type="image/x-icon" href="/icons/icon-256.ico">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+    <app-header></app-header>
+    <main>
+        
+    </main>
+    <footer>
+        <p>&copy; 2024 Gokuraku</p>
+    </footer>
+    <script src="main.js" type="module"></script>
+    <script src="support-zsu-block.js"></script>
 </body>
 </html>
