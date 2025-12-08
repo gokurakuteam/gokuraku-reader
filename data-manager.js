@@ -1,4 +1,3 @@
-
 let mangaData = [];
 
 export async function loadMangaData() {
