@@ -7,8 +7,7 @@ export async function loadMangaData() {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data = await response.json();
-        mangaData = data.manga; // Тепер ми беремо масив із ключа "manga"
+        mangaData = await response.json();
         console.log('Manga data loaded successfully!');
     } catch (error) {
         console.error("Could not load manga data:", error);
