@@ -6940,7 +6940,7 @@
       "Комедія",
       "Романтика"
     ],
-    "latestUpdate": "2025-12-08T17:48:08.545510Z",
+    "latestUpdate": "2025-12-15T20:37:27.683420Z",
     "chapters": [
       {
         "id": 202,
@@ -7069,6 +7069,49 @@
           "https://files.catbox.moe/1c41g2.webp",
           "https://files.catbox.moe/k32cgy.webp",
           "https://files.catbox.moe/pc8p05.webp"
+        ]
+      },
+      {
+        "id": 228,
+        "title": "",
+        "volume": 1,
+        "chapter": 4.0,
+        "date": "2025-12-15",
+        "pages": [
+          "https://files.catbox.moe/wjve0m.webp",
+          "https://files.catbox.moe/p8eio6.webp",
+          "https://files.catbox.moe/yqxqd3.webp",
+          "https://files.catbox.moe/qnh2wy.webp",
+          "https://files.catbox.moe/metjvo.webp",
+          "https://files.catbox.moe/2ihjfr.webp",
+          "https://files.catbox.moe/g4qywt.webp",
+          "https://files.catbox.moe/vvb4ap.webp",
+          "https://files.catbox.moe/b7mayd.webp",
+          "https://files.catbox.moe/i019mc.webp",
+          "https://files.catbox.moe/tiu1wb.webp",
+          "https://files.catbox.moe/viotrd.webp",
+          "https://files.catbox.moe/2b1tq6.webp",
+          "https://files.catbox.moe/z2zgiq.webp",
+          "https://files.catbox.moe/qz2ndx.webp",
+          "https://files.catbox.moe/wjflzr.webp",
+          "https://files.catbox.moe/wk3l24.webp",
+          "https://files.catbox.moe/805cxj.webp",
+          "https://files.catbox.moe/z53rse.webp",
+          "https://files.catbox.moe/v5zkh8.webp",
+          "https://files.catbox.moe/yb457b.webp",
+          "https://files.catbox.moe/r3ed4o.webp",
+          "https://files.catbox.moe/vch8v3.webp",
+          "https://files.catbox.moe/tigr7b.webp",
+          "https://files.catbox.moe/gbbngh.webp",
+          "https://files.catbox.moe/dup48q.webp",
+          "https://files.catbox.moe/3i55tp.webp",
+          "https://files.catbox.moe/3kp1pw.webp",
+          "https://files.catbox.moe/g3p32s.webp",
+          "https://files.catbox.moe/8ntzad.webp",
+          "https://files.catbox.moe/ghjyml.webp",
+          "https://files.catbox.moe/b6y3bf.webp",
+          "https://files.catbox.moe/gyndag.webp",
+          "https://files.catbox.moe/oc9o94.webp"
         ]
       }
     ]
