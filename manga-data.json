@@ -7872,7 +7872,7 @@
       "Привиди",
       "Надприродне"
     ],
-    "latestUpdate": "2025-12-08T17:51:38.432509Z",
+    "latestUpdate": "2025-12-21T18:33:40.963894Z",
     "chapters": [
       {
         "id": 207,
@@ -7934,6 +7934,30 @@
           "https://files.catbox.moe/gw20vc.webp",
           "https://files.catbox.moe/3yfydq.webp",
           "https://files.catbox.moe/2j20mg.webp"
+        ]
+      },
+      {
+        "id": 236,
+        "title": "",
+        "volume": 1,
+        "chapter": 2.0,
+        "date": "2025-12-21",
+        "pages": [
+          "https://files.catbox.moe/5wtxcl.webp",
+          "https://files.catbox.moe/tto5ph.webp",
+          "https://files.catbox.moe/tzo5c4.webp",
+          "https://files.catbox.moe/44ojlk.webp",
+          "https://files.catbox.moe/tzo1gx.webp",
+          "https://files.catbox.moe/7ce213.webp",
+          "https://files.catbox.moe/ejqwlf.webp",
+          "https://files.catbox.moe/a8rzqv.webp",
+          "https://files.catbox.moe/i8rfy9.webp",
+          "https://files.catbox.moe/4tpq96.webp",
+          "https://files.catbox.moe/2yykgi.webp",
+          "https://files.catbox.moe/ktlyu1.webp",
+          "https://files.catbox.moe/lbdwex.webp",
+          "https://files.catbox.moe/r9s4xl.webp",
+          "https://files.catbox.moe/he8fnq.webp"
         ]
       }
     ]
