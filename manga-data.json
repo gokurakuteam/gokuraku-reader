@@ -6158,8 +6158,8 @@
     "description": "У світі, де лише жінки можуть бути відьмами, один нічого не підозрюючий хлопець здобуває їхню силу. Тут відьми мусять вполювати свою магію! Там, у непроглядній гущавині лісу, жахливий володар магії та найсильніша відьма зійшлися у смертельному двобої. Аж раптом у цю запеклу сутичку вривається юний хлопчина. Його ім'я — Ічі, і він лише мисливець. Та саме йому судилося перевернути світ магії догори дригом у цій епічній сазі про полювання на чари!",
     "type": "Манґа",
     "status": "Виходить",
-    "coverImage": "https://files.catbox.moe/6keh8l.webp",
-    "backgroundImage": "https://files.catbox.moe/10lgh1.webp",
+    "coverImage": "https://files.catbox.moe/102vvx.webp",
+    "backgroundImage": "https://files.catbox.moe/2c2zia.jpg",
     "pageUrl": "#title?id=8",
     "genres": [
       "Шьонен",
@@ -6169,7 +6169,7 @@
       "Фентезі",
       "Магія"
     ],
-    "latestUpdate": "2025-12-27T18:19:29.297205Z",
+    "latestUpdate": "2026-01-03T20:08:57.623284Z",
     "chapters": [
       {
         "id": 153,
@@ -6640,6 +6640,31 @@
           "https://files.catbox.moe/dkknj6.webp",
           "https://files.catbox.moe/3cap4n.webp",
           "https://files.catbox.moe/7khsbv.webp"
+        ]
+      },
+      {
+        "id": 255,
+        "title": "Вище голови не скочиш",
+        "volume": 3,
+        "chapter": 17.0,
+        "date": "2026-01-03",
+        "pages": [
+          "https://files.catbox.moe/o6ck0d.webp",
+          "https://files.catbox.moe/sgby9l.webp",
+          "https://files.catbox.moe/rgkp1x.webp",
+          "https://files.catbox.moe/ef83vl.webp",
+          "https://files.catbox.moe/aad2hf.webp",
+          "https://files.catbox.moe/f9feiy.webp",
+          "https://files.catbox.moe/bcdl07.webp",
+          "https://files.catbox.moe/4pzvyw.webp",
+          "https://files.catbox.moe/ehs1dg.webp",
+          "https://files.catbox.moe/q69k2f.webp",
+          "https://files.catbox.moe/efhuab.webp",
+          "https://files.catbox.moe/64g07x.webp",
+          "https://files.catbox.moe/g6qv18.webp",
+          "https://files.catbox.moe/3cfn2n.webp",
+          "https://files.catbox.moe/tqcnll.webp",
+          "https://files.catbox.moe/0d0duo.webp"
         ]
       }
     ]
