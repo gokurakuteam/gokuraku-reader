@@ -8591,11 +8591,11 @@
       "Драма",
       "Психологія"
     ],
-    "latestUpdate": "2026-01-01T18:10:36.165933Z",
+    "latestUpdate": "2026-01-08T19:14:26.529459Z",
     "chapters": [
       {
         "id": 213,
-        "title": "",
+        "title": "Пролог",
         "volume": 1,
         "chapter": 0.0,
         "date": "2025-12-11",
@@ -8611,7 +8611,7 @@
       },
       {
         "id": 214,
-        "title": "",
+        "title": "Наша перша зустріч",
         "volume": 1,
         "chapter": 1.0,
         "date": "2025-12-11",
@@ -8765,7 +8765,7 @@
       },
       {
         "id": 215,
-        "title": "",
+        "title": "Cвояк свояка вгадає здалека",
         "volume": 1,
         "chapter": 2.0,
         "date": "2025-12-11",
@@ -8812,7 +8812,7 @@
       },
       {
         "id": 216,
-        "title": "",
+        "title": "Ти впав мені в око",
         "volume": 1,
         "chapter": 3.0,
         "date": "2025-12-11",
@@ -8860,7 +8860,7 @@
       },
       {
         "id": 217,
-        "title": "",
+        "title": "«Тепер ми квити, чи не так?»",
         "volume": 1,
         "chapter": 4.0,
         "date": "2025-12-11",
@@ -8927,7 +8927,7 @@
       },
       {
         "id": 218,
-        "title": "",
+        "title": "Пов'язані надією",
         "volume": 1,
         "chapter": 5.0,
         "date": "2025-12-11",
@@ -8972,7 +8972,7 @@
       },
       {
         "id": 219,
-        "title": "",
+        "title": "Гід для шпигуна",
         "volume": 1,
         "chapter": 6.0,
         "date": "2025-12-11",
@@ -9013,7 +9013,7 @@
       },
       {
         "id": 220,
-        "title": "",
+        "title": "Раптове вибачення",
         "volume": 1,
         "chapter": 7.0,
         "date": "2025-12-11",
@@ -9061,7 +9061,7 @@
       },
       {
         "id": 221,
-        "title": "",
+        "title": "Приходь до мене",
         "volume": 1,
         "chapter": 8.0,
         "date": "2025-12-11",
@@ -9110,7 +9110,7 @@
       },
       {
         "id": 222,
-        "title": "",
+        "title": "Досить уже того супу з водоростей",
         "volume": 1,
         "chapter": 9.0,
         "date": "2025-12-11",
@@ -9168,7 +9168,7 @@
       },
       {
         "id": 223,
-        "title": "",
+        "title": "Ми справді розуміємо одне одного",
         "volume": 1,
         "chapter": 10.0,
         "date": "2025-12-11",
@@ -9223,7 +9223,7 @@
       },
       {
         "id": 245,
-        "title": "",
+        "title": "Доведений до межі",
         "volume": 1,
         "chapter": 11.0,
         "date": "2025-12-25",
@@ -9283,7 +9283,7 @@
       },
       {
         "id": 253,
-        "title": "",
+        "title": "Хто я для тебе?",
         "volume": 1,
         "chapter": 12.0,
         "date": "2026-01-01",
@@ -9326,6 +9326,46 @@
           "https://files.catbox.moe/p9awfe.webp",
           "https://files.catbox.moe/pd5bnc.webp",
           "https://files.catbox.moe/2v2eki.webp"
+        ]
+      },
+      {
+        "id": 259,
+        "title": "«Каже, що гидкий, а погляду не відводить»",
+        "volume": 1,
+        "chapter": 13.0,
+        "date": "2026-01-08",
+        "pages": [
+          "https://files.catbox.moe/1tuxxv.webp",
+          "https://files.catbox.moe/7ccokb.webp",
+          "https://files.catbox.moe/qzne6f.webp",
+          "https://files.catbox.moe/dec7te.webp",
+          "https://files.catbox.moe/poqa7v.webp",
+          "https://files.catbox.moe/6oimr9.webp",
+          "https://files.catbox.moe/x31wgh.webp",
+          "https://files.catbox.moe/iw4jo4.webp",
+          "https://files.catbox.moe/pewy38.webp",
+          "https://files.catbox.moe/q05qfo.webp",
+          "https://files.catbox.moe/7uj335.webp",
+          "https://files.catbox.moe/a9x6sv.webp",
+          "https://files.catbox.moe/s13b2k.webp",
+          "https://files.catbox.moe/4z49pg.webp",
+          "https://files.catbox.moe/gviovb.webp",
+          "https://files.catbox.moe/1sjzk9.webp",
+          "https://files.catbox.moe/uwwsc1.webp",
+          "https://files.catbox.moe/ojf2xy.webp",
+          "https://files.catbox.moe/jj4o3n.webp",
+          "https://files.catbox.moe/bvc4an.webp",
+          "https://files.catbox.moe/b19n30.webp",
+          "https://files.catbox.moe/4lok91.webp",
+          "https://files.catbox.moe/c3rfoz.webp",
+          "https://files.catbox.moe/w0fo28.webp",
+          "https://files.catbox.moe/ykgdxm.webp",
+          "https://files.catbox.moe/detnjo.webp",
+          "https://files.catbox.moe/s14huf.webp",
+          "https://files.catbox.moe/r7jy3f.webp",
+          "https://files.catbox.moe/wamwwk.webp",
+          "https://files.catbox.moe/io2g3b.webp",
+          "https://files.catbox.moe/2ciuk2.webp"
         ]
       }
     ]
