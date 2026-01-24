@@ -6539,7 +6539,7 @@
       "Фентезі",
       "Магія"
     ],
-    "latestUpdate": "2026-01-17T15:20:19.137252Z",
+    "latestUpdate": "2026-01-24T16:09:10.692413Z",
     "chapters": [
       {
         "id": 153,
@@ -7087,6 +7087,33 @@
           "https://files.catbox.moe/y0n5tc.webp",
           "https://files.catbox.moe/yixjvz.webp",
           "https://files.catbox.moe/2u7hx0.webp"
+        ]
+      },
+      {
+        "id": 287,
+        "title": "Віщунка",
+        "volume": 3,
+        "chapter": 20.0,
+        "date": "2026-01-24",
+        "pages": [
+          "https://files.catbox.moe/n58rdr.webp",
+          "https://files.catbox.moe/u8yizj.webp",
+          "https://files.catbox.moe/bkvpp1.webp",
+          "https://files.catbox.moe/ytuqoy.webp",
+          "https://files.catbox.moe/lau9x0.webp",
+          "https://files.catbox.moe/rcb3z8.webp",
+          "https://files.catbox.moe/e75k5y.webp",
+          "https://files.catbox.moe/omt64o.webp",
+          "https://files.catbox.moe/2mszx8.webp",
+          "https://files.catbox.moe/7asthl.webp",
+          "https://files.catbox.moe/bwszcn.webp",
+          "https://files.catbox.moe/rm7k9k.webp",
+          "https://files.catbox.moe/59k1wb.webp",
+          "https://files.catbox.moe/dnhp4v.webp",
+          "https://files.catbox.moe/zpji56.webp",
+          "https://files.catbox.moe/7ydbqa.webp",
+          "https://files.catbox.moe/ogaasy.webp",
+          "https://files.catbox.moe/vmhk50.webp"
         ]
       }
     ]
