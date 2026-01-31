@@ -6685,7 +6685,7 @@
       "Фентезі",
       "Магія"
     ],
-    "latestUpdate": "2026-01-24T16:09:10.692413Z",
+    "latestUpdate": "2026-01-31T20:37:23.377233Z",
     "chapters": [
       {
         "id": 153,
@@ -7260,6 +7260,33 @@
           "https://files.catbox.moe/7ydbqa.webp",
           "https://files.catbox.moe/ogaasy.webp",
           "https://files.catbox.moe/vmhk50.webp"
+        ]
+      },
+      {
+        "id": 300,
+        "title": "Як ми живемо",
+        "volume": 3,
+        "chapter": 21.0,
+        "date": "2026-01-31",
+        "pages": [
+          "https://files.catbox.moe/ks47t7.webp",
+          "https://files.catbox.moe/hvom1w.webp",
+          "https://files.catbox.moe/tpwybz.webp",
+          "https://files.catbox.moe/tc2l69.webp",
+          "https://files.catbox.moe/zvtnpq.webp",
+          "https://files.catbox.moe/mkow49.webp",
+          "https://files.catbox.moe/q95kps.webp",
+          "https://files.catbox.moe/29aasv.webp",
+          "https://files.catbox.moe/gjwbxk.webp",
+          "",
+          "https://files.catbox.moe/vp8i7u.webp",
+          "https://files.catbox.moe/q2es7t.webp",
+          "https://files.catbox.moe/pdituv.webp",
+          "https://files.catbox.moe/fmta86.webp",
+          "https://files.catbox.moe/671bly.webp",
+          "https://files.catbox.moe/fy0ok2.webp",
+          "https://files.catbox.moe/pzidsg.webp",
+          "https://files.catbox.moe/xwx9u3.webp"
         ]
       }
     ]
