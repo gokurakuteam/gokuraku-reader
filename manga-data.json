@@ -6828,7 +6828,7 @@
       "Фентезі",
       "Магія"
     ],
-    "latestUpdate": "2026-01-31T20:37:23.377233Z",
+    "latestUpdate": "2026-02-07T20:10:54.030485Z",
     "chapters": [
       {
         "id": 153,
@@ -7430,6 +7430,34 @@
           "https://files.catbox.moe/fy0ok2.webp",
           "https://files.catbox.moe/pzidsg.webp",
           "https://files.catbox.moe/xwx9u3.webp"
+        ]
+      },
+      {
+        "id": 311,
+        "title": "Кровний договір між наставницею та учнем",
+        "volume": 3,
+        "chapter": 22.0,
+        "date": "2026-02-07",
+        "pages": [
+          "https://files.catbox.moe/ypzrxo.webp",
+          "https://files.catbox.moe/vynrqk.webp",
+          "https://files.catbox.moe/afgyvh.webp",
+          "https://files.catbox.moe/0s1fr2.webp",
+          "https://files.catbox.moe/ywrm2n.webp",
+          "https://files.catbox.moe/hevat5.webp",
+          "https://files.catbox.moe/719alm.webp",
+          "https://files.catbox.moe/cehwtv.webp",
+          "https://files.catbox.moe/w4bj2v.webp",
+          "https://files.catbox.moe/nrw9c6.webp",
+          "https://files.catbox.moe/u2jb2p.webp",
+          "https://files.catbox.moe/qobu27.webp",
+          "https://files.catbox.moe/v0d7f4.webp",
+          "https://files.catbox.moe/yq5v1k.webp",
+          "https://files.catbox.moe/zthy2w.webp",
+          "https://files.catbox.moe/kx4a85.webp",
+          "https://files.catbox.moe/29lzve.webp",
+          "https://files.catbox.moe/7ld8l1.webp",
+          "https://files.catbox.moe/f8yhas.webp"
         ]
       }
     ]
@@ -11847,7 +11875,7 @@
   {
     "id": 25,
     "title": "Невдалий приклад бездоганного прокляття",
-    "description": "Вісімнадцять років люди називали Адріну ім'ям брата та охрестили «втіленням прокляття». Щоб заступити місце того, хто спочив у землі, вона стала лицаркою Пасели, де згодом її прозвали «скаженим собакою». Після нескінченних змін між загонами, її врешті  признали охороняти герцога Юліуса — і саме там вона уперше зіштовхнулася зі справжнім прокляттям... «Він, без сумніву, лише на рік старший за мене... тоді чому?..»",
+    "description": "Вісімнадцять років люди називали Адріну ім'ям брата та охрестили «втіленням прокляття». Щоб заступити місце того, хто спочив у землі, вона стала лицаркою Палеси, де згодом її прозвали «скаженим собакою». Після нескінченних змін між загонами, її врешті  признали охороняти герцога Юліуса — і саме там вона уперше зіштовхнулася зі справжнім прокляттям... «Він, без сумніву, лише на рік старший за мене... тоді чому?..»",
     "type": "Манхва",
     "status": "Виходить",
     "coverImage": "https://files.catbox.moe/hu8i1f.webp",
