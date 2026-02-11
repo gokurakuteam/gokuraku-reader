@@ -5981,7 +5981,7 @@
       "Шьонен-ай",
       "Школа"
     ],
-    "latestUpdate": "2026-02-04T20:03:22.396085Z",
+    "latestUpdate": "2026-02-11T20:25:12.082322Z",
     "chapters": [
       {
         "id": 205,
@@ -6264,6 +6264,38 @@
           "https://files.catbox.moe/6tui9y.webp",
           "https://files.catbox.moe/gliuml.webp",
           "https://files.catbox.moe/i3qdv6.webp"
+        ]
+      },
+      {
+        "id": 315,
+        "title": "",
+        "volume": 2,
+        "chapter": 50.0,
+        "date": "2026-02-11",
+        "pages": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
         ]
       }
     ]
