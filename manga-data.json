@@ -8074,7 +8074,7 @@
       "Трилер",
       "Подорожі в часі"
     ],
-    "latestUpdate": "2026-02-05T18:12:40.425427Z",
+    "latestUpdate": "2026-02-12T19:36:41.446081Z",
     "chapters": [
       {
         "id": 241,
@@ -8291,6 +8291,31 @@
           "https://files.catbox.moe/2v5tyj.webp",
           "https://files.catbox.moe/ie8n9y.webp",
           "https://files.catbox.moe/cjv7tp.webp"
+        ]
+      },
+      {
+        "id": 316,
+        "title": "",
+        "volume": 1,
+        "chapter": 5.0,
+        "date": "2026-02-12",
+        "pages": [
+          "https://files.catbox.moe/s1yupo.webp",
+          "https://files.catbox.moe/mossuu.webp",
+          "https://files.catbox.moe/tjnkaf.webp",
+          "https://files.catbox.moe/wj7ec0.webp",
+          "https://files.catbox.moe/b7f1pg.webp",
+          "https://files.catbox.moe/7rjch4.webp",
+          "https://files.catbox.moe/n3pf5s.webp",
+          "https://files.catbox.moe/jyzxu2.webp",
+          "https://files.catbox.moe/ss5isi.webp",
+          "https://files.catbox.moe/pkt8pw.webp",
+          "https://files.catbox.moe/8bmqk4.webp",
+          "https://files.catbox.moe/1akxek.webp",
+          "https://files.catbox.moe/w6ixpy.webp",
+          "https://files.catbox.moe/6q1v13.webp",
+          "https://files.catbox.moe/qmitg3.webp",
+          "https://files.catbox.moe/t1w2ca.webp"
         ]
       }
     ]
