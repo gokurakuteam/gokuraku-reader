@@ -12683,5 +12683,81 @@
         ]
       }
     ]
+  },
+  {
+    "id": 26,
+    "title": "Димова завіса",
+    "description": "Безглузді плітки. Чу Инхьон завжди був в їх центрі. Коли я необачно збрехав, Инхьон просто посміявся, ніби йому це здалось кумедним. Цю посмішку я ніколи раніше не бачив.",
+    "type": "Манхва",
+    "status": "Виходить",
+    "coverImage": "https://files.catbox.moe/qwd8m5.jpg",
+    "backgroundImage": "https://files.catbox.moe/bda7sy.jpg",
+    "pageUrl": "#title?id=26",
+    "genres": [
+      "Шьонен-Ай",
+      "Драма",
+      "Школа",
+      "Романтика",
+      "ГГ чоловік",
+      "Дружба",
+      "Кохання",
+      "Знущання",
+      "Перше кохання."
+    ],
+    "latestUpdate": "2026-02-14T11:03:21.474645Z",
+    "chapters": [
+      {
+        "id": 318,
+        "title": "",
+        "volume": 1,
+        "chapter": 1.0,
+        "date": "2026-02-14",
+        "pages": [
+          "https://files.catbox.moe/zz0a5f.webp",
+          "https://files.catbox.moe/33mhvb.webp",
+          "https://files.catbox.moe/0zn8yd.webp",
+          "https://files.catbox.moe/mbapa9.webp",
+          "https://files.catbox.moe/xgc517.webp",
+          "https://files.catbox.moe/9tyfvt.webp",
+          "https://files.catbox.moe/pgdset.webp",
+          "https://files.catbox.moe/v6lmp0.webp",
+          "https://files.catbox.moe/kofctd.webp",
+          "https://files.catbox.moe/jswpvo.webp",
+          "https://files.catbox.moe/cwo1fo.webp",
+          "https://files.catbox.moe/oe5fyl.webp",
+          "https://files.catbox.moe/f80fp7.webp",
+          "https://files.catbox.moe/g4cc1v.webp",
+          "https://files.catbox.moe/wlzq2o.webp",
+          "https://files.catbox.moe/2p0viu.webp",
+          "https://files.catbox.moe/l8fdc9.webp",
+          "https://files.catbox.moe/mfbkqv.webp",
+          "https://files.catbox.moe/4divxj.webp",
+          "https://files.catbox.moe/lf7fkl.webp",
+          "https://files.catbox.moe/2o79c0.webp",
+          "https://files.catbox.moe/zw51iy.webp",
+          "https://files.catbox.moe/u9pgmm.webp",
+          "https://files.catbox.moe/kvpr0b.webp",
+          "https://files.catbox.moe/5k4e8v.webp",
+          "https://files.catbox.moe/x374jh.webp",
+          "https://files.catbox.moe/4f61th.webp",
+          "https://files.catbox.moe/r8x5zw.webp",
+          "https://files.catbox.moe/qz9ckc.webp",
+          "https://files.catbox.moe/k0yi97.webp",
+          "https://files.catbox.moe/fw56f5.webp",
+          "https://files.catbox.moe/kaw040.webp",
+          "https://files.catbox.moe/kxgg7e.webp",
+          "https://files.catbox.moe/hgbru3.webp",
+          "https://files.catbox.moe/bkk9cz.webp",
+          "https://files.catbox.moe/xl5nzz.webp",
+          "https://files.catbox.moe/go465t.webp",
+          "https://files.catbox.moe/m08vel.webp",
+          "https://files.catbox.moe/4462ao.webp",
+          "https://files.catbox.moe/jwxse4.webp",
+          "https://files.catbox.moe/do3tgr.webp",
+          "https://files.catbox.moe/u3w0v7.webp",
+          "https://files.catbox.moe/ssifrb.png"
+        ]
+      }
+    ]
   }
 ]
