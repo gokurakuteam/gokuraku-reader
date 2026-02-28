@@ -7280,7 +7280,7 @@
       "Фентезі",
       "Магія"
     ],
-    "latestUpdate": "2026-02-23T20:35:12.970977Z",
+    "latestUpdate": "2026-02-28T19:37:53.421029Z",
     "chapters": [
       {
         "id": 153,
@@ -7963,6 +7963,35 @@
           "",
           "",
           ""
+        ]
+      },
+      {
+        "id": 340,
+        "title": "Радісна країна",
+        "volume": 3,
+        "chapter": 25.0,
+        "date": "2026-02-28",
+        "pages": [
+          "https://files.catbox.moe/y1a33w.webp",
+          "https://files.catbox.moe/fpzj7u.webp",
+          "https://files.catbox.moe/z9gyy5.webp",
+          "https://files.catbox.moe/y2rvmv.webp",
+          "https://files.catbox.moe/29k6pv.webp",
+          "https://files.catbox.moe/k84fra.webp",
+          "https://files.catbox.moe/kzdwxm.webp",
+          "https://files.catbox.moe/xdjz3v.webp",
+          "https://files.catbox.moe/re4ic7.webp",
+          "https://files.catbox.moe/wp3dku.webp",
+          "https://files.catbox.moe/vguxod.webp",
+          "https://files.catbox.moe/x9zuip.webp",
+          "https://files.catbox.moe/sfyvas.webp",
+          "https://files.catbox.moe/4mtm3y.webp",
+          "https://files.catbox.moe/pdr94d.webp",
+          "https://files.catbox.moe/9f4hl1.webp",
+          "https://files.catbox.moe/dmvbhe.webp",
+          "https://files.catbox.moe/wvwxvi.webp",
+          "https://files.catbox.moe/1bk0xs.webp",
+          "https://files.catbox.moe/rm4ug4.webp"
         ]
       }
     ]
