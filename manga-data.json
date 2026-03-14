@@ -7484,8 +7484,8 @@
     "description": "У світі, де лише жінки можуть бути відьмами, один нічого не підозрюючий хлопець здобуває їхню силу. Тут відьми мусять вполювати свою магію! Там, у непроглядній гущавині лісу, жахливий володар магії та найсильніша відьма зійшлися у смертельному двобої. Аж раптом у цю запеклу сутичку вривається юний хлопчина. Його ім'я — Ічі, і він лише мисливець. Та саме йому судилося перевернути світ магії догори дригом у цій епічній сазі про полювання на чари!",
     "type": "Манґа",
     "status": "Виходить",
-    "coverImage": "https://files.catbox.moe/f53see.webp",
-    "backgroundImage": "https://files.catbox.moe/0udu6h.webp",
+    "coverImage": "https://files.catbox.moe/up3usk.jpg",
+    "backgroundImage": "https://files.catbox.moe/82fjgv.jpg",
     "pageUrl": "#title?id=8",
     "genres": [
       "Шьонен",
@@ -7495,7 +7495,7 @@
       "Фентезі",
       "Магія"
     ],
-    "latestUpdate": "2026-03-09T21:31:45.406543Z",
+    "latestUpdate": "2026-03-14T18:04:10.731336Z",
     "chapters": [
       {
         "id": 153,
@@ -8211,7 +8211,7 @@
       },
       {
         "id": 349,
-        "title": "Лорд Бакуґамі",
+        "title": "Лорд Бакуґамі(Поки не працює, обіцяю виправити, чесно)",
         "volume": 4,
         "chapter": 26.0,
         "date": "2026-03-08",
@@ -8232,35 +8232,35 @@
           "https://files.catbox.moe/ptcb1h.webp",
           "https://files.catbox.moe/zmkluo.webp",
           "https://files.catbox.moe/ssrc9p.webp",
-          "https://files.catbox.moe/k13tnu.webp"
-        ]
-      },
-      {
-        "id": 352,
-        "title": "Лорд Бакуґамі",
-        "volume": 4,
-        "chapter": 26.0,
-        "date": "2026-03-09",
-        "pages": [
-          "https://files.catbox.moe/shas7f.webp",
-          "https://files.catbox.moe/tbn9wy.webp",
-          "https://files.catbox.moe/zq4e7f.webp",
-          "https://files.catbox.moe/1dj8et.webp",
-          "https://files.catbox.moe/cr2gkr.webp",
-          "https://files.catbox.moe/dpvjqt.webp",
-          "https://files.catbox.moe/h9rn0h.webp",
-          "https://files.catbox.moe/atba76.webp",
-          "https://files.catbox.moe/gfourx.webp",
-          "https://files.catbox.moe/9fo4qg.webp",
-          "https://files.catbox.moe/klkp3c.webp",
-          "https://files.catbox.moe/7096ok.webp",
-          "https://files.catbox.moe/et60ef.webp",
-          "https://files.catbox.moe/ptcb1h.webp",
-          "https://files.catbox.moe/zmkluo.webp",
-          "https://files.catbox.moe/ssrc9p.webp",
           "https://files.catbox.moe/k13tnu.webp",
           "https://files.catbox.moe/f53see.webp",
           "https://files.catbox.moe/0udu6h.webp"
+        ]
+      },
+      {
+        "id": 357,
+        "title": "Найбільш розшукуваний",
+        "volume": 4,
+        "chapter": 27.0,
+        "date": "2026-03-14",
+        "pages": [
+          "https://files.catbox.moe/86jhfn.webp",
+          "https://files.catbox.moe/a6w3z0.webp",
+          "https://files.catbox.moe/0i5tky.webp",
+          "https://files.catbox.moe/hll5tx.webp",
+          "https://files.catbox.moe/88qlbu.webp",
+          "https://files.catbox.moe/xr1ahn.webp",
+          "https://files.catbox.moe/lck5rd.webp",
+          "https://files.catbox.moe/gooqjc.webp",
+          "https://files.catbox.moe/h1x2sa.webp",
+          "https://files.catbox.moe/luq2ee.webp",
+          "https://files.catbox.moe/o2tpn2.webp",
+          "https://files.catbox.moe/89w5y4.webp",
+          "https://files.catbox.moe/a3phzh.webp",
+          "https://files.catbox.moe/5ri3pp.webp",
+          "https://files.catbox.moe/mq0rrv.webp",
+          "https://files.catbox.moe/hvldit.webp",
+          "https://files.catbox.moe/1a3xdv.webp"
         ]
       }
     ]
