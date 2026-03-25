@@ -6570,7 +6570,7 @@
       "Шьонен-ай",
       "Школа"
     ],
-    "latestUpdate": "2026-03-19T20:11:52.763574Z",
+    "latestUpdate": "2026-03-25T20:42:57.528433Z",
     "chapters": [
       {
         "id": 205,
@@ -7061,6 +7061,33 @@
           "https://files.catbox.moe/86w2ia.webp",
           "https://files.catbox.moe/7wc6vp.webp",
           "https://files.catbox.moe/dnncyk.webp"
+        ]
+      },
+      {
+        "id": 379,
+        "title": "",
+        "volume": 3,
+        "chapter": 56.0,
+        "date": "2026-03-25",
+        "pages": [
+          "https://files.catbox.moe/8lhpir.webp",
+          "https://files.catbox.moe/s1aome.webp",
+          "https://files.catbox.moe/p1b5cr.webp",
+          "https://files.catbox.moe/nx38an.webp",
+          "https://files.catbox.moe/qvx8w4.webp",
+          "https://files.catbox.moe/4zvek2.webp",
+          "https://files.catbox.moe/ppa2aq.webp",
+          "https://files.catbox.moe/gimxvi.webp",
+          "https://files.catbox.moe/74eeyp.webp",
+          "https://files.catbox.moe/5uw01u.webp",
+          "https://files.catbox.moe/qzllxa.webp",
+          "https://files.catbox.moe/jxlkqf.webp",
+          "https://files.catbox.moe/o2svb4.webp",
+          "https://files.catbox.moe/3vjd4g.webp",
+          "https://files.catbox.moe/swmqz2.webp",
+          "https://files.catbox.moe/1rg48j.webp",
+          "https://files.catbox.moe/2jsbxo.webp",
+          "https://files.catbox.moe/2atnci.webp"
         ]
       }
     ]
