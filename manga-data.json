@@ -4146,7 +4146,7 @@
       "Яой",
       "Шьонен-ай"
     ],
-    "latestUpdate": "2026-03-29T17:42:48.856245Z",
+    "latestUpdate": "2026-04-05T19:52:48.502778Z",
     "chapters": [
       {
         "id": 113,
@@ -5553,6 +5553,43 @@
           "https://files.catbox.moe/ezvqzn.webp",
           "https://files.catbox.moe/lyfl5a.webp",
           "https://files.catbox.moe/83r7m7.webp",
+          "https://files.catbox.moe/y0g570.webp"
+        ]
+      },
+      {
+        "id": 410,
+        "title": "",
+        "volume": 1,
+        "chapter": 32.0,
+        "date": "2026-04-05",
+        "pages": [
+          "https://files.catbox.moe/okez0s.webp",
+          "https://files.catbox.moe/vlcsr6.webp",
+          "https://files.catbox.moe/v3bd1f.webp",
+          "https://files.catbox.moe/2mo1li.webp",
+          "https://files.catbox.moe/ox5dv2.webp",
+          "https://files.catbox.moe/v23eua.webp",
+          "https://files.catbox.moe/4jsbno.webp",
+          "https://files.catbox.moe/8idygz.webp",
+          "https://files.catbox.moe/bj7cic.webp",
+          "https://files.catbox.moe/17tv99.webp",
+          "https://files.catbox.moe/3ft6ky.webp",
+          "https://files.catbox.moe/uydsdm.webp",
+          "https://files.catbox.moe/ne3rnu.webp",
+          "https://files.catbox.moe/l63s3y.webp",
+          "https://files.catbox.moe/gj3hjs.webp",
+          "",
+          "https://files.catbox.moe/oce9ja.webp",
+          "https://files.catbox.moe/6eqp5r.webp",
+          "https://files.catbox.moe/4omf2e.webp",
+          "https://files.catbox.moe/vpffed.webp",
+          "https://files.catbox.moe/mgjr3g.webp",
+          "https://files.catbox.moe/0985yh.webp",
+          "https://files.catbox.moe/q5a345.webp",
+          "https://files.catbox.moe/oqp4y6.webp",
+          "https://files.catbox.moe/gmlizi.webp",
+          "https://files.catbox.moe/riiqal.webp",
+          "https://files.catbox.moe/58mgfi.webp",
           "https://files.catbox.moe/y0g570.webp"
         ]
       }
