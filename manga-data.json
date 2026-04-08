@@ -6782,7 +6782,7 @@
       "Шьонен-ай",
       "Школа"
     ],
-    "latestUpdate": "2026-04-01T20:27:25.852187Z",
+    "latestUpdate": "2026-04-08T20:58:51.677901Z",
     "chapters": [
       {
         "id": 205,
@@ -7326,6 +7326,55 @@
           "https://files.catbox.moe/durn78.webp",
           "https://files.catbox.moe/fvqxer.webp",
           "https://files.catbox.moe/tpanzt.webp"
+        ]
+      },
+      {
+        "id": 415,
+        "title": "",
+        "volume": 3,
+        "chapter": 58.0,
+        "date": "2026-04-08",
+        "pages": [
+          "https://files.catbox.moe/3r63l8.webp",
+          "https://files.catbox.moe/ef4xax.webp",
+          "https://files.catbox.moe/zwt0t0.webp",
+          "https://files.catbox.moe/psr5fx.webp",
+          "https://files.catbox.moe/gp6tji.webp",
+          "https://files.catbox.moe/4kutpw.webp",
+          "https://files.catbox.moe/v3zr58.webp",
+          "https://files.catbox.moe/v9r703.webp",
+          "https://files.catbox.moe/m2m1ok.webp",
+          "https://files.catbox.moe/94vwit.webp",
+          "https://files.catbox.moe/yq3ifb.webp",
+          "",
+          "https://files.catbox.moe/olzwgo.webp",
+          "https://files.catbox.moe/33rmn9.webp",
+          "https://files.catbox.moe/npwf3v.webp",
+          "https://files.catbox.moe/2vjvy1.webp",
+          "https://files.catbox.moe/a7vo6m.webp",
+          "https://files.catbox.moe/4moruq.webp",
+          "https://files.catbox.moe/ri33wg.webp",
+          "https://files.catbox.moe/hzk753.webp",
+          "https://files.catbox.moe/ew0pbl.webp",
+          "https://files.catbox.moe/q5tclc.webp",
+          "https://files.catbox.moe/9m6yxw.webp",
+          "https://files.catbox.moe/5rphf1.webp",
+          "https://files.catbox.moe/iowlld.webp",
+          "https://files.catbox.moe/ar5i8b.webp",
+          "https://files.catbox.moe/c3g3z3.webp",
+          "https://files.catbox.moe/kznmie.webp",
+          "https://files.catbox.moe/3y6ql6.webp",
+          "https://files.catbox.moe/ulvpsq.webp",
+          "https://files.catbox.moe/k2n2kt.webp",
+          "https://files.catbox.moe/5lqvso.webp",
+          "https://files.catbox.moe/9g9dd0.webp",
+          "https://files.catbox.moe/h1kow6.webp",
+          "https://files.catbox.moe/l3sxos.webp",
+          "https://files.catbox.moe/dgkewg.webp",
+          "https://files.catbox.moe/iiwibt.webp",
+          "https://files.catbox.moe/yxsw35.webp",
+          "https://files.catbox.moe/ihmxlp.webp",
+          "https://files.catbox.moe/qbblkl.webp"
         ]
       }
     ]
