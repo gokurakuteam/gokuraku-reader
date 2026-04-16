@@ -7484,7 +7484,7 @@
       {
         "id": 428,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 59.0,
         "date": "2026-04-15",
         "pages": [
@@ -9542,7 +9542,7 @@
       "Трилер",
       "Подорожі в часі"
     ],
-    "latestUpdate": "2026-04-10T20:06:50.378842Z",
+    "latestUpdate": "2026-04-16T20:34:28.658324Z",
     "chapters": [
       {
         "id": 241,
@@ -10122,6 +10122,54 @@
           "https://files.catbox.moe/ehb8tp.webp",
           "https://files.catbox.moe/luwyl9.webp",
           "https://files.catbox.moe/prxgad.webp"
+        ]
+      },
+      {
+        "id": 430,
+        "title": "",
+        "volume": 1,
+        "chapter": 13.0,
+        "date": "2026-04-16",
+        "pages": [
+          "https://files.catbox.moe/8n5ojy.webp",
+          "https://files.catbox.moe/tgi1xd.webp",
+          "https://files.catbox.moe/ll9nky.webp",
+          "https://files.catbox.moe/fx92af.webp",
+          "https://files.catbox.moe/43qbca.webp",
+          "https://files.catbox.moe/m9o6am.webp",
+          "https://files.catbox.moe/g3ohm7.webp",
+          "https://files.catbox.moe/ntqj7h.webp",
+          "https://files.catbox.moe/ve1qxj.webp",
+          "https://files.catbox.moe/569d5w.webp",
+          "https://files.catbox.moe/m3g8re.webp",
+          "https://files.catbox.moe/bdiesr.webp",
+          "https://files.catbox.moe/rj1khm.webp",
+          "https://files.catbox.moe/lj2b9x.webp",
+          "https://files.catbox.moe/1tkmy6.webp",
+          "https://files.catbox.moe/hkvx1w.webp",
+          "https://files.catbox.moe/mfnue8.webp",
+          "https://files.catbox.moe/a488ik.webp",
+          "https://files.catbox.moe/pu4naa.webp",
+          "https://files.catbox.moe/meprgt.webp",
+          "https://files.catbox.moe/wrc8a0.webp",
+          "https://files.catbox.moe/a9law1.webp",
+          "https://files.catbox.moe/353g7n.webp",
+          "https://files.catbox.moe/uzjze7.webp",
+          "https://files.catbox.moe/v38jdr.webp",
+          "https://files.catbox.moe/9avbnp.webp",
+          "https://files.catbox.moe/hh0203.webp",
+          "https://files.catbox.moe/044zsb.webp",
+          "https://files.catbox.moe/eathll.webp",
+          "https://files.catbox.moe/9ct79p.webp",
+          "https://files.catbox.moe/1tfzyx.webp",
+          "https://files.catbox.moe/85tqm1.webp",
+          "https://files.catbox.moe/6b2jom.webp",
+          "https://files.catbox.moe/hanq25.webp",
+          "https://files.catbox.moe/c8j9bh.webp",
+          "https://files.catbox.moe/61b3pf.webp",
+          "https://files.catbox.moe/3j0li2.webp",
+          "https://files.catbox.moe/vf3hsn.webp",
+          "https://files.catbox.moe/3v3ts0.webp"
         ]
       }
     ]
