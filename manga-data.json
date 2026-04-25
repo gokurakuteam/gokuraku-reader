@@ -17850,7 +17850,7 @@
       "Непорозуміння",
       "Втрата пам'яті"
     ],
-    "latestUpdate": "2026-04-18T19:47:34.422887Z",
+    "latestUpdate": "2026-04-25T20:43:46.174114Z",
     "chapters": [
       {
         "id": 369,
@@ -18443,6 +18443,36 @@
           "",
           "",
           ""
+        ]
+      },
+      {
+        "id": 445,
+        "title": "",
+        "volume": 1,
+        "chapter": 15.0,
+        "date": "2026-04-25",
+        "pages": [
+          "https://files.catbox.moe/fjz2ji.webp",
+          "https://files.catbox.moe/dr48er.webp",
+          "https://files.catbox.moe/vg97h9.webp",
+          "https://files.catbox.moe/30yz9o.webp",
+          "https://files.catbox.moe/x206o1.webp",
+          "https://files.catbox.moe/75a8ou.webp",
+          "https://files.catbox.moe/nemor3.webp",
+          "https://files.catbox.moe/tv86i2.webp",
+          "https://files.catbox.moe/ta2uen.webp",
+          "https://files.catbox.moe/ztivyu.webp",
+          "https://files.catbox.moe/7l3nt8.webp",
+          "https://files.catbox.moe/72m42a.webp",
+          "https://files.catbox.moe/bpy0nx.webp",
+          "https://files.catbox.moe/azwmsk.webp",
+          "https://files.catbox.moe/d69mj9.webp",
+          "https://files.catbox.moe/2q82pj.webp",
+          "https://files.catbox.moe/kp0pv4.webp",
+          "https://files.catbox.moe/mplumo.webp",
+          "https://files.catbox.moe/qhye7m.webp",
+          "https://files.catbox.moe/yi6ipx.webp",
+          "https://files.catbox.moe/61yv5x.webp"
         ]
       }
     ]
