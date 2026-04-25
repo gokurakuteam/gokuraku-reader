@@ -8333,7 +8333,7 @@
       "Фентезі",
       "Магія"
     ],
-    "latestUpdate": "2026-04-18T19:46:37.415616Z",
+    "latestUpdate": "2026-04-25T20:35:37.372442Z",
     "chapters": [
       {
         "id": 153,
@@ -9229,6 +9229,34 @@
           "",
           "",
           ""
+        ]
+      },
+      {
+        "id": 444,
+        "title": "Переплетені долі",
+        "volume": 4,
+        "chapter": 33.0,
+        "date": "2026-04-25",
+        "pages": [
+          "https://files.catbox.moe/ktqbsf.webp",
+          "https://files.catbox.moe/ffcga2.webp",
+          "https://files.catbox.moe/xm7lo4.webp",
+          "https://files.catbox.moe/nohdzv.webp",
+          "https://files.catbox.moe/nnhrtg.webp",
+          "https://files.catbox.moe/wdj9h4.webp",
+          "https://files.catbox.moe/icc4yr.webp",
+          "https://files.catbox.moe/lcgtuv.webp",
+          "https://files.catbox.moe/i8d0m0.webp",
+          "https://files.catbox.moe/sw8j4f.webp",
+          "https://files.catbox.moe/q48nlu.webp",
+          "https://files.catbox.moe/72hsqk.webp",
+          "https://files.catbox.moe/a9u7q8.webp",
+          "https://files.catbox.moe/mfvq64.webp",
+          "https://files.catbox.moe/rqc86o.webp",
+          "https://files.catbox.moe/awn2h8.webp",
+          "https://files.catbox.moe/jqndi0.webp",
+          "https://files.catbox.moe/4oo3ra.webp",
+          "https://files.catbox.moe/hfd7y5.webp"
         ]
       }
     ]
