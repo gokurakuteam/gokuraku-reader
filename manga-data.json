@@ -10636,7 +10636,7 @@
       "Шьонен-ай",
       "Повсякденність"
     ],
-    "latestUpdate": "2026-05-12T20:16:42.499320Z",
+    "latestUpdate": "2026-05-19T20:12:01.671649Z",
     "chapters": [
       {
         "id": 151,
@@ -11495,6 +11495,41 @@
           "https://files.catbox.moe/1crmk5.webp",
           "https://files.catbox.moe/tvoflg.webp",
           "https://files.catbox.moe/k31dan.webp"
+        ]
+      },
+      {
+        "id": 456,
+        "title": "Спеціальний ігровий епізод 1: Місяць сьогодні такий гарний",
+        "volume": 1,
+        "chapter": 20.5,
+        "date": "2026-05-19",
+        "pages": [
+          "https://files.catbox.moe/cbprfe.webp",
+          "https://files.catbox.moe/8bfuue.webp",
+          "https://files.catbox.moe/vf7qhs.webp",
+          "https://files.catbox.moe/v87bm1.webp",
+          "https://files.catbox.moe/jdyb6m.webp",
+          "https://files.catbox.moe/8n66m8.webp",
+          "https://files.catbox.moe/uevik4.webp",
+          "https://files.catbox.moe/uux5y2.webp",
+          "https://files.catbox.moe/hsvs2n.webp",
+          "https://files.catbox.moe/2g3bo8.webp",
+          "https://files.catbox.moe/qgbkkb.webp",
+          "https://files.catbox.moe/0wwd7m.webp",
+          "https://files.catbox.moe/ntey5m.webp",
+          "https://files.catbox.moe/0yyizc.webp",
+          "https://files.catbox.moe/qkcyk7.webp",
+          "https://files.catbox.moe/yx5uxn.webp",
+          "https://files.catbox.moe/fu0tll.webp",
+          "https://files.catbox.moe/8rhvqg.webp",
+          "https://files.catbox.moe/vqq87m.webp",
+          "https://files.catbox.moe/l6r87e.webp",
+          "https://files.catbox.moe/s1p3b0.webp",
+          "https://files.catbox.moe/xg9a26.webp",
+          "https://files.catbox.moe/h04fl0.webp",
+          "https://files.catbox.moe/0ielnk.webp",
+          "https://files.catbox.moe/h1r2l3.webp",
+          "https://files.catbox.moe/h0gy0c.webp"
         ]
       }
     ]
