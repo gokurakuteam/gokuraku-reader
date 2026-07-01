@@ -7345,7 +7345,7 @@
       "Шьонен-ай",
       "Школа"
     ],
-    "latestUpdate": "2026-06-17T21:02:29.438273Z",
+    "latestUpdate": "2026-07-01T18:06:16.926213Z",
     "chapters": [
       {
         "id": 205,
@@ -8124,6 +8124,45 @@
           "https://files.catbox.moe/rorkd2.jpg",
           "https://files.catbox.moe/bspx31.webp"
         ]
+      },
+      {
+        "id": 502,
+        "title": "",
+        "volume": 3,
+        "chapter": 65.0,
+        "date": "2026-07-01",
+        "pages": [
+          "https://files.catbox.moe/79g1s4.webp",
+          "https://files.catbox.moe/d1b8ou.webp",
+          "https://files.catbox.moe/4uzyoe.webp",
+          "https://files.catbox.moe/f3py4x.webp",
+          "https://files.catbox.moe/282fbn.webp",
+          "https://files.catbox.moe/8asrqz.webp",
+          "https://files.catbox.moe/g6xdqb.webp",
+          "https://files.catbox.moe/bfw5i7.webp",
+          "https://files.catbox.moe/4ef2mm.webp",
+          "https://files.catbox.moe/dyejtl.webp",
+          "https://files.catbox.moe/ck0t0d.webp",
+          "https://files.catbox.moe/c2u01e.webp",
+          "https://files.catbox.moe/vx2dlq.webp",
+          "https://files.catbox.moe/7q8oxe.webp",
+          "https://files.catbox.moe/7inn3i.webp",
+          "https://files.catbox.moe/avb9pp.webp",
+          "https://files.catbox.moe/ylqowm.webp",
+          "https://files.catbox.moe/bi325x.webp",
+          "https://files.catbox.moe/usw767.webp",
+          "https://files.catbox.moe/tysedg.webp",
+          "https://files.catbox.moe/gpibig.webp",
+          "https://files.catbox.moe/l717tm.webp",
+          "https://files.catbox.moe/9bunsk.webp",
+          "https://files.catbox.moe/1r7p8f.webp",
+          "https://files.catbox.moe/y8iv8o.webp",
+          "https://files.catbox.moe/of21mv.webp",
+          "https://files.catbox.moe/niuroa.webp",
+          "https://files.catbox.moe/ryjque.webp",
+          "https://files.catbox.moe/xvvt41.webp",
+          "https://files.catbox.moe/bsy9vw.webp"
+        ]
       }
     ]
   },
@@ -8472,7 +8511,7 @@
     "title": "Гра в кохання",
     "description": "Ви коли-небудь чули фразу «прикидайся, доки не вийде»? Коул і Макс — двоє шкільних приятелів, які виводять цю цитату на новий рівень, вдаючи із себе пару для соціального проекту, щоб з'ясувати, чи може «вдавання» призвести до справжнього кохання. Але що станеться після завершення проекту? Вони повернуться до дружби чи «вдавання» стане реальністю?",
     "type": "Комікс",
-    "status": "Виходить",
+    "status": "Закинуто",
     "coverImage": "https://files.catbox.moe/umjngg.webp",
     "backgroundImage": "https://files.catbox.moe/umjngg.webp",
     "pageUrl": "#title?id=7",
@@ -20932,7 +20971,7 @@
       "Фентезі",
       "Еротика"
     ],
-    "latestUpdate": "2026-06-24T19:57:30.966092Z",
+    "latestUpdate": "2026-07-01T18:07:16.284882Z",
     "chapters": [
       {
         "id": 397,
@@ -21406,6 +21445,33 @@
           "https://files.catbox.moe/xcdc3z.webp",
           "https://files.catbox.moe/t9alf3.webp",
           "https://files.catbox.moe/rgjvwr.webp"
+        ]
+      },
+      {
+        "id": 503,
+        "title": "",
+        "volume": 1,
+        "chapter": 15.0,
+        "date": "2026-07-01",
+        "pages": [
+          "https://files.catbox.moe/vaef3x.webp",
+          "https://files.catbox.moe/smiwxm.webp",
+          "https://files.catbox.moe/wywc87.webp",
+          "https://files.catbox.moe/qwuzh7.webp",
+          "https://files.catbox.moe/gfgace.webp",
+          "https://files.catbox.moe/glq1w9.webp",
+          "https://files.catbox.moe/iyo15l.webp",
+          "https://files.catbox.moe/7hw6dj.webp",
+          "https://files.catbox.moe/smrzow.webp",
+          "https://files.catbox.moe/z8ciui.webp",
+          "https://files.catbox.moe/14pgur.webp",
+          "https://files.catbox.moe/j0cfvw.webp",
+          "https://files.catbox.moe/wqaxsv.webp",
+          "https://files.catbox.moe/7elcy6.webp",
+          "https://files.catbox.moe/fagcp0.webp",
+          "https://files.catbox.moe/55vg12.webp",
+          "https://files.catbox.moe/mo1bsy.webp",
+          "https://files.catbox.moe/nm64sf.webp"
         ]
       }
     ]
