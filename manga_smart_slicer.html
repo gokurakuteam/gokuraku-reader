@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manga Smart Slicer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #09090b; /* zinc-950 */
+            color: #fafafa; /* zinc-50 */
+            overflow: hidden;
+        }
+
+        /* Custom Scrollbar for sleek look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #18181b; /* zinc-900 */
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3f3f46; /* zinc-700 */
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #52525b; /* zinc-600 */
+        }
+
+        .dropzone-active {
+            border-color: #2563eb !important; /* blue-600 */
+            background-color: rgba(37, 99, 235, 0.05) !important;
+        }
+
+        .transition-transform-colors {
+            transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+        }
+
+        input[type="number"], select {
+            color: white;
+            background-color: #18181b;
+            border: 1px solid #27272a;
+        }
+        
+        input[type="number"]:focus, select:focus {
+            outline: none;
+            border-color: #2563eb;
+        }
+
+        /* Loader Animation */
+        .loader {
+            border: 3px solid #27272a;
+            border-top: 3px solid #2563eb;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hide { display: none !important; }
+    </style>
+</head>
+<body class="flex h-screen w-screen selection:bg-blue-600 selection:text-white">
+
+    <aside class="w-80 h-full bg-zinc-900 border-r border-zinc-800 flex flex-col shrink-0 z-10 relative">
+        <div class="p-6 border-b border-zinc-800">
+            <h1 class="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                Smart Slicer
+            </h1>
+            <p class="text-xs text-zinc-400 mt-1">Локальна обробка в браузері</p>
+        </div>
+
+        <div class="p-6 overflow-y-auto flex-1 space-y-5 custom-scrollbar">
+            <!-- Height -->
+            <div>
+                <label class="block text-sm font-medium text-zinc-300 mb-1">Висота сторінки (px)</label>
+                <input type="number" id="opt-height" value="6000" class="w-full px-3 py-2 rounded-md text-sm transition-transform-colors">
+            </div>
+
+            <!-- Naming Mode -->
+            <div>
+                <label class="block text-sm font-medium text-zinc-300 mb-1">Метод назв</label>
+                <select id="opt-name-mode" class="w-full px-3 py-2 rounded-md text-sm transition-transform-colors">
+                    <option value="1">Лічильник (01, 02...)</option>
+                    <option value="2">Мапінг джерел (01-03...)</option>
+                </select>
+            </div>
+
+            <!-- Smart Mode -->
+            <div>
+                <label class="block text-sm font-medium text-zinc-300 mb-1">Режим Smart Cut</label>
+                <select id="opt-smart-mode" class="w-full px-3 py-2 rounded-md text-sm transition-transform-colors" onchange="toggleSmartMethod()">
+                    <option value="true">Увімкнено</option>
+                    <option value="false">Вимкнено (Фіксовано)</option>
+                </select>
+            </div>
+
+            <!-- Smart Algorithm -->
+            <div id="smart-method-container">
+                <label class="block text-sm font-medium text-zinc-300 mb-1">Алгоритм пошуку</label>
+                <select id="opt-smart-method" class="w-full px-3 py-2 rounded-md text-sm transition-transform-colors">
+                    <option value="1">Solid Line (Шукати чисті пусті лінії)</option>
+                    <option value="3">Hybrid (Пусті лінії + Уникнення тексту)</option>
+                </select>
+            </div>
+
+            <!-- Tolerances -->
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-sm font-medium text-zinc-300 mb-1" title="На скільки пікселів можна скоротити">Мінімум (-)</label>
+                    <input type="number" id="opt-tol-min" value="3000" class="w-full px-3 py-2 rounded-md text-sm transition-transform-colors">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-zinc-300 mb-1" title="На скільки пікселів можна збільшити">Максимум (+)</label>
+                    <input type="number" id="opt-tol-max" value="100" class="w-full px-3 py-2 rounded-md text-sm transition-transform-colors">
+                </div>
+            </div>
+
+            <!-- Format & Quality -->
+            <div class="grid grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-sm font-medium text-zinc-300 mb-1">Формат</label>
+                    <select id="opt-format" class="w-full px-3 py-2 rounded-md text-sm transition-transform-colors">
+                        <option value="jpeg">JPG</option>
+                        <option value="webp">WebP</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-zinc-300 mb-1">Якість (%)</label>
+                    <input type="number" id="opt-quality" value="100" min="1" max="100" class="w-full px-3 py-2 rounded-md text-sm transition-transform-colors">
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6 border-t border-zinc-800 bg-zinc-900/50 backdrop-blur">
+            <button id="btn-start" onclick="startSlicing()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3 px-4 rounded-md shadow-lg shadow-blue-600/20 transition-transform-colors disabled:opacity-50 disabled:cursor-not-allowed">
+                Почати нарізку
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-full bg-zinc-950 relative">
+        
+        <!-- Dropzone View -->
+        <div id="view-input" class="flex-1 flex flex-col p-8 items-center justify-center relative transition-opacity duration-300">
+            <div id="dropzone" class="w-full max-w-2xl aspect-video border-2 border-dashed border-zinc-700 rounded-xl flex flex-col items-center justify-center bg-zinc-900/30 hover:bg-zinc-900/50 transition-transform-colors cursor-pointer group">
+                <input type="file" id="file-input" multiple accept="image/jpeg, image/png, image/webp, image/bmp, application/zip, .zip" class="hidden">
+                <svg class="text-zinc-500 group-hover:text-blue-500 mb-4 transition-transform-colors" xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <p class="text-lg font-medium text-zinc-200">Перетягніть файли або архів сюди</p>
+                <p class="text-sm text-zinc-500 mt-2">або натисніть для вибору (JPG, PNG, WebP, ZIP)</p>
+            </div>
+            
+            <!-- File List Preview -->
+            <div id="file-list-container" class="w-full max-w-2xl mt-6 hide">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-medium text-zinc-400" id="file-count">0 файлів обрано</span>
+                    <button onclick="clearFiles()" class="text-sm text-zinc-500 hover:text-red-400 transition-transform-colors">Очистити</button>
+                </div>
+                <div id="file-list" class="max-h-48 overflow-y-auto bg-zinc-900 border border-zinc-800 rounded-md p-2 space-y-1 custom-scrollbar text-sm text-zinc-300">
+                    <!-- Files will be listed here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Processing Overlay -->
+        <div id="processing-overlay" class="absolute inset-0 bg-zinc-950/90 backdrop-blur-sm z-20 flex flex-col items-center justify-center hide transition-opacity duration-300 opacity-0">
+            <div class="loader mb-6"></div>
+            <h2 class="text-2xl font-semibold mb-2" id="progress-title">Обробка...</h2>
+            <p class="text-zinc-400 mb-8" id="progress-text">Підготовка файлів</p>
+            <div class="w-64 h-2 bg-zinc-800 rounded-full overflow-hidden">
+                <div id="progress-bar" class="h-full bg-blue-600 w-0 transition-all duration-200 ease-out"></div>
+            </div>
+        </div>
+
+        <!-- Results View -->
+        <div id="view-results" class="flex-1 flex flex-col h-full hide">
+            <div class="p-6 border-b border-zinc-800 flex justify-between items-center bg-zinc-900/50 backdrop-blur">
+                <div>
+                    <h2 class="text-xl font-semibold">Результати</h2>
+                    <p class="text-sm text-zinc-400" id="result-stats">Згенеровано 0 файлів</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="resetApp()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-medium rounded-md transition-transform-colors border border-zinc-700">
+                        Новий проект
+                    </button>
+                    <button onclick="downloadAll()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md shadow-md shadow-blue-600/20 transition-transform-colors">
+                        Завантажити все
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Result Grid -->
+            <div class="flex-1 overflow-y-auto p-6 bg-zinc-950 custom-scrollbar">
+                <div id="result-grid" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Result items will be appended here -->
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // --- State ---
+        let selectedFiles = [];
+        let generatedResults = []; // [{ name: string, url: blobUrl }]
+
+        // --- DOM Elements ---
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('file-input');
+        const fileListContainer = document.getElementById('file-list-container');
+        const fileList = document.getElementById('file-list');
+        const fileCount = document.getElementById('file-count');
+        const btnStart = document.getElementById('btn-start');
+
+        const viewInput = document.getElementById('view-input');
+        const viewResults = document.getElementById('view-results');
+        const overlay = document.getElementById('processing-overlay');
+        const progressTitle = document.getElementById('progress-title');
+        const progressText = document.getElementById('progress-text');
+        const progressBar = document.getElementById('progress-bar');
+        
+        const resultGrid = document.getElementById('result-grid');
+        const resultStats = document.getElementById('result-stats');
+
+        // --- UI Interactions ---
+
+        function toggleSmartMethod() {
+            const isSmart = document.getElementById('opt-smart-mode').value === 'true';
+            document.getElementById('smart-method-container').style.display = isSmart ? 'block' : 'none';
+        }
+
+        // --- Drag and Drop Handling ---
+
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('dropzone-active');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('dropzone-active');
+        });
+
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('dropzone-active');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        dropzone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        async function handleFiles(files) {
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/bmp'];
+            let newFiles = [];
+            
+            // Показуємо завантаження якщо є архів, бо розпакування займає час
+            const hasZip = Array.from(files).some(f => f.name.toLowerCase().endsWith('.zip') || f.type === 'application/zip');
+            if (hasZip) {
+                overlay.classList.remove('hide');
+                setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+                progressTitle.textContent = "Обробка...";
+                progressText.textContent = "Розпакування архіву...";
+                progressBar.style.width = '50%';
+            }
+
+            for (const file of files) {
+                if (file.name.toLowerCase().endsWith('.zip') || file.type === 'application/zip') {
+                    try {
+                        const zip = new JSZip();
+                        const contents = await zip.loadAsync(file);
+                        
+                        for (const filename of Object.keys(contents.files)) {
+                            const zipEntry = contents.files[filename];
+                            if (!zipEntry.dir) {
+                                // Ігноруємо системні файли macOS та приховані файли
+                                if (filename.includes('__MACOSX/') || filename.split('/').pop().startsWith('.')) continue;
+
+                                const ext = filename.split('.').pop().toLowerCase();
+                                if (['jpg', 'jpeg', 'png', 'webp', 'bmp'].includes(ext)) {
+                                    const blob = await zipEntry.async("blob");
+                                    // Використовуємо тільки кінцеве ім'я файлу без папок
+                                    const cleanName = filename.split('/').pop();
+                                    const extractedFile = new File([blob], cleanName, { 
+                                        type: `image/${ext === 'jpg' ? 'jpeg' : ext}` 
+                                    });
+                                    newFiles.push(extractedFile);
+                                }
+                            }
+                        }
+                    } catch (e) {
+                        console.error("Error reading ZIP:", e);
+                        alert("Помилка читання архіву: " + file.name);
+                    }
+                } else if (validImageTypes.includes(file.type)) {
+                    newFiles.push(file);
+                }
+            }
+            
+            if (hasZip) {
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hide'), 300);
+                setTimeout(() => {
+                    progressTitle.textContent = "Обробка...";
+                    progressText.textContent = "Підготовка файлів";
+                    progressBar.style.width = '0%';
+                }, 300);
+            }
+
+            if(newFiles.length === 0) return;
+
+            // Natural Sort
+            const collator = new Intl.Collator(undefined, {numeric: true, sensitivity: 'base'});
+            selectedFiles = [...selectedFiles, ...newFiles].sort((a, b) => collator.compare(a.name, b.name));
+
+            updateFileListUI();
+        }
+
+        function updateFileListUI() {
+            if (selectedFiles.length > 0) {
+                fileListContainer.classList.remove('hide');
+                fileCount.textContent = `${selectedFiles.length} файлів обрано`;
+                
+                fileList.innerHTML = '';
+                selectedFiles.forEach((file, index) => {
+                    const el = document.createElement('div');
+                    el.className = 'px-2 py-1 bg-zinc-800/50 rounded flex justify-between';
+                    el.innerHTML = `<span class="truncate pr-2">${file.name}</span> <span class="text-zinc-500 text-xs shrink-0">${(file.size / 1024 / 1024).toFixed(2)} MB</span>`;
+                    fileList.appendChild(el);
+                });
+            } else {
+                fileListContainer.classList.add('hide');
+            }
+            updateStartButton();
+        }
+
+        function clearFiles() {
+            selectedFiles = [];
+            fileInput.value = '';
+            updateFileListUI();
+        }
+
+        function updateStartButton() {
+            btnStart.disabled = selectedFiles.length === 0;
+        }
+
+        // Run initial UI checks
+        updateStartButton();
+
+        // --- STREAMING_CHUNK: Image Processing Utilities ---
+
+        // Yield to main thread to prevent UI freezing
+        function yieldToMain() {
+            return new Promise(resolve => setTimeout(resolve, 0));
+        }
+
+        // Load File to Image element
+        function loadImage(file) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                const url = URL.createObjectURL(file);
+                img.onload = () => {
+                    URL.revokeObjectURL(url);
+                    resolve(img);
+                };
+                img.onerror = reject;
+                img.src = url;
+            });
+        }
+
+        // Convert canvas to Blob
+        function canvasToBlob(canvas, format, quality) {
+            return new Promise(resolve => {
+                const mimeType = format === 'webp' ? 'image/webp' : 'image/jpeg';
+                const q = format === 'webp' ? quality / 100 : quality / 100;
+                canvas.toBlob(resolve, mimeType, q);
+            });
+        }
+
+        // --- STREAMING_CHUNK: Smart Cut Algorithms (Math) ---
+
+        // Normalization helper
+        function normalizeArray(arr) {
+            let min = Infinity, max = -Infinity;
+            const len = arr.length;
+            for(let i=0; i<len; i++) {
+                if(arr[i] < min) min = arr[i];
+                if(arr[i] > max) max = arr[i];
+            }
+            const res = new Float32Array(len);
+            if (max === min) return res;
+            for(let i=0; i<len; i++) {
+                res[i] = (arr[i] - min) / (max - min);
+            }
+            return res;
+        }
+
+        // The core search engine port from Python
+        function findOptimalCut(ctx, width, startY, endY, method) {
+            const h = endY - startY;
+            if (h <= 0) return startY;
+
+            // Get pixel data for the search strip
+            const imgData = ctx.getImageData(0, startY, width, h);
+            const data = imgData.data;
+
+            let bestY = 0;
+            let minScore = Infinity;
+            
+            const variances = new Float32Array(h);
+            const edgeDensities = new Float32Array(h);
+
+            // Pre-calculate luminance, variance, and edge density per row
+            for (let y = 0; y < h; y++) {
+                let rowSum = 0;
+                const rowLuma = new Float32Array(width);
+                
+                // 1. Calculate luminance
+                for (let x = 0; x < width; x++) {
+                    const i = (y * width + x) * 4;
+                    // Standard grayscale weights
+                    const luma = 0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2];
+                    rowLuma[x] = luma;
+                    rowSum += luma;
+                }
+                
+                const mean = rowSum / width;
+                let varSum = 0;
+                let edgeSum = 0;
+                
+                // 2. Calculate Variance & Edges
+                for (let x = 0; x < width; x++) {
+                    varSum += Math.pow(rowLuma[x] - mean, 2);
+                    if (x > 0) {
+                        edgeSum += Math.abs(rowLuma[x] - rowLuma[x-1]);
+                    }
+                }
+                
+                variances[y] = varSum / width;
+                edgeDensities[y] = edgeSum;
+            }
+
+            // 3. Find Minimum based on Method
+            if (method === '1') {
+                // Method A: Solid Line Seeker (Min Variance)
+                for (let y = 0; y < h; y++) {
+                    if (variances[y] < minScore) {
+                        minScore = variances[y];
+                        bestY = y;
+                        if (variances[y] === 0) break; // Perfect solid line
+                    }
+                }
+            } else {
+                // Method C: Hybrid (Variance + Edge Density)
+                const normVars = normalizeArray(variances);
+                const normEdges = normalizeArray(edgeDensities);
+                for (let y = 0; y < h; y++) {
+                    const score = normVars[y] + normEdges[y]; // 50/50 weighting
+                    if (score < minScore) {
+                        minScore = score;
+                        bestY = y;
+                    }
+                }
+            }
+
+            return startY + bestY;
+        }
+
+        // Format name logic
+        function extractNumbers(str) {
+            const matches = str.match(/\d+/g);
+            return matches ? matches.join('') : str;
+        }
+
+        function getFileName(index, activeFiles, nameMode, ext) {
+            if (nameMode === '1' || activeFiles.length === 0) {
+                return `${index.toString().padStart(2, '0')}.${ext}`;
+            } else {
+                const baseStart = extractNumbers(activeFiles[0].name.split('.')[0]);
+                const baseEnd = extractNumbers(activeFiles[activeFiles.length - 1].name.split('.')[0]);
+                if (baseStart !== baseEnd && baseEnd) {
+                    return `${baseStart}-${baseEnd}.${ext}`;
+                }
+                return `${baseStart || index.toString().padStart(2, '0')}.${ext}`;
+            }
+        }
+
+        // --- STREAMING_CHUNK: Core Application Logic (SmartSlicer) ---
+
+        async function startSlicing() {
+            if (selectedFiles.length === 0) return;
+
+            // Gather Settings
+            const settings = {
+                targetHeight: parseInt(document.getElementById('opt-height').value) || 6000,
+                nameMode: document.getElementById('opt-name-mode').value,
+                smartMode: document.getElementById('opt-smart-mode').value === 'true',
+                smartMethod: document.getElementById('opt-smart-method').value,
+                tolMin: parseInt(document.getElementById('opt-tol-min').value) || 3000,
+                tolMax: parseInt(document.getElementById('opt-tol-max').value) || 100,
+                format: document.getElementById('opt-format').value,
+                quality: parseInt(document.getElementById('opt-quality').value) || 100
+            };
+
+            // Setup UI
+            overlay.classList.remove('hide');
+            setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+            progressBar.style.width = '0%';
+            
+            // Clean up previous results memory
+            generatedResults.forEach(r => URL.revokeObjectURL(r.url));
+            generatedResults = [];
+            resultGrid.innerHTML = '';
+
+            try {
+                let bufferCanvas = null;
+                let fileCursor = 0;
+                let sliceIndex = 1;
+                let activeFilesMap = []; // { name, startY, endY }
+                const ext = settings.format === 'webp' ? 'webp' : 'jpg';
+
+                const totalFiles = selectedFiles.length;
+
+                while (true) {
+                    const neededHeight = settings.targetHeight + settings.tolMax;
+
+                    // 1. Fill Buffer
+                    while ((!bufferCanvas || bufferCanvas.height < neededHeight) && fileCursor < totalFiles) {
+                        progressText.textContent = `Завантаження джерела ${fileCursor + 1} з ${totalFiles}...`;
+                        progressBar.style.width = `${(fileCursor / totalFiles) * 50}%`;
+                        await yieldToMain();
+
+                        const file = selectedFiles[fileCursor];
+                        const img = await loadImage(file);
+
+                        if (!bufferCanvas) {
+                            bufferCanvas = document.createElement('canvas');
+                            bufferCanvas.width = img.width;
+                            bufferCanvas.height = img.height;
+                            const ctx = bufferCanvas.getContext('2d', { willReadFrequently: true });
+                            ctx.drawImage(img, 0, 0);
+                            
+                            activeFilesMap.push({ name: file.name, startY: 0, endY: img.height });
+                        } else {
+                            // Match width if needed
+                            const scale = bufferCanvas.width / img.width;
+                            const h = Math.round(img.height * scale);
+                            
+                            const newBuf = document.createElement('canvas');
+                            newBuf.width = bufferCanvas.width;
+                            newBuf.height = bufferCanvas.height + h;
+                            const ctx = newBuf.getContext('2d', { willReadFrequently: true });
+                            
+                            // Draw old buffer
+                            ctx.drawImage(bufferCanvas, 0, 0);
+                            // Draw new img
+                            ctx.drawImage(img, 0, bufferCanvas.height, bufferCanvas.width, h);
+                            
+                            activeFilesMap.push({ name: file.name, startY: bufferCanvas.height, endY: bufferCanvas.height + h });
+                            bufferCanvas = newBuf;
+                        }
+                        fileCursor++;
+                    }
+
+                    if (!bufferCanvas) break; // Done completely
+
+                    progressText.textContent = `Обчислення розрізу ${sliceIndex}...`;
+                    progressBar.style.width = `${50 + (sliceIndex / (totalFiles * 2)) * 50}%`;
+                    await yieldToMain();
+
+                    // 2. Find Cut Point
+                    let cutY = settings.targetHeight;
+
+                    // If we reached the end of files and buffer is small, just take the rest
+                    if (bufferCanvas.height <= settings.targetHeight && fileCursor >= totalFiles) {
+                        cutY = bufferCanvas.height;
+                    } else if (settings.smartMode) {
+                        // Calculate search bounds
+                        const searchStart = Math.max(0, settings.targetHeight - settings.tolMin);
+                        const searchEnd = Math.min(bufferCanvas.height, settings.targetHeight + settings.tolMax);
+                        
+                        const ctx = bufferCanvas.getContext('2d', { willReadFrequently: true });
+                        cutY = findOptimalCut(ctx, bufferCanvas.width, searchStart, searchEnd, settings.smartMethod);
+                    }
+
+                    // 3. Extract & Save Slice
+                    const sliceCanvas = document.createElement('canvas');
+                    sliceCanvas.width = bufferCanvas.width;
+                    sliceCanvas.height = cutY;
+                    const sliceCtx = sliceCanvas.getContext('2d');
+                    sliceCtx.drawImage(bufferCanvas, 0, 0, bufferCanvas.width, cutY, 0, 0, bufferCanvas.width, cutY);
+
+                    // Filter active files that contribute to this slice
+                    const contributingFiles = activeFilesMap.filter(f => f.startY < cutY && f.endY > 0);
+                    const fileName = getFileName(sliceIndex, contributingFiles, settings.nameMode, ext);
+
+                    const blob = await canvasToBlob(sliceCanvas, settings.format, settings.quality);
+                    const url = URL.createObjectURL(blob);
+                    generatedResults.push({ name: fileName, url: url });
+                    
+                    renderResultItem(fileName, url);
+
+                    // 4. Update Buffer for next iteration
+                    const remainingHeight = bufferCanvas.height - cutY;
+                    if (remainingHeight > 0) {
+                        const newBuf = document.createElement('canvas');
+                        newBuf.width = bufferCanvas.width;
+                        newBuf.height = remainingHeight;
+                        const ctx = newBuf.getContext('2d', { willReadFrequently: true });
+                        // Draw the remainder by shifting up
+                        ctx.drawImage(bufferCanvas, 0, -cutY);
+                        bufferCanvas = newBuf;
+                    } else {
+                        bufferCanvas = null;
+                    }
+
+                    // Shift activeFilesMap tracking
+                    for (let f of activeFilesMap) {
+                        f.startY -= cutY;
+                        f.endY -= cutY;
+                    }
+                    activeFilesMap = activeFilesMap.filter(f => f.endY > 0);
+
+                    sliceIndex++;
+
+                    // If end of files and nothing left in buffer
+                    if (fileCursor >= totalFiles && !bufferCanvas) {
+                        break;
+                    }
+                }
+
+                // Done
+                progressBar.style.width = '100%';
+                progressText.textContent = 'Завершено!';
+                
+                setTimeout(() => {
+                    overlay.classList.add('opacity-0');
+                    setTimeout(() => {
+                        overlay.classList.add('hide');
+                        showResults();
+                    }, 300);
+                }, 500);
+
+            } catch (error) {
+                console.error(error);
+                alert("Сталася помилка при обробці: " + error.message);
+                overlay.classList.add('opacity-0');
+                setTimeout(() => overlay.classList.add('hide'), 300);
+            }
+        }
+
+        // --- STREAMING_CHUNK: Results & UI Management ---
+
+        function renderResultItem(name, url) {
+            const div = document.createElement('div');
+            div.className = "bg-zinc-900 border border-zinc-800 rounded-lg overflow-hidden flex flex-col group transition-transform-colors hover:border-zinc-700";
+            
+            div.innerHTML = `
+                <div class="h-40 bg-zinc-950 flex items-center justify-center p-2 overflow-hidden border-b border-zinc-800 relative">
+                    <img src="${url}" class="max-h-full max-w-full object-contain drop-shadow-lg" alt="${name}">
+                    <div class="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <a href="${url}" target="_blank" class="text-white hover:text-blue-400 bg-zinc-900/80 p-2 rounded-full backdrop-blur">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"></path><path d="M10 14 21 3"></path><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path></svg>
+                        </a>
+                    </div>
+                </div>
+                <div class="p-3 flex justify-between items-center bg-zinc-900">
+                    <span class="text-sm font-medium text-zinc-300 truncate pr-2" title="${name}">${name}</span>
+                    <a href="${url}" download="${name}" class="text-blue-500 hover:text-blue-400 p-1 shrink-0 transition-colors" title="Завантажити">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    </a>
+                </div>
+            `;
+            resultGrid.appendChild(div);
+        }
+
+        function showResults() {
+            viewInput.classList.add('hide');
+            viewResults.classList.remove('hide');
+            resultStats.textContent = `Згенеровано ${generatedResults.length} файлів`;
+        }
+
+        function resetApp() {
+            viewResults.classList.add('hide');
+            viewInput.classList.remove('hide');
+            clearFiles();
+        }
+
+        // Automatically trigger downloads sequentially
+        async function downloadAll() {
+            for (let i = 0; i < generatedResults.length; i++) {
+                const res = generatedResults[i];
+                const a = document.createElement('a');
+                a.href = res.url;
+                a.download = res.name;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                // Small delay to prevent browser from blocking multiple downloads
+                await new Promise(r => setTimeout(r, 250));
+            }
+        }
+    </script>
+</body>
+</html>
