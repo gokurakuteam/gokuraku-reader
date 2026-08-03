@@ -3,37 +3,662 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manga Smart Slicer</title>
+    <title>Manga Smart Slicer (Web Edition)</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- JSZip для читання та створення архівів -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FileSaver для збереження згенерованого архіву -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #09090b; /* zinc-950 */
-            color: #fafafa; /* zinc-50 */
-            overflow: hidden;
+        /* Темна тема, чорно-біла палітра з акцентом, без градієнтів */
+        :root {
+            --bg-color: #0a0a0a;
+            --surface-color: #171717;
+            --border-color: #262626;
+            --text-main: #f5f5f5;
+            --text-muted: #a3a3a3;
+            --accent: #4f46e5; /* Індиго */
+            --accent-hover: #4338ca;
         }
 
-        /* Custom Scrollbar for sleek look */
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        .surface {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .input-field {
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            transition: border-color 0.2s ease;
+        }
+        
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .btn-accent {
+            background-color: var(--accent);
+            color: white;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .btn-accent:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .btn-accent:active {
+            transform: scale(0.98);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+
+        .btn-outline:hover {
+            border-color: var(--text-muted);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Стилізований скролбар */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
         ::-webkit-scrollbar-track {
-            background: #18181b; /* zinc-900 */
+            background: var(--bg-color);
         }
         ::-webkit-scrollbar-thumb {
-            background: #3f3f46; /* zinc-700 */
+            background: var(--border-color);
             border-radius: 4px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #52525b; /* zinc-600 */
+            background: var(--text-muted);
         }
 
-        .dropzone-active {
-            border-color: #2563eb !important; /* blue-600 */
-            background-color: rgba(37, 99, 235, 0.05) !important;
+        .fade-in {
+            animation: fadeIn 0.3s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #drop-zone {
+            transition: all 0.2s ease;
+        }
+        #drop-zone.dragover {
+            border-color: var(--accent);
+            background-color: rgba(79, 70, 229, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex flex-col items-center">
+
+    <header class="w-full max-w-6xl mb-8 flex justify-between items-end border-b border-[#262626] pb-4">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight">Manga Smart Slicer</h1>
+            <p class="text-[var(--text-muted)] mt-1">Web Edition • Локальна обробка</p>
+        </div>
+    </header>
+
+    <main class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Ліва панель: Налаштування -->
+        <aside class="surface p-6 rounded-xl flex flex-col gap-6 h-fit">
+            <h2 class="text-xl font-semibold border-b border-[#262626] pb-2">Налаштування</h2>
+            
+            <div class="flex flex-col gap-2">
+                <label class="text-sm text-[var(--text-muted)]">Цільова висота (px)</label>
+                <input type="number" id="opt-height" value="6000" class="input-field rounded-lg px-3 py-2 w-full">
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm text-[var(--text-muted)]" title="На скільки пікселів сторінка може бути коротшою">Мін. поріг (px)</label>
+                    <input type="number" id="opt-min-tol" value="3000" class="input-field rounded-lg px-3 py-2 w-full">
+                </div>
+                <div class="flex flex-col gap-2">
+                    <label class="text-sm text-[var(--text-muted)]" title="На скільки пікселів сторінка може бути довшою">Макс. поріг (px)</label>
+                    <input type="number" id="opt-max-tol" value="100" class="input-field rounded-lg px-3 py-2 w-full">
+                </div>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-sm text-[var(--text-muted)]">Розумний розріз (Smart Cut)</label>
+                <select id="opt-smart-mode" class="input-field rounded-lg px-3 py-2 w-full">
+                    <option value="1">Увімкнено (Пошук пустот)</option>
+                    <option value="3">Гібридний (Пустоти + Текст)</option>
+                    <option value="0">Вимкнено (Фіксована висота)</option>
+                </select>
+            </div>
+
+            <div class="flex flex-col gap-2">
+                <label class="text-sm text-[var(--text-muted)]">Формат виводу</label>
+                <select id="opt-format" class="input-field rounded-lg px-3 py-2 w-full">
+                    <option value="image/jpeg">JPG (Якість 100%)</option>
+                    <option value="image/webp">WebP (Якість 90%)</option>
+                </select>
+            </div>
+            
+            <div class="flex flex-col gap-2">
+                <label class="text-sm text-[var(--text-muted)]">Найменування файлів</label>
+                <select id="opt-naming" class="input-field rounded-lg px-3 py-2 w-full">
+                    <option value="1">Лічильник (01.jpg, 02.jpg)</option>
+                    <option value="2">Мапінг джерела (01-02.jpg)</option>
+                </select>
+            </div>
+
+        </aside>
+
+        <!-- Права панель: Дропзона, Логи та Результати -->
+        <section class="lg:col-span-2 flex flex-col gap-6">
+            
+            <!-- Дропзона -->
+            <div id="drop-zone" class="surface border-2 border-dashed border-[#262626] rounded-xl p-10 flex flex-col items-center justify-center text-center cursor-pointer relative overflow-hidden group">
+                <input type="file" id="file-input" multiple accept=".jpg,.jpeg,.png,.webp,.bmp,.zip" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10">
+                <svg class="w-12 h-12 text-[var(--text-muted)] mb-4 group-hover:text-[var(--text-main)] transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                </svg>
+                <h3 class="text-lg font-medium">Перетягніть файли або ZIP-архів сюди</h3>
+                <p class="text-sm text-[var(--text-muted)] mt-2">Підтримуються зображення або один .zip файл з ними</p>
+                
+                <div id="file-count" class="mt-4 px-4 py-1 bg-[var(--border-color)] rounded-full text-sm font-medium hidden">
+                    Обрано: <span id="file-count-num">0</span> файлів
+                </div>
+            </div>
+
+            <!-- Керування -->
+            <div class="flex gap-4 items-center">
+                <button id="btn-start" class="btn-accent px-6 py-3 rounded-xl font-medium flex-1 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    Почати нарізку
+                </button>
+                <button id="btn-clear" class="btn-outline px-6 py-3 rounded-xl font-medium hidden">
+                    Очистити
+                </button>
+            </div>
+
+            <!-- Прогрес та Логи -->
+            <div id="progress-container" class="surface rounded-xl p-6 hidden flex-col gap-4">
+                <div class="flex justify-between items-center text-sm font-medium">
+                    <span id="progress-status">Обробка...</span>
+                    <span id="progress-percent">0%</span>
+                </div>
+                <div class="w-full bg-[var(--bg-color)] rounded-full h-2 overflow-hidden border border-[#262626]">
+                    <div id="progress-bar" class="bg-[var(--accent)] h-full transition-all duration-300 w-0"></div>
+                </div>
+                <div id="log-area" class="text-xs text-[var(--text-muted)] font-mono h-24 overflow-y-auto bg-[var(--bg-color)] p-3 rounded-lg border border-[#262626]">
+                    <!-- Логи тут -->
+                </div>
+            </div>
+
+            <!-- Результати (Кнопка ZIP) -->
+            <div id="results-container" class="hidden flex-col gap-4">
+                <div class="surface rounded-xl p-8 flex flex-col items-center justify-center text-center gap-4 fade-in">
+                    <div class="w-16 h-16 rounded-full bg-green-500/10 flex items-center justify-center text-green-500 mb-2">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-bold">Нарізку завершено!</h3>
+                    <p class="text-[var(--text-muted)]" id="result-stats">Створено 0 файлів.</p>
+                    
+                    <div class="flex flex-col gap-2 w-full max-w-xs mt-2">
+                        <label class="text-sm text-[var(--text-muted)] text-left">Назва архіву</label>
+                        <div class="flex items-center gap-2">
+                            <input type="text" id="zip-filename" value="manga_sliced" class="input-field rounded-lg px-3 py-2 w-full" placeholder="Введіть назву">
+                            <span class="text-[var(--text-muted)] font-mono">.zip</span>
+                        </div>
+                    </div>
+
+                    <button id="btn-download-zip" class="btn-accent mt-2 px-8 py-4 rounded-xl font-bold text-lg flex items-center gap-3 shadow-lg">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                        Завантажити як ZIP
+                    </button>
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <script>
+        // --- СТАН ТА ЕЛЕМЕНТИ ---
+        let sourceFiles = [];
+        let slicedResults = [];
+        let isProcessing = false;
+
+        const DOM = {
+            dropZone: document.getElementById('drop-zone'),
+            fileInput: document.getElementById('file-input'),
+            fileCount: document.getElementById('file-count'),
+            fileCountNum: document.getElementById('file-count-num'),
+            btnStart: document.getElementById('btn-start'),
+            btnClear: document.getElementById('btn-clear'),
+            progressContainer: document.getElementById('progress-container'),
+            progressBar: document.getElementById('progress-bar'),
+            progressStatus: document.getElementById('progress-status'),
+            progressPercent: document.getElementById('progress-percent'),
+            logArea: document.getElementById('log-area'),
+            resultsContainer: document.getElementById('results-container'),
+            resultStats: document.getElementById('result-stats'),
+            btnDownloadZip: document.getElementById('btn-download-zip'),
+            zipFilename: document.getElementById('zip-filename')
+        };
+
+        // --- УТИЛІТИ ---
+        function log(message) {
+            const div = document.createElement('div');
+            div.textContent = `> ${message}`;
+            DOM.logArea.appendChild(div);
+            DOM.logArea.scrollTop = DOM.logArea.scrollHeight;
+            console.log(message);
+        }
+
+        function updateProgress(percent, statusText) {
+            DOM.progressBar.style.width = `${Math.min(100, Math.max(0, percent))}%`;
+            DOM.progressPercent.textContent = `${Math.round(percent)}%`;
+            if (statusText) DOM.progressStatus.textContent = statusText;
+        }
+
+        function naturalSort(a, b) {
+            return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+        }
+
+        function isImageFile(filename) {
+            return /\.(jpg|jpeg|png|webp|bmp)$/i.test(filename) && !filename.includes('__MACOSX');
+        }
+
+        // --- ОБРОБКА ФАЙЛІВ ---
+        async function handleFilesSelected(files) {
+            if (isProcessing || files.length === 0) return;
+            
+            sourceFiles = [];
+            slicedResults = [];
+            DOM.btnStart.disabled = true;
+            DOM.fileCount.classList.remove('hidden');
+            DOM.fileCountNum.textContent = "Обробка...";
+            DOM.resultsContainer.classList.add('hidden');
+            DOM.progressContainer.classList.add('hidden');
+            DOM.logArea.innerHTML = '';
+
+            try {
+                if (files.length === 1 && files[0].name.toLowerCase().endsWith('.zip')) {
+                    log(`Читання архіву: ${files[0].name}`);
+                    
+                    // Автоматично підставляємо назву завантаженого архіву як пропозицію для результату
+                    let originalName = files[0].name.replace(/\.zip$/i, '');
+                    DOM.zipFilename.value = `${originalName}_sliced`;
+
+                    const zip = await JSZip.loadAsync(files[0]);
+                    
+                    const zipEntries = Object.values(zip.files).filter(entry => 
+                        !entry.dir && isImageFile(entry.name)
+                    );
+
+                    let loaded = 0;
+                    for (const entry of zipEntries) {
+                        const blob = await entry.async("blob");
+                        const fileName = entry.name.split('/').pop();
+                        sourceFiles.push({ name: fileName, blob: blob });
+                        loaded++;
+                        if (loaded % 10 === 0) DOM.fileCountNum.textContent = `Розпаковано ${loaded}...`;
+                    }
+                } else {
+                    for (let i = 0; i < files.length; i++) {
+                        if (isImageFile(files[i].name)) {
+                            sourceFiles.push({ name: files[i].name, blob: files[i] });
+                        }
+                    }
+                }
+
+                sourceFiles.sort(naturalSort);
+                
+                DOM.fileCountNum.textContent = sourceFiles.length;
+                DOM.btnStart.disabled = sourceFiles.length === 0;
+                DOM.btnClear.classList.remove('hidden');
+                
+                if (sourceFiles.length > 0) {
+                    log(`Завантажено ${sourceFiles.length} зображень.`);
+                } else {
+                    log('Зображень не знайдено.');
+                }
+
+            } catch (error) {
+                log(`Помилка читання файлів: ${error.message}`);
+                DOM.fileCountNum.textContent = "Помилка";
+            }
+        }
+
+        DOM.dropZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            DOM.dropZone.classList.add('dragover');
+        });
+        DOM.dropZone.addEventListener('dragleave', () => {
+            DOM.dropZone.classList.remove('dragover');
+        });
+        DOM.dropZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            DOM.dropZone.classList.remove('dragover');
+            if (e.dataTransfer.files) handleFilesSelected(e.dataTransfer.files);
+        });
+        DOM.fileInput.addEventListener('change', (e) => {
+            if (e.target.files) handleFilesSelected(e.target.files);
+        });
+        DOM.btnClear.addEventListener('click', () => {
+            sourceFiles = [];
+            slicedResults = [];
+            DOM.fileInput.value = '';
+            DOM.fileCount.classList.add('hidden');
+            DOM.btnStart.disabled = true;
+            DOM.btnClear.classList.add('hidden');
+            DOM.resultsContainer.classList.add('hidden');
+            DOM.progressContainer.classList.add('hidden');
+            DOM.zipFilename.value = 'manga_sliced';
+        });
+
+        // --- ЛОГІКА НАРІЗКИ ---
+        async function loadBitmap(blob) {
+            return await createImageBitmap(blob);
+        }
+
+        function getVarianceCut(ctx, width, startY, endY) {
+            const h = endY - startY;
+            if (h <= 0) return startY;
+            
+            const imgData = ctx.getImageData(0, startY, width, h);
+            const data = imgData.data;
+            
+            let bestLocalY = 0;
+            let minVar = Infinity;
+
+            for (let y = 0; y < h; y++) {
+                let sum = 0;
+                let sumSq = 0;
+                for (let x = 0; x < width; x++) {
+                    const idx = (y * width + x) * 4;
+                    const gray = (data[idx] + data[idx+1] + data[idx+2]) / 3;
+                    sum += gray;
+                    sumSq += gray * gray;
+                }
+                const mean = sum / width;
+                const variance = (sumSq / width) - (mean * mean);
+                
+                if (variance < minVar) {
+                    minVar = variance;
+                    bestLocalY = y;
+                    if (variance === 0) break;
+                }
+            }
+            return startY + bestLocalY;
+        }
+
+        function getHybridCut(ctx, width, startY, endY) {
+            const h = endY - startY;
+            if (h <= 0) return startY;
+            
+            const imgData = ctx.getImageData(0, startY, width, h);
+            const data = imgData.data;
+            
+            let vars = new Float32Array(h);
+            let edges = new Float32Array(h);
+
+            let minV = Infinity, maxV = -Infinity;
+            let minE = Infinity, maxE = -Infinity;
+
+            for (let y = 0; y < h; y++) {
+                let sum = 0, sumSq = 0;
+                let edgeSum = 0;
+                let prevGray = -1;
+
+                for (let x = 0; x < width; x++) {
+                    const idx = (y * width + x) * 4;
+                    const gray = (data[idx] + data[idx+1] + data[idx+2]) / 3;
+                    
+                    sum += gray;
+                    sumSq += gray * gray;
+                    
+                    if (x > 0) edgeSum += Math.abs(gray - prevGray);
+                    prevGray = gray;
+                }
+                
+                const mean = sum / width;
+                const variance = (sumSq / width) - (mean * mean);
+                
+                vars[y] = variance;
+                edges[y] = edgeSum;
+
+                if (variance < minV) minV = variance;
+                if (variance > maxV) maxV = variance;
+                if (edgeSum < minE) minE = edgeSum;
+                if (edgeSum > maxE) maxE = edgeSum;
+            }
+
+            let bestLocalY = 0;
+            let minCombined = Infinity;
+
+            for (let y = 0; y < h; y++) {
+                const nVar = maxV === minV ? 0 : (vars[y] - minV) / (maxV - minV);
+                const nEdge = maxE === minE ? 0 : (edges[y] - minE) / (maxE - minE);
+                
+                const score = nVar + nEdge; 
+                if (score < minCombined) {
+                    minCombined = score;
+                    bestLocalY = y;
+                }
+            }
+            
+            return startY + bestLocalY;
+        }
+
+        function formatName(index, startFile, endFile, namingMode, mimeType) {
+            const ext = mimeType === 'image/webp' ? 'webp' : 'jpg';
+            const idxStr = index.toString().padStart(2, '0');
+            
+            if (namingMode === '1' || !startFile) {
+                return `${idxStr}.${ext}`;
+            } else {
+                const sName = startFile.split('.')[0];
+                const eName = endFile ? endFile.split('.')[0] : sName;
+                if (sName === eName) return `${sName}_${idxStr}.${ext}`;
+                return `${sName}-${eName}_${idxStr}.${ext}`;
+            }
+        }
+
+        function extractBlob(canvas, mimeType, quality) {
+            return new Promise(resolve => {
+                canvas.toBlob(blob => resolve(blob), mimeType, quality);
+            });
+        }
+
+        async function processSlicing() {
+            if (sourceFiles.length === 0) return;
+            
+            isProcessing = true;
+            DOM.btnStart.disabled = true;
+            DOM.progressContainer.classList.remove('hidden');
+            DOM.progressContainer.classList.add('flex');
+            DOM.resultsContainer.classList.add('hidden');
+            slicedResults = [];
+            
+            const targetHeight = parseInt(document.getElementById('opt-height').value) || 6000;
+            const minTol = parseInt(document.getElementById('opt-min-tol').value) || 3000;
+            const maxTol = parseInt(document.getElementById('opt-max-tol').value) || 100;
+            const smartMode = document.getElementById('opt-smart-mode').value;
+            const mimeType = document.getElementById('opt-format').value;
+            const quality = mimeType === 'image/webp' ? 0.90 : 1.0;
+            const namingMode = document.getElementById('opt-naming').value;
+
+            log(`Початок нарізки. Файлів: ${sourceFiles.length}`);
+
+            let bufferCanvas = document.createElement('canvas');
+            let bufferCtx = bufferCanvas.getContext('2d', { willReadFrequently: true });
+            let isBufferEmpty = true;
+            let currentWidth = 0;
+            let fileIndex = 0;
+            let sliceIndex = 1;
+            let activeFiles = [];
+
+            try {
+                while (fileIndex < sourceFiles.length || !isBufferEmpty) {
+                    while ((isBufferEmpty || bufferCanvas.height < targetHeight + maxTol) && fileIndex < sourceFiles.length) {
+                        const fileObj = sourceFiles[fileIndex];
+                        const bmp = await loadBitmap(fileObj.blob);
+                        activeFiles.push(fileObj.name);
+                        
+                        if (isBufferEmpty) {
+                            bufferCanvas.width = bmp.width;
+                            bufferCanvas.height = bmp.height;
+                            bufferCtx.drawImage(bmp, 0, 0);
+                            currentWidth = bmp.width;
+                            isBufferEmpty = false;
+                        } else {
+                            let drawW = currentWidth;
+                            let drawH = bmp.height;
+                            if (bmp.width !== currentWidth) {
+                                drawH = Math.round(bmp.height * (currentWidth / bmp.width));
+                            }
+
+                            const tempCanvas = document.createElement('canvas');
+                            tempCanvas.width = currentWidth;
+                            tempCanvas.height = bufferCanvas.height + drawH;
+                            const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+                            
+                            tempCtx.drawImage(bufferCanvas, 0, 0);
+                            tempCtx.drawImage(bmp, 0, bufferCanvas.height, drawW, drawH);
+                            
+                            bufferCanvas = tempCanvas;
+                            bufferCtx = tempCtx;
+                        }
+                        
+                        bmp.close();
+                        fileIndex++;
+                        
+                        updateProgress((fileIndex / sourceFiles.length) * 50, 'Зчитування та склеювання...');
+                    }
+
+                    if (isBufferEmpty) break;
+
+                    let cutY = bufferCanvas.height;
+
+                    if (bufferCanvas.height > targetHeight) {
+                        const searchStart = Math.max(0, targetHeight - minTol);
+                        const searchEnd = Math.min(bufferCanvas.height, targetHeight + maxTol);
+
+                        if (smartMode === '1') {
+                            cutY = getVarianceCut(bufferCtx, currentWidth, searchStart, searchEnd);
+                        } else if (smartMode === '3') {
+                            cutY = getHybridCut(bufferCtx, currentWidth, searchStart, searchEnd);
+                        } else {
+                            cutY = targetHeight; 
+                        }
+                    }
+
+                    const sliceCanvas = document.createElement('canvas');
+                    sliceCanvas.width = currentWidth;
+                    sliceCanvas.height = cutY;
+                    const sliceCtx = sliceCanvas.getContext('2d');
+                    sliceCtx.drawImage(bufferCanvas, 0, 0, currentWidth, cutY, 0, 0, currentWidth, cutY);
+
+                    const blob = await extractBlob(sliceCanvas, mimeType, quality);
+                    
+                    const fName = formatName(sliceIndex, activeFiles[0], activeFiles[activeFiles.length-1], namingMode, mimeType);
+                    slicedResults.push({ name: fName, blob: blob });
+                    log(`Згенеровано: ${fName} (Висота: ${cutY}px)`);
+
+                    const remainH = bufferCanvas.height - cutY;
+                    if (remainH > 0) {
+                        const tempCanvas = document.createElement('canvas');
+                        tempCanvas.width = currentWidth;
+                        tempCanvas.height = remainH;
+                        const tempCtx = tempCanvas.getContext('2d', { willReadFrequently: true });
+                        tempCtx.drawImage(bufferCanvas, 0, cutY, currentWidth, remainH, 0, 0, currentWidth, remainH);
+                        
+                        bufferCanvas = tempCanvas;
+                        bufferCtx = tempCtx;
+                        
+                        activeFiles = [activeFiles[activeFiles.length - 1]];
+                    } else {
+                        isBufferEmpty = true;
+                        activeFiles = [];
+                    }
+
+                    sliceIndex++;
+                    updateProgress(50 + ((fileIndex / sourceFiles.length) * 50), 'Нарізка...');
+                    
+                    await new Promise(r => setTimeout(r, 10));
+                }
+
+                updateProgress(100, 'Завершено!');
+                log(`Успішно нарізано. Всього файлів: ${slicedResults.length}`);
+                
+                DOM.resultStats.textContent = `Створено файлів: ${slicedResults.length}. Готово до пакування.`;
+                DOM.resultsContainer.classList.remove('hidden');
+                DOM.resultsContainer.classList.add('flex');
+
+            } catch (err) {
+                log(`ПОМИЛКА: ${err.message}`);
+                console.error(err);
+                updateProgress(0, 'Помилка');
+            } finally {
+                isProcessing = false;
+                DOM.btnStart.disabled = false;
+            }
+        }
+
+        // --- ГЕНЕРАЦІЯ ZIP ---
+        async function handleDownloadZip() {
+            if (slicedResults.length === 0) return;
+            
+            DOM.btnDownloadZip.disabled = true;
+            DOM.btnDownloadZip.innerHTML = `<svg class="animate-spin w-6 h-6 mr-2" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Пакування...`;
+
+            try {
+                log('Генерація ZIP архіву...');
+                const zip = new JSZip();
+                
+                slicedResults.forEach(file => {
+                    zip.file(file.name, file.blob);
+                });
+
+                const content = await zip.generateAsync({
+                    type: "blob",
+                    compression: "STORE"
+                }, (metadata) => {
+                    if (metadata.percent % 20 === 0) log(`Пакування: ${metadata.percent.toFixed(0)}%`);
+                });
+
+                // Беремо назву з інпута, або ставимо стандартну
+                let finalName = DOM.zipFilename.value.trim() || "manga_sliced";
+                if (!finalName.toLowerCase().endsWith('.zip')) {
+                    finalName += '.zip';
+                }
+
+                saveAs(content, finalName);
+                log('Архів успішно завантажено!');
+                
+            } catch (error) {
+                log(`Помилка створення ZIP: ${error.message}`);
+            } finally {
+                DOM.btnDownloadZip.disabled = false;
+                DOM.btnDownloadZip.innerHTML = `<svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg> Завантажити як ZIP`;
+            }
+        }
+
+        DOM.btnStart.addEventListener('click', processSlicing);
+        DOM.btnDownloadZip.addEventListener('click', handleDownloadZip);
+
+    </script>
+</body>
+</html>
         }
 
         .transition-transform-colors {
