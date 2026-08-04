@@ -131,8 +131,8 @@
                 <div>
                     <label class="block text-sm font-medium text-zinc-300 mb-1">Формат</label>
                     <select id="opt-format" class="w-full px-3 py-2 rounded-md text-sm transition-transform-colors">
+                        <option value="webp" selected>WebP</option>
                         <option value="jpeg">JPG</option>
-                        <option value="webp">WebP</option>
                     </select>
                 </div>
                 <div>
@@ -193,7 +193,7 @@
                     <button onclick="resetApp()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-medium rounded-md transition-transform-colors border border-zinc-700">
                         Новий проект
                     </button>
-                    <button id="btn-download-all" onclick="downloadAll()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md shadow-md shadow-blue-600/20 transition-transform-colors flex items-center gap-2">
+                    <button id="btn-download-all" onclick="openDownloadModal()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md shadow-md shadow-blue-600/20 transition-transform-colors flex items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                         Завантажити архів
                     </button>
@@ -208,12 +208,49 @@
             </div>
         </div>
 
+        <!-- Download Settings Modal -->
+        <div id="download-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+            <div class="bg-zinc-900 border border-zinc-700 rounded-xl w-full max-w-md p-6 shadow-2xl transform scale-95 transition-transform duration-300" id="download-modal-content">
+                <h3 class="text-xl font-bold text-white mb-4">Налаштування завантаження</h3>
+                
+                <div class="space-y-5">
+                    <div>
+                        <label class="block text-sm font-medium text-zinc-300 mb-1">Назва архіву (основа)</label>
+                        <input type="text" id="modal-basename" oninput="updateModalPreview()" class="w-full px-3 py-2 rounded-md bg-zinc-950 border border-zinc-700 text-white focus:border-blue-500 focus:outline-none transition-colors">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-zinc-300 mb-1">Номер розділу (опціонально)</label>
+                        <div class="flex items-center gap-2">
+                            <button onclick="changeChapter(-1)" class="w-10 h-10 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-md text-white transition-colors text-lg font-bold">-</button>
+                            <input type="number" id="modal-chapter" step="0.5" oninput="handleChapterInput()" placeholder="Наприклад: 12" class="flex-1 px-3 py-2 h-10 rounded-md bg-zinc-950 border border-zinc-700 text-white text-center focus:border-blue-500 focus:outline-none transition-colors">
+                            <button onclick="changeChapter(1)" class="w-10 h-10 flex items-center justify-center bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-md text-white transition-colors text-lg font-bold">+</button>
+                        </div>
+                    </div>
+
+                    <div class="bg-zinc-950/50 p-3 rounded-lg border border-zinc-800">
+                        <span class="text-xs text-zinc-500 block mb-1">Фінальна назва файлу:</span>
+                        <span id="modal-preview" class="text-sm font-mono text-blue-400 break-all">archive.zip</span>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex justify-end gap-3">
+                    <button onclick="closeDownloadModal()" class="px-4 py-2 bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-medium rounded-md transition-colors border border-zinc-700">Скасувати</button>
+                    <button id="modal-btn-confirm" onclick="confirmDownload()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md shadow-md shadow-blue-600/20 transition-colors flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                        Завантажити
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <script>
         // --- State ---
         let selectedFiles = [];
         let generatedResults = []; // [{ name: string, url: blobUrl, blob: Blob }]
+        let originalArchiveName = "sliced_manga";
 
         // --- DOM Elements ---
         const dropzone = document.getElementById('dropzone');
@@ -281,6 +318,9 @@
 
             for (const file of files) {
                 if (file.name.toLowerCase().endsWith('.zip') || file.type === 'application/zip') {
+                    if (originalArchiveName === "sliced_manga") {
+                        originalArchiveName = file.name.replace(/\.[^/.]+$/, "");
+                    }
                     try {
                         const zip = new JSZip();
                         const contents = await zip.loadAsync(file);
@@ -666,19 +706,81 @@
             viewResults.classList.add('hide');
             viewInput.classList.remove('hide');
             clearFiles();
+            originalArchiveName = "sliced_manga";
         }
 
-        // Pack files into a ZIP archive and download
-        async function downloadAll() {
+        // --- Download Modal Logic ---
+
+        const dlModal = document.getElementById('download-modal');
+        const dlModalContent = document.getElementById('download-modal-content');
+        const modalBasename = document.getElementById('modal-basename');
+        const modalChapter = document.getElementById('modal-chapter');
+        const modalPreview = document.getElementById('modal-preview');
+        const modalBtnConfirm = document.getElementById('modal-btn-confirm');
+
+        function openDownloadModal() {
+            if (generatedResults.length === 0) return;
+            
+            // Set default base name from uploaded zip or fallback
+            modalBasename.value = originalArchiveName;
+            modalChapter.value = ""; // Clear chapter by default
+            updateModalPreview();
+
+            // Show modal
+            dlModal.classList.remove('opacity-0', 'pointer-events-none');
+            dlModalContent.classList.remove('scale-95');
+        }
+
+        function closeDownloadModal() {
+            dlModal.classList.add('opacity-0', 'pointer-events-none');
+            dlModalContent.classList.add('scale-95');
+        }
+
+        function handleChapterInput() {
+            // Якщо ім'я файлу досі стандартне (з архіву), то стираємо його при введенні розділу
+            if (modalBasename.value === originalArchiveName) {
+                modalBasename.value = "";
+            }
+            updateModalPreview();
+        }
+
+        function changeChapter(delta) {
+            let current = parseFloat(modalChapter.value) || 0;
+            let next = current + delta;
+            if (next < 0) next = 0;
+            modalChapter.value = next;
+            handleChapterInput();
+        }
+
+        function updateModalPreview() {
+            let base = modalBasename.value.trim();
+            let ch = modalChapter.value.trim();
+            
+            let finalName = "archive";
+            
+            if (base && ch) {
+                finalName = `${base} Розділ ${ch}`;
+            } else if (base) {
+                finalName = base;
+            } else if (ch) {
+                finalName = `Розділ ${ch}`;
+            }
+
+            modalPreview.textContent = finalName + ".zip";
+        }
+
+        async function confirmDownload() {
             if (generatedResults.length === 0) return;
 
-            const originalHTML = btnDownloadAll.innerHTML;
-            btnDownloadAll.innerHTML = `
+            let finalName = modalPreview.textContent;
+
+            const originalHTML = modalBtnConfirm.innerHTML;
+            modalBtnConfirm.innerHTML = `
                 <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 Архівування...
             `;
-            btnDownloadAll.disabled = true;
-            btnDownloadAll.classList.add('opacity-75', 'cursor-not-allowed');
+            modalBtnConfirm.disabled = true;
+            modalBtnConfirm.classList.add('opacity-75', 'cursor-not-allowed');
 
             try {
                 const zip = new JSZip();
@@ -694,7 +796,7 @@
                 
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = "sliced_manga.zip";
+                a.download = finalName;
                 document.body.appendChild(a);
                 a.click();
                 
@@ -702,13 +804,14 @@
                 document.body.removeChild(a);
                 setTimeout(() => URL.revokeObjectURL(url), 100);
 
+                closeDownloadModal();
             } catch (error) {
                 console.error("Error creating ZIP:", error);
                 alert("Помилка при створенні архіву.");
             } finally {
-                btnDownloadAll.innerHTML = originalHTML;
-                btnDownloadAll.disabled = false;
-                btnDownloadAll.classList.remove('opacity-75', 'cursor-not-allowed');
+                modalBtnConfirm.innerHTML = originalHTML;
+                modalBtnConfirm.disabled = false;
+                modalBtnConfirm.classList.remove('opacity-75', 'cursor-not-allowed');
             }
         }
     </script>
