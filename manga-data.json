@@ -13648,7 +13648,7 @@
       "Шьонен-ай",
       "Повсякденність"
     ],
-    "latestUpdate": "2026-08-09T20:56:37.026953Z",
+    "latestUpdate": "2026-08-10T20:26:33.373728Z",
     "chapters": [
       {
         "id": 151,
@@ -15149,6 +15149,34 @@
           "https://files.catbox.moe/4m3sqj.webp",
           "https://files.catbox.moe/9zx1ah.webp",
           "https://files.catbox.moe/mckv7y.webp"
+        ]
+      },
+      {
+        "id": 603,
+        "title": "І де їх носить?!",
+        "volume": 1,
+        "chapter": 40.0,
+        "date": "2026-08-10",
+        "pages": [
+          "https://files.catbox.moe/0h3ilr.webp",
+          "https://files.catbox.moe/ryp5fy.webp",
+          "https://files.catbox.moe/q2wohi.webp",
+          "https://files.catbox.moe/ihgurb.webp",
+          "https://files.catbox.moe/0blh1m.webp",
+          "https://files.catbox.moe/eprp26.webp",
+          "https://files.catbox.moe/cy0a55.webp",
+          "https://files.catbox.moe/2joflt.webp",
+          "https://files.catbox.moe/72xa2x.webp",
+          "https://files.catbox.moe/lmlijx.webp",
+          "https://files.catbox.moe/s2alaw.webp",
+          "https://files.catbox.moe/0c64ui.webp",
+          "https://files.catbox.moe/stp1rd.webp",
+          "https://files.catbox.moe/y8a47y.webp",
+          "https://files.catbox.moe/uy0e6r.webp",
+          "https://files.catbox.moe/osyadz.webp",
+          "https://files.catbox.moe/eypow5.webp",
+          "https://files.catbox.moe/l4odfx.webp",
+          "https://files.catbox.moe/nq9p2e.webp"
         ]
       }
     ]
