@@ -182,7 +182,12 @@ async function loadPage(page, params, routeId) {
         const mangaId = params.get('mangaId');
         const chapterIdParam = parseFloat(params.get('chapterId'));
         const manga = getMangaById(mangaId);
-        const chapter = manga?.chapters.find(ch => ch.chapter === chapterIdParam);
+        let chapter = manga?.chapters.find(ch => ch.chapter === chapterIdParam);
+
+        // Fallback for old links where chapterId was the internal id
+        if (!chapter && manga) {
+             chapter = manga.chapters.find(ch => ch.id === parseInt(params.get('chapterId')));
+        }
 
         if (manga && chapter) {
             if (chapter.externalUrl) {
@@ -238,7 +243,7 @@ async function loadPage(page, params, routeId) {
         } else {
             await showNotFoundPage();
         }
-        loadGiscusForPage('reader', mangaId, chapterId);
+        loadGiscusForPage('reader', mangaId, chapter?.id);
     }
 }
 
