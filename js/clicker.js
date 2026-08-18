@@ -110,10 +110,17 @@ export function applyThemeMode(mode) {
 }
 
 function updateClickerArea() {
-    const char = SHOP_ITEMS.characters.find(c => c.id === state.activeCharacterId);
-    let currentSkin = char?.skins.find(s => s.id === state.activeSkinId);
+    let char = SHOP_ITEMS.characters.find(c => c.id === state.activeCharacterId);
+    if (!char) {
+        char = SHOP_ITEMS.characters[0];
+        state.activeCharacterId = char.id;
+    }
+    let currentSkin = char.skins.find(s => s.id === state.activeSkinId);
     // Якщо активний скін не належить поточному персонажу (при перемиканні), беремо дефолтний
-    if (!currentSkin && char) currentSkin = char.skins[0];
+    if (!currentSkin) {
+        currentSkin = char.skins[0];
+        state.activeSkinId = currentSkin.id;
+    }
     
     const img = document.getElementById('active-chibik');
     const name = document.getElementById('active-char-name');
@@ -316,15 +323,15 @@ function showPhrase(container) {
     // Центруємо бульбашку над клікером
     container.appendChild(bubble);
     
-    // Анімація
+    // Анімація (з'являється збоку)
     setTimeout(() => {
         bubble.style.opacity = '1';
-        bubble.style.transform = 'translate(-50%, -50px)';
+        bubble.style.transform = 'translate(10px, -10px)';
     }, 10);
 
     setTimeout(() => {
         bubble.style.opacity = '0';
-        bubble.style.transform = 'translate(-50%, -80px)';
+        bubble.style.transform = 'translate(20px, -20px)';
         setTimeout(() => bubble.remove(), 300);
     }, 1500);
 }

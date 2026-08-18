@@ -117,21 +117,30 @@ export class AppHeader extends HTMLElement {
                 <div class="logo">Gokuraku</div>
                 <nav>
                      <a href="#" data-page="home" class="active">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+                        <i data-lucide="home" class="icon"></i>
                         <span class="text">Головна</span>
                     </a>
                     <a href="#catalog" data-page="catalog">
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                        <i data-lucide="library" class="icon"></i>
                         <span class="text">Каталог</span>
                     </a>
                     <a href="#cabinet" data-page="cabinet">
-                         <svg class="icon" viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                         <i data-lucide="user" class="icon"></i>
                         <span class="text">Кабінет</span>
                     </a>
                 </nav>
             </header>
         `;
         shadow.appendChild(wrapper);
+        
+        // Wait for Lucide to load before creating icons
+        if (window.lucide) {
+            lucide.createIcons({ root: shadow });
+        } else {
+            window.addEventListener('load', () => {
+                if (window.lucide) lucide.createIcons({ root: shadow });
+            });
+        }
     }
 }
 

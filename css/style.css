@@ -1,0 +1,25 @@
+
+/* Novel Reader Styles */
+.novel-view {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    font-size: 1.1rem;
+    line-height: 1.6;
+}
+
+.novel-content p {
+    text-indent: 2rem;
+    margin-bottom: 1rem;
+    text-align: justify;
+}
+
+.novel-content p:empty {
+    display: none;
+}
+
+.novel-content p:has(> *:only-child) {
+    /* If paragraph only contains stars, we center it. But a simple text-align based on content is hard in CSS. */
+}
+
+/* Let's use a simple JS trick or just use text-align center for paragraphs containing only * */
