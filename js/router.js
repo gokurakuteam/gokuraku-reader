@@ -14,11 +14,47 @@ const routes = {
     'reader': 'reader.html'
 };
 
-async function loadPage(page, params) {
+let currentRouteId = 0;
+
+async function loadPage(page, params, routeId) {
     const main = document.querySelector('main');
-    const response = await fetch(routes[page]);
-    const content = await response.text();
-    main.innerHTML = content;
+    
+    main.classList.add('fade-out');
+    await new Promise(resolve => setTimeout(resolve, 200));
+    
+    if (routeId !== currentRouteId) return;
+
+    main.innerHTML = `
+        <div style="display: flex; justify-content: center; align-items: center; height: 50vh;">
+            <svg class="spinner" viewBox="0 0 50 50" style="width: 50px; height: 50px; stroke: var(--accent-color); stroke-width: 4; fill: none;">
+                <circle cx="25" cy="25" r="20" stroke-dasharray="100" stroke-dashoffset="30"></circle>
+            </svg>
+        </div>
+    `;
+    main.classList.remove('fade-out');
+
+    try {
+        const response = await fetch(routes[page]);
+        const content = await response.text();
+        
+        if (routeId !== currentRouteId) return; 
+
+        main.classList.add('fade-out');
+        await new Promise(resolve => setTimeout(resolve, 150));
+        if (routeId !== currentRouteId) return;
+        
+        main.innerHTML = content;
+        
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                main.classList.remove('fade-out');
+            });
+        });
+    } catch (e) {
+        console.error(e);
+        main.innerHTML = 'Error loading page';
+        main.classList.remove('fade-out');
+    }
 
     if (page === 'home') {
         await setupDynamicCarousel();
@@ -45,7 +81,7 @@ async function loadPage(page, params) {
         let genres = params ? params.get('genres') : null;
         initCatalog(allManga, genres ? genres.split(',') : []);
     } else if (page === 'title') {
-        const mangaId = parseInt(params.get('id'));
+        const mangaId = params.get('id');
         const manga = getMangaById(mangaId);
 
         if (manga) {
@@ -127,7 +163,7 @@ async function loadPage(page, params) {
                  if (!manga || !chapter) return '';
                  return `
                     <li>
-                        <a href="#reader?mangaId=${manga.id}&chapterId=${chapter.id}">
+                        <a href="#reader?mangaId=${manga.slug || manga.id}&chapterId=${chapter.chapter}">
                             <img src="${manga.coverImage}" alt="${manga.title}">
                             <div class="update-info">
                                 <h3>${manga.title}</h3>
@@ -143,25 +179,42 @@ async function loadPage(page, params) {
         }
 
     } else if (page === 'reader') {
-        const mangaId = parseInt(params.get('mangaId'));
-        const chapterId = parseInt(params.get('chapterId'));
+        const mangaId = params.get('mangaId');
+        const chapterIdParam = parseFloat(params.get('chapterId'));
         const manga = getMangaById(mangaId);
-        const chapter = manga?.chapters.find(ch => ch.id === chapterId);
+        const chapter = manga?.chapters.find(ch => ch.chapter === chapterIdParam);
 
         if (manga && chapter) {
-            addChapterToHistory(mangaId, chapterId);
+            if (chapter.externalUrl) {
+                window.location.replace(chapter.externalUrl);
+                return;
+            }
 
-            main.querySelector('.back-button').href = `#title?id=${mangaId}`;
+            window.scrollTo(0, 0);
+
+            // Using numeric IDs for history tracking internally
+            addChapterToHistory(manga.id, chapter.id);
+
+            main.querySelector('.back-button').href = `#title?id=${manga.slug || manga.id}`;
             main.querySelector('.chapter-title').textContent = `Том ${chapter.volume}, Розділ ${chapter.chapter}${chapter.title ? `: ${chapter.title}` : ''}`;
+            
             const readerContent = main.querySelector('.reader-content');
-            readerContent.innerHTML = chapter.pages.map(pageUrl => `<img src="${pageUrl}" alt="Сторінка розділу" loading="lazy">`).join('');
+            if (chapter.content) {
+                // Novel content
+                readerContent.innerHTML = `<div class="novel-content">${chapter.content}</div>`;
+                readerContent.classList.add('novel-view');
+            } else if (chapter.pages) {
+                // Manga content
+                readerContent.innerHTML = chapter.pages.map(pageUrl => `<img src="${pageUrl}" alt="Сторінка розділу" loading="lazy">`).join('');
+                readerContent.classList.remove('novel-view');
+            }
 
-            const chapterIndex = manga.chapters.findIndex(ch => ch.id === chapterId);
+            const chapterIndex = manga.chapters.findIndex(ch => ch.id === chapter.id);
             
             const prevBtn = main.querySelector('.prev-chapter-btn');
             if (chapterIndex > 0) {
                 const prevChapter = manga.chapters[chapterIndex - 1];
-                prevBtn.href = `#reader?mangaId=${mangaId}&chapterId=${prevChapter.id}`;
+                prevBtn.href = `#reader?mangaId=${manga.slug || manga.id}&chapterId=${prevChapter.chapter}`;
                 prevBtn.style.display = 'inline-flex';
             } else {
                  prevBtn.style.display = 'none';
@@ -170,13 +223,13 @@ async function loadPage(page, params) {
             const nextBtn = main.querySelector('.next-chapter-btn');
             if (chapterIndex < manga.chapters.length - 1) {
                 const nextChapter = manga.chapters[chapterIndex + 1];
-                nextBtn.href = `#reader?mangaId=${mangaId}&chapterId=${nextChapter.id}`;
+                nextBtn.href = `#reader?mangaId=${manga.slug || manga.id}&chapterId=${nextChapter.chapter}`;
                 nextBtn.style.display = 'inline-flex';
             } else {
                 nextBtn.style.display = 'none';
             }
 
-            main.querySelector('.home-btn').href = `#title?id=${mangaId}`;
+            main.querySelector('.home-btn').href = `#title?id=${manga.slug || manga.id}`;
 
             const appHeader = document.querySelector('app-header');
             if (window.innerWidth <= 768) {
@@ -285,6 +338,7 @@ function setupCabinetBookmarks() {
 }
 
 export async function handleNavigation() {
+    const routeId = ++currentRouteId;
     const hash = window.location.hash.substring(1);
     const [page, query] = hash.split('?');
     const params = new URLSearchParams(query);
@@ -294,9 +348,12 @@ export async function handleNavigation() {
     if (pageName !== 'reader' && appHeader) {
         appHeader.classList.remove('hidden');
     }
-
+    
+    const main = document.querySelector('main');
+    
     if (routes[pageName]) {
-        await loadPage(pageName, params);
+        await loadPage(pageName, params, routeId);
+        if (routeId !== currentRouteId) return; // Abort if navigation changed
         window.scrollTo(0, 0);
 
         const appHeaderShadowRoot = appHeader?.shadowRoot;
@@ -307,6 +364,9 @@ export async function handleNavigation() {
                     link.classList.add('active');
                 }
             });
+        }
+        if (window.lucide) {
+            lucide.createIcons();
         }
     } else {
         await showNotFoundPage();

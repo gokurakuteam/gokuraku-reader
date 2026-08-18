@@ -18,7 +18,10 @@ export function getAllManga() {
 }
 
 export function getMangaById(id) {
-    return mangaData.find(manga => manga.id === id);
+    if (typeof id === 'string' && isNaN(id)) {
+        return mangaData.find(manga => manga.slug === id);
+    }
+    return mangaData.find(manga => manga.id === parseInt(id));
 }
 
 export function getLatestUpdates(limit) {

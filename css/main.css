@@ -5,52 +5,67 @@
 
 :root {
     /* --- ТЕМНА ТЕМА (За замовчуванням) --- */
-    --background-dark: #121212;
-    --text-light: #e0e0e0;
-    --card-background: #1e1e1e;
-    --secondary-text: #a0a0a0;
-    --border-color: #333333;
+    --background-dark: #141218; /* Material 3 Surface */
+    --text-light: #E6E0E9;
+    --card-background: #2B2930; /* Surface Container */
+    --secondary-text: #CAC4D0;
+    --border-color: #49454F; /* Outline Variant */
     
+    /* State Layers */
+    --hover-state: rgba(230, 224, 233, 0.08);
+    --focus-state: rgba(230, 224, 233, 0.12);
+    --pressed-state: rgba(230, 224, 233, 0.12);
+
     /* Градієнти для карток та банерів (Темна тема) */
-    /* Починається з темного, переходить у прозорий */
-    --overlay-color-start: rgba(18, 18, 18, 0.95); 
+    --overlay-color-start: rgba(20, 18, 24, 0.95); 
     --overlay-color-end: transparent;
     
     /* Текст, що лежить на цьому градієнті */
-    --text-on-overlay: #e0e0e0; 
-    --text-secondary-on-overlay: #a0a0a0;
+    --text-on-overlay: #E6E0E9; 
+    --text-secondary-on-overlay: #CAC4D0;
 
     /* Акцентні (змінюються через JS) */
-    --accent-color: #00ff99;
-    --glow-color: rgba(0, 255, 153, 0.5);
+    --accent-color: #D0BCFF; /* Primary */
+    --glow-color: rgba(208, 188, 255, 0.25); /* M'якше світіння */
 
     /* Кольори сповіщень (Alerts) - Темна тема */
-    --alert-bg: rgba(255, 235, 59, 0.1);
-    --alert-border: rgba(255, 235, 59, 0.5);
-    --alert-text: #fff176;
+    --alert-bg: rgba(255, 180, 171, 0.1);
+    --alert-border: rgba(255, 180, 171, 0.5);
+    --alert-text: #FFB4AB;
+    
+    /* Анімації (Material 3 standard easing) */
+    --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
 }
 
 /* --- СВІТЛА ТЕМА --- */
 html[data-theme="light"] {
-    --background-dark: #f2f4f7; /* Світлий фон сторінки */
-    --text-light: #1a1a1a;      /* Темний основний текст */
-    --card-background: #ffffff; /* Білі картки */
-    --secondary-text: #5f6368;  /* Сірий вторинний текст */
-    --border-color: #e0e0e0;    /* Світлі межі */
+    --background-dark: #FEF7FF; /* Surface */
+    --text-light: #1D1B20;      
+    --card-background: #F3EDF7; /* Surface Container */
+    --secondary-text: #49454F;  
+    --border-color: #CAC4D0;    /* Outline Variant */
+
+    /* State Layers */
+    --hover-state: rgba(29, 27, 32, 0.08);
+    --focus-state: rgba(29, 27, 32, 0.12);
+    --pressed-state: rgba(29, 27, 32, 0.12);
 
     /* Градієнти для карток та банерів (Світла тема) */
-    /* Починається з білого, переходить у прозорий */
-    --overlay-color-start: rgba(255, 255, 255, 0.95);
+    --overlay-color-start: rgba(254, 247, 255, 0.95);
     --overlay-color-end: transparent;
 
     /* Текст на світлому градієнті має бути темним */
-    --text-on-overlay: #1a1a1a;
-    --text-secondary-on-overlay: #5f6368;
+    --text-on-overlay: #1D1B20;
+    --text-secondary-on-overlay: #49454F;
+
+    /* Акцентні (світла тема) */
+    --accent-color: #6750A4; /* Primary */
+    --glow-color: rgba(103, 80, 164, 0.15);
 
     /* Кольори сповіщень (Alerts) - Світла тема */
-    --alert-bg: #fff9c4;
-    --alert-border: #fbc02d;
-    --alert-text: #5f5200;
+    --alert-bg: #FFDAD6;
+    --alert-border: #FFB4AB;
+    --alert-text: #410002;
 }
 
 body {
@@ -58,9 +73,9 @@ body {
     color: var(--text-light);
     font-family: 'Montserrat', sans-serif;
     margin: 0;
-    background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23808080" fill-opacity="0.05" fill-rule="evenodd"%3E%3Cpath d="M0 60L60 0H30L0 30M60 60V30L30 60"/%3E%3C/g%3E%3C/svg%3E');
+    background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23808080" fill-opacity="0.03" fill-rule="evenodd"%3E%3Cpath d="M0 60L60 0H30L0 30M60 60V30L30 60"/%3E%3C/g%3E%3C/svg%3E'); /* Трохи менш помітна текстура */
     overflow-x: hidden;
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.3s var(--md-sys-motion-easing-emphasized), color 0.3s var(--md-sys-motion-easing-emphasized);
 }
 
 main {
@@ -68,6 +83,14 @@ main {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+    transition: opacity 0.2s var(--md-sys-motion-easing-emphasized), transform 0.2s var(--md-sys-motion-easing-emphasized);
+    opacity: 1;
+    transform: translateY(0);
+}
+
+main.fade-out {
+    opacity: 0;
+    transform: translateY(10px);
 }
 
 footer {
@@ -76,35 +99,59 @@ footer {
     margin-top: 2rem;
     background-color: var(--card-background);
     border-top: 1px solid var(--border-color);
-    transition: background-color 0.3s ease, border-color 0.3s ease;
+    transition: background-color 0.3s var(--md-sys-motion-easing-emphasized), border-color 0.3s var(--md-sys-motion-easing-emphasized);
 }
 
 .button {
     display: inline-flex; 
     align-items: center;
     justify-content: center;
-    background-color: transparent;
+    background-color: var(--card-background);
     color: var(--accent-color);
-    border: 1px solid var(--accent-color);
+    border: 1px solid var(--border-color);
     padding: 0.75rem 1.5rem;
-    border-radius: 25px;
+    border-radius: 100px; /* Pill shape */
     cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    transition: all 0.3s var(--md-sys-motion-easing-emphasized);
+    font-weight: 600;
+    text-transform: none; /* Material 3 uses title case */
+    letter-spacing: 0.5px;
     text-decoration: none;
+    position: relative;
+    overflow: hidden;
+}
+
+/* State Layer for buttons */
+.button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--accent-color);
+    opacity: 0;
+    transition: opacity 0.2s linear;
+}
+
+.button:hover::before {
+    opacity: 0.08; /* Hover state layer */
+}
+.button:active::before {
+    opacity: 0.12; /* Pressed state layer */
 }
 
 .button:hover {
-    background-color: var(--accent-color);
-    /* У темній темі - темний текст, у світлій - білий текст для контрасту з яскравим фоном */
-    color: #121212; 
-    box-shadow: 0 0 15px var(--glow-color);
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transform: translateY(-1px);
 }
 
-html[data-theme="light"] .button:hover {
-    color: #ffffff;
+.button-primary {
+    background-color: var(--accent-color);
+    color: var(--background-dark);
+    border: none;
+}
+.button-primary::before { background-color: var(--text-light); }
+.button-primary:hover {
+    box-shadow: 0 4px 15px var(--glow-color);
 }
 
 .icon-button {
@@ -117,18 +164,35 @@ html[data-theme="light"] .button:hover {
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: all 0.3s ease;
+    transition: all 0.3s var(--md-sys-motion-easing-emphasized);
+    position: relative;
+    overflow: hidden;
+}
+
+.icon-button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--text-light);
+    opacity: 0;
+    transition: opacity 0.2s linear;
+}
+
+.icon-button:hover::before {
+    opacity: 0.08;
+}
+
+.icon-button:active::before {
+    opacity: 0.12;
 }
 
 .icon-button:hover {
-    color: var(--accent-color);
-    background-color: rgba(128, 128, 128, 0.1);
+    color: var(--text-light);
 }
 
-.icon-button svg {
+.icon-button svg, .icon-button i {
     width: 24px;
     height: 24px;
-    fill: currentColor;
 }
 
 section {

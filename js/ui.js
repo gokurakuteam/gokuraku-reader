@@ -1,5 +1,6 @@
 import { isChapterRead, removeChapterFromHistory, addChapterToHistory, addAllChaptersToHistory, removeAllChaptersFromHistory, getBookmarks, getMangaCategory, addBookmark, removeBookmark } from '../storage-manager.js';
 import { downloadChapterAsPdf } from './pdf-generator.js';
+import { downloadChapterAsEpub, downloadMultipleChaptersAsEpub } from './epub-generator.js';
 import { addCategory, deleteCategory } from '../storage-manager.js';
 
 
@@ -139,19 +140,27 @@ export function renderChapterList(manga, sortOrder) {
 
     chapterList.innerHTML = sortedChapters.map(ch => {
         const isRead = isChapterRead(manga.id, ch.id);
+        const chapterUrl = ch.externalUrl ? ch.externalUrl : `#reader?mangaId=${manga.slug || manga.id}&chapterId=${ch.chapter}`;
+        const targetAttr = ch.externalUrl ? 'target="_blank" rel="noopener noreferrer"' : '';
+        const externalIcon = ch.externalUrl ? `<i data-lucide="external-link" style="width: 14px; height: 14px; margin-left: 4px; vertical-align: middle;"></i>` : '';
+        
         return `
             <li class="${isRead ? 'read-chapter' : ''}">
-                <a href="#reader?mangaId=${manga.id}&chapterId=${ch.id}">Том ${ch.volume}, Розділ ${ch.chapter}${ch.title ? `: ${ch.title}` : ''}</a>
+                <a href="${chapterUrl}" ${targetAttr}>Том ${ch.volume}, Розділ ${ch.chapter}${ch.title ? `: ${ch.title}` : ''}${externalIcon}</a>
                 <span class="chapter-meta">
-                    <svg class="eye-icon ${isRead ? 'read' : ''}" data-manga-id="${manga.id}" data-chapter-id="${ch.id}" xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px"><path d="M480-320q75 0 127.5-52.5T660-500q0-75-52.5-127.5T480-680q-75 0-127.5 52.5T300-500q0 75 52.5 127.5T480-320Zm0-72q-45 0-76.5-31.5T372-500q0-45 31.5-76.5T480-608q45 0 76.5 31.5T588-500q0 45-31.5 76.5T480-392Zm0 192q-134 0-244.5-72T61-462q-5-9-7.5-18.5T51-500q0-10 2.5-19.5T61-538q64-118 174.5-190T480-800q134 0 244.5 72T899-538q5 9 7.5 18.5T909-500q0 10-2.5 19.5T899-462q-64 118-174.5 190T480-200Z"/></svg>
+                    <i data-lucide="eye" class="eye-icon ${isRead ? 'read' : ''}" data-manga-id="${manga.id}" data-chapter-id="${ch.id}"></i>
                     ${new Date(ch.date).toLocaleDateString()}
-                    <button class="icon-button download-chapter-btn" title="Завантажити розділ у PDF" data-manga-id="${manga.id}" data-chapter-id="${ch.id}">
-                        <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                    <button class="icon-button download-chapter-btn" title="Завантажити розділ" data-manga-id="${manga.id}" data-chapter-id="${ch.id}">
+                        <i data-lucide="download"></i>
                     </button>
                 </span>
             </li>
         `;
     }).join('');
+
+    if (window.lucide) {
+        lucide.createIcons({ root: chapterList });
+    }
 }
 
 export function updateReadButton(manga) {
@@ -165,7 +174,15 @@ export function updateReadButton(manga) {
         firstUnreadChapter = sortedChapters[0]; 
     }
 
-    readButton.href = `#reader?mangaId=${manga.id}&chapterId=${firstUnreadChapter.id}`;
+    if (firstUnreadChapter.externalUrl) {
+        readButton.href = firstUnreadChapter.externalUrl;
+        readButton.target = '_blank';
+        readButton.rel = 'noopener noreferrer';
+    } else {
+        readButton.href = `#reader?mangaId=${manga.slug || manga.id}&chapterId=${firstUnreadChapter.chapter}`;
+        readButton.removeAttribute('target');
+        readButton.removeAttribute('rel');
+    }
 }
 
 // ЗАМІНІТЬ ЦЮ ФУНКЦІЮ ПОВНІСТЮ
@@ -246,6 +263,25 @@ export function handleChapterListClicks(manga) {
 async function startBatchDownload(mangaId, chapters, quality, uiElements) {
     const { overallLabel, currentLabel, currentBar, modal } = uiElements;
 
+    // Перевіряємо, чи всі вибрані розділи є текстовими (новели)
+    const allNovel = chapters.every(ch => !!ch.content);
+
+    if (allNovel) {
+        overallLabel.textContent = `Генерується один EPUB для ${chapters.length} розділів...`;
+        try {
+            const onProgress = (percent, status) => {
+                currentLabel.textContent = `${status}: ${Math.round(percent)}%`;
+                currentBar.style.width = `${percent}%`;
+            };
+            await downloadMultipleChaptersAsEpub(mangaId, chapters, { onProgress });
+            overallLabel.textContent = 'Усі завантаження завершено!';
+        } catch (error) {
+            overallLabel.textContent = `Помилка при завантаженні EPUB.`;
+        }
+        setTimeout(() => modal.remove(), 2000);
+        return;
+    }
+
     for (let i = 0; i < chapters.length; i++) {
         const chapter = chapters[i];
         overallLabel.textContent = `Розділ ${i + 1} з ${chapters.length} (Розділ ${chapter.chapter})`;
@@ -256,7 +292,12 @@ async function startBatchDownload(mangaId, chapters, quality, uiElements) {
                 currentBar.style.width = `${percent}%`;
             };
 
-            await downloadChapterAsPdf(mangaId, chapter.id, { quality, onProgress });
+            const isNovel = !!chapter.content;
+            if (isNovel) {
+                await downloadChapterAsEpub(mangaId, chapter.id, { onProgress });
+            } else {
+                await downloadChapterAsPdf(mangaId, chapter.id, { quality, onProgress });
+            }
         } catch (error) {
             overallLabel.textContent = `Помилка при завантаженні розділу ${chapter.chapter}. Пропускаємо...`;
             await new Promise(resolve => setTimeout(resolve, 2000)); // Пауза, щоб користувач побачив помилку
@@ -291,14 +332,14 @@ function showBatchDownloadModal(manga) {
                  <div class="download-options">
                     <div class="download-quality-option" data-quality="compressed">
                         <div class="quality-icon">
-                            <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                            <i data-lucide="file-zip"></i>
                         </div>
                         <p class="quality-text-main">Стиснутий</p>
                         <p class="quality-text-secondary">Менший розмір</p>
                     </div>
                     <div class="download-quality-option" data-quality="original">
                         <div class="quality-icon">
-                            <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>
+                            <i data-lucide="file-check-2"></i>
                         </div>
                         <p class="quality-text-main">Оригінал</p>
                         <p class="quality-text-secondary">Краща якість</p>
@@ -319,6 +360,10 @@ function showBatchDownloadModal(manga) {
         </div>
     `;
     document.body.appendChild(overlay);
+
+    if (window.lucide) {
+        lucide.createIcons({ root: overlay });
+    }
 
     let chaptersToDownload = [];
     
@@ -390,10 +435,10 @@ export function showCategoryManagerModal(onUpdateCallback) {
             <span class="category-text">${cat.name}</span>
             <div class="category-item-actions">
                 <button class="icon-button edit-cat-btn" title="Редагувати">
-                    <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    <i data-lucide="pencil" style="width: 18px; height: 18px;"></i>
                 </button>
                 <button class="icon-button delete-cat-btn" title="Видалити">
-                    <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                    <i data-lucide="trash-2" style="width: 18px; height: 18px;"></i>
                 </button>
             </div>
         </li>
@@ -412,6 +457,10 @@ export function showCategoryManagerModal(onUpdateCallback) {
     `;
 
     document.body.appendChild(overlay);
+
+    if (window.lucide) {
+        lucide.createIcons({ root: overlay });
+    }
 
     const list = overlay.querySelector('.category-manager-list');
     const nameInput = overlay.querySelector('#new-category-input');
@@ -491,14 +540,14 @@ function showDownloadOptionsModal(mangaId, chapterId) {
             <div class="download-options">
                 <div class="download-quality-option" data-quality="compressed">
                     <div class="quality-icon">
-                        <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+                        <i data-lucide="file-zip"></i>
                     </div>
                     <p class="quality-text-main">Стиснутий</p>
                     <p class="quality-text-secondary">Менший розмір</p>
                 </div>
                 <div class="download-quality-option" data-quality="original">
                     <div class="quality-icon">
-                        <svg viewBox="0 0 24 24"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21 12 17.27z"/></svg>
+                        <i data-lucide="file-check-2"></i>
                     </div>
                     <p class="quality-text-main">Оригінал</p>
                     <p class="quality-text-secondary">Краща якість</p>
@@ -515,6 +564,10 @@ function showDownloadOptionsModal(mangaId, chapterId) {
     `;
     document.body.appendChild(overlay);
 
+    if (window.lucide) {
+        lucide.createIcons({ root: overlay });
+    }
+
     const optionsDiv = overlay.querySelector('.download-options');
     const progressContainer = overlay.querySelector('.progress-container');
     const progressBar = overlay.querySelector('.progress-bar');
@@ -525,6 +578,33 @@ function showDownloadOptionsModal(mangaId, chapterId) {
             overlay.remove();
         }
     });
+
+    const manga = getMangaById(mangaId);
+    const chapter = manga.chapters.find(c => c.id === chapterId);
+    const isNovel = !!chapter.content;
+
+    if (isNovel) {
+        optionsDiv.style.display = 'none';
+        progressContainer.style.display = 'block';
+
+        const onProgress = (percent, status) => {
+            const p = Math.round(percent);
+            progressBar.style.width = `${p}%`;
+            progressLabel.textContent = `${status}: ${p}%`;
+        };
+
+        downloadChapterAsEpub(mangaId, chapterId, { onProgress })
+            .then(() => {
+                progressLabel.textContent = 'Завершено!';
+                setTimeout(() => overlay.remove(), 1500);
+            })
+            .catch(err => {
+                progressLabel.textContent = 'Помилка!';
+                console.error(err);
+                setTimeout(() => overlay.remove(), 3000);
+            });
+        return;
+    }
 
     optionsDiv.addEventListener('click', e => {
         const qualityOption = e.target.closest('.download-quality-option');

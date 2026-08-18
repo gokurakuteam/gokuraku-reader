@@ -1,11 +1,15 @@
 .carousel-container {
     position: relative;
     overflow: hidden;
+    padding-bottom: 2rem; /* Місце для точок знизу */
 }
 
 .manga-banner-container {
     height: 400px;
-    border-radius: 15px;
+    border-radius: 28px; /* Material 3 Extra Large shape */
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    background-color: var(--card-background);
 }
 
 .manga-banners {
@@ -13,7 +17,7 @@
     height: 100%;
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+    transition: transform 0.8s cubic-bezier(0.2, 0, 0, 1); /* Material 3 emphasized easing */
 }
 
 .manga-banner {
@@ -22,23 +26,27 @@
     left: 0;
     width: 100%;
     height: 100%;
-    opacity: 0;
+    opacity: 0.5;
     text-decoration: none;
     backface-visibility: hidden;
-    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
-    border-radius: 15px;
+    transition: opacity 0.8s ease, transform 0.8s cubic-bezier(0.2, 0, 0, 1);
     overflow: hidden;
-    box-shadow: 0 15px 50px rgba(0,0,0,0.2);
+    transform-origin: center center;
 }
 
 .manga-banner img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 3s ease; /* повільний зум */
 }
 
 .manga-banner.active {
     opacity: 1;
+}
+
+.manga-banner.active img {
+    transform: scale(1.05); /* Легкий зум при активації */
 }
 
 .banner-caption {
@@ -46,51 +54,54 @@
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 4rem 1.5rem 1.5rem;
+    padding: 6rem 2rem 2rem; /* Більше відступу знизу */
     /* Градієнт банера адаптується під тему */
-    background: linear-gradient(to top, var(--overlay-color-start) 30%, var(--overlay-color-end));
+    background: linear-gradient(to top, var(--overlay-color-start) 20%, var(--overlay-color-end));
     /* Текст адаптується під градієнт */
     color: var(--text-on-overlay);
     text-align: left;
-    transition: opacity 0.5s ease, background 0.3s ease, color 0.3s ease;
+    transition: opacity 0.5s ease;
 }
 
 .banner-caption h3 {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 1.8rem;
+    font-weight: 800;
     margin: 0 0 0.5rem 0;
-    text-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    letter-spacing: -0.5px;
 }
 
 .banner-caption p {
     margin: 0;
-    font-size: 1rem;
-    font-weight: 400;
+    font-size: 1.1rem;
+    font-weight: 500;
     color: var(--text-secondary-on-overlay);
 }
 
 .banner-dots {
     position: absolute;
-    bottom: -25px;
+    bottom: 0px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 12px;
+    gap: 8px;
     z-index: 10;
 }
 
 .banner-dot {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
+    width: 8px;
+    height: 8px;
+    border-radius: 4px; /* Круглі */
     background-color: var(--border-color);
     cursor: pointer;
-    transition: all 0.4s ease;
+    transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
+    opacity: 0.5;
 }
 
 .banner-dot.active {
     background-color: var(--accent-color);
-    transform: scale(1.2);
+    width: 32px; /* Pill форма для активної точки */
+    opacity: 1;
 }
 
 .carousel-nav button {
@@ -98,37 +109,52 @@
     top: 50%;
     transform: translateY(-50%);
     z-index: 20;
-    /* Кнопки навігації завжди темні напівпрозорі для контрасту з картинкою */
-    background-color: rgba(28, 28, 28, 0.7);
-    color: #e0e0e0; 
-    border: 1px solid rgba(255,255,255,0.2);
+    background-color: var(--card-background);
+    color: var(--text-light); 
+    border: none;
     border-radius: 50%;
-    width: 44px;
-    height: 44px;
+    width: 48px;
+    height: 48px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
     display: flex;
     justify-content: center;
     align-items: center;
-    backdrop-filter: blur(5px);
     padding: 0;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.carousel-nav button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: var(--text-light);
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s linear;
+}
+
+.carousel-nav button:hover::before {
+    opacity: 0.08;
+}
+
+.carousel-nav button:active::before {
+    opacity: 0.12;
 }
 
 .carousel-nav button:hover {
-    background-color: var(--accent-color);
-    color: #121212;
-    border-color: var(--accent-color);
-    transform: translateY(-50%) scale(1.05);
+    color: var(--accent-color);
+    transform: translateY(-50%) scale(1.1);
 }
 
-.carousel-nav svg {
-    width: 28px;
-    height: 28px;
-    fill: currentColor;
+.carousel-nav svg, .carousel-nav i {
+    width: 24px;
+    height: 24px;
+    z-index: 1; /* щоб був над state layer */
 }
 
-.carousel-prev { left: 22px; }
-.carousel-next { right: 22px; }
+.carousel-prev { left: 16px; }
+.carousel-next { right: 16px; }
 
 /* --- Update list styles --- */
 .update-list {
@@ -243,7 +269,6 @@
 .social-icon svg {
     width: 28px;
     height: 28px;
-    fill: currentColor;
 }
 
 

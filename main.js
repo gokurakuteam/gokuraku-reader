@@ -29,6 +29,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     window.addEventListener('hashchange', handleNavigation);
     await handleNavigation();
+    
+    if (window.lucide) {
+        lucide.createIcons();
+    }
 
     document.querySelector('app-header').shadowRoot.querySelectorAll('nav a').forEach(link => {
         link.addEventListener('click', (e) => {
