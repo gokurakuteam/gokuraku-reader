@@ -35,9 +35,9 @@
 }
 
 .title-cover img {
-    width: 200px;
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    width: 220px;
+    border-radius: 24px; /* Consistent radius */
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 5px 15px var(--glow-color);
 }
 
 .title-info h1 {
@@ -68,15 +68,17 @@
 
 .genres a {
     background-color: var(--card-background);
-    padding: 0.5rem 1rem;
-    border-radius: 15px;
+    padding: 0.6rem 1.2rem;
+    border-radius: 100px; /* Pill shape */
     margin-right: 0.5rem;
     margin-bottom: 0.5rem;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    font-weight: 500;
     display: inline-block;
     text-decoration: none;
-    color: var(--secondary-text);
-    transition: all 0.3s ease;
+    color: var(--text-light); /* Better contrast */
+    border: 1px solid var(--border-color);
+    transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .genres a:hover {
@@ -92,10 +94,16 @@
 }
 
 .title-actions {
-    margin-top: 1.5rem;
+    margin-top: 2rem;
     display: flex;
     gap: 1rem;
     align-items: center;
+}
+
+.read-button {
+    font-size: 1.1rem;
+    padding: 1rem 2rem;
+    box-shadow: 0 4px 15px var(--glow-color);
 }
 
 .chapter-list .list-header {
@@ -131,23 +139,45 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem;
+    padding: 1.25rem;
     background-color: var(--card-background);
-    border-radius: 10px;
+    border-radius: 24px; /* Consistent card radius */
     margin-bottom: 1rem;
-    transition: background-color 0.3s ease, opacity 0.3s ease;
-    border: 1px solid transparent; /* Щоб не скакало при ховері */
+    transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+    border: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
+}
+
+.chapter-list li::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--text-light);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+
+.chapter-list li > * {
+    position: relative;
+    z-index: 1;
 }
 
 .chapter-list li.read-chapter {
     opacity: 0.6;
+    background-color: transparent;
+    border-style: dashed;
 }
 
 .chapter-list li:hover {
-    /* ВИПРАВЛЕННЯ: Замість фіксованого #2a2a2a використовуємо змінну border-color або напівпрозорий акцент */
-    /* У світлій темі border-color світлий, у темній - темний. Це безпечно. */
-    background-color: var(--border-color);
-    opacity: 1;
+    transform: translateY(-2px);
+    border-radius: 24px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.chapter-list li:hover::after {
+    opacity: 0.05;
 }
 
 .chapter-list li a {
@@ -269,14 +299,18 @@
 
 .modal-content {
     background-color: var(--card-background);
-    margin: 15% auto;
-    padding: 2rem;
+    margin: 5vh auto;
+    padding: 2.5rem 2rem;
     border: 1px solid var(--border-color);
     width: 80%;
     max-width: 400px;
-    border-radius: 15px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 32px;
     text-align: center;
     position: relative;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    animation: scaleUp 0.4s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .close-button {
@@ -316,6 +350,7 @@
     background-color: #dc3545;
     border-color: #dc3545;
     color: white;
+    border-radius: 100px;
 }
 
 .button-danger:hover {
@@ -368,18 +403,22 @@
 
 .bookmark-modal {
     background-color: var(--card-background);
-    padding: 2rem;
-    border-radius: 15px;
+    padding: 2.5rem 2rem;
+    border-radius: 32px;
     width: 90%;
     max-width: 400px;
     text-align: center;
     border: 1px solid var(--border-color);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    animation: scaleUp 0.4s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .bookmark-modal h3 {
     margin-top: 0;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     color: var(--text-light);
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
 .category-list {
@@ -390,27 +429,29 @@
 }
 
 .category-btn {
-    background: none;
-    border: 1px solid var(--border-color);
+    background-color: var(--background-dark);
+    border: none;
     color: var(--text-light);
-    padding: 0.8rem;
+    padding: 1rem;
     width: 100%;
-    border-radius: 10px;
+    border-radius: 100px;
     cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.2s ease;
+    font-size: 1.05rem;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .category-btn:hover {
-    background-color: var(--border-color);
-    border-color: var(--secondary-text);
+    background-color: var(--hover-state);
+    transform: translateY(-2px);
 }
 
 .category-btn.active {
     background-color: var(--accent-color);
     color: #121212;
-    border-color: var(--accent-color);
-    font-weight: bold;
+    border: none;
+    font-weight: 700;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 
 .remove-bookmark-btn {
@@ -440,18 +481,21 @@
 
 .download-modal {
     background-color: var(--card-background);
-    padding: 2rem;
-    border-radius: 15px;
+    padding: 2.5rem 2rem;
+    border-radius: 32px;
     width: 90%;
     max-width: 400px;
     text-align: center;
     border: 1px solid var(--border-color);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    animation: scaleUp 0.4s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .download-modal h3 {
     margin-top: 0;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
 .download-options {
@@ -486,17 +530,17 @@
 .progress-bar-container {
     width: 100%;
     background-color: var(--background-dark);
-    border-radius: 10px;
+    border-radius: 100px;
     border: 1px solid var(--border-color);
     overflow: hidden;
-    height: 20px;
+    height: 16px;
 }
 
 .progress-bar {
     width: 0%;
     height: 100%;
     background-color: var(--accent-color);
-    border-radius: 10px;
+    border-radius: 100px;
     transition: width 0.3s ease;
 }
 
@@ -517,18 +561,21 @@
 
 .batch-download-modal {
     background-color: var(--card-background);
-    padding: 2rem;
-    border-radius: 15px;
+    padding: 2.5rem 2rem;
+    border-radius: 32px;
     width: 90%;
     max-width: 450px;
     border: 1px solid var(--border-color);
-    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    animation: scaleUp 0.4s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .batch-download-modal h3 {
     margin-top: 0;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
 }
 
 .batch-download-modal .view {
@@ -561,16 +608,20 @@
 /* --- Нові стилі для модального вікна завантаження --- */
 
 .batch-download-modal #batch-selection-view .button {
-    background-color: var(--card-background);
-    border: 1px solid var(--border-color);
+    background-color: var(--background-dark);
+    border: none;
     color: var(--text-light);
+    border-radius: 100px;
+    padding: 1rem;
+    font-size: 1.05rem;
+    font-weight: 500;
+    transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .batch-download-modal #batch-selection-view .button:hover {
-    background-color: var(--border-color);
-    color: var(--accent-color);
-    border-color: var(--accent-color);
-    box-shadow: none; 
+    background-color: var(--hover-state);
+    color: var(--text-light);
+    transform: translateY(-2px);
 }
 
 
@@ -584,27 +635,30 @@
 
 .download-quality-option {
     background-color: var(--background-dark);
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
+    border: 2px solid transparent;
+    border-radius: 32px;
     padding: 1.5rem 1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.75rem;
+    text-align: center;
 }
 
 .download-quality-option:hover {
-    transform: translateY(-5px);
+    background-color: var(--hover-state);
     border-color: var(--accent-color);
-    box-shadow: 0 0 15px var(--glow-color);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1), 0 0 15px var(--glow-color);
 }
 
 .quality-icon {
     width: 48px;
     height: 48px;
     color: var(--accent-color);
+    margin-bottom: 0.5rem;
+    transform: scale(1.2);
 }
 
 .quality-icon svg {
@@ -627,32 +681,59 @@
 
 /* --- СТИЛІ ДЛЯ ВКЛАДОК НА СТОРІНЦІ ТАЙТЛУ --- */
 .tabs {
-    display: flex;
-    border-bottom: 2px solid var(--border-color);
+    display: inline-flex;
+    justify-content: center;
     margin-bottom: 2rem;
-    padding-bottom: 1rem;
+    gap: 0.25rem;
+    background-color: var(--card-background);
+    padding: 0.5rem;
+    border-radius: 100px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .tab-link {
-    background: none;
+    background: transparent !important;
     border: none;
     color: var(--secondary-text);
-    padding: 0.8rem 1.5rem;
+    padding: 0.75rem 1.5rem;
     cursor: pointer;
     font-size: 1.1rem;
     font-weight: 600;
     position: relative;
-    transition: color 0.3s ease;
-    background-color: none !important;
+    transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+    border-radius: 100px;
+    overflow: hidden;
 }
 
-.tab-link:hover {
-    color: var(--text-light);
+.tab-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--text-light);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 100px;
+    z-index: 0;
+}
+
+.tab-link:hover::before {
+    opacity: 0.08;
+}
+
+.tab-link > * {
+    position: relative;
+    z-index: 1;
 }
 
 .tab-link.active {
-    color: var(--accent-color);
-    background-color: none !important;
+    color: var(--text-light);
+    background-color: var(--background-dark) !important;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
 }
 
 .tab-content {
@@ -661,6 +742,7 @@
 
 .tab-content.active {
     display: block;
+    animation: fadeIn 0.4s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .chapter-list .list-header h2 {

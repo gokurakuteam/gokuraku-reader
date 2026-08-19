@@ -1,15 +1,57 @@
 let mangaData = [];
 
-export async function loadMangaData() {
-    try {
-        const response = await fetch('manga-data.json');
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+let loadPromise = null;
+
+export function loadMangaData() {
+    if (!loadPromise) {
+        loadPromise = (async () => {
+            try {
+                const response = await fetch('api/manga-list.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                mangaData = await response.json();
+                console.log('Manga list loaded successfully!');
+            } catch (error) {
+                console.error("Could not load manga list:", error);
+                loadPromise = null; // Дозволяємо спробувати ще раз при помилці
+            }
+        })();
+    }
+    return loadPromise;
+}
+
+const detailedMangaFetched = new Set();
+
+export async function fetchMangaDetails(id) {
+    let identifier = id;
+    if (typeof id === 'number' || (typeof id === 'string' && !isNaN(id))) {
+        // Find slug if it's a numeric ID
+        const manga = mangaData.find(m => m.id === parseInt(id));
+        if (manga && manga.slug) {
+            identifier = manga.slug;
         }
-        mangaData = await response.json();
-        console.log('Manga data loaded successfully!');
+    }
+
+    if (detailedMangaFetched.has(identifier)) return;
+
+    try {
+        const response = await fetch(`api/manga/${identifier}.json`);
+        if (!response.ok) throw new Error(`Failed to load details for ${identifier}`);
+        
+        const fullData = await response.json();
+        
+        // Update local mangaData with the full data
+        const index = mangaData.findIndex(m => m.id === fullData.id);
+        if (index !== -1) {
+            mangaData[index] = fullData;
+        } else {
+            mangaData.push(fullData);
+        }
+        
+        detailedMangaFetched.add(identifier);
     } catch (error) {
-        console.error("Could not load manga data:", error);
+        console.error("Could not fetch manga details:", error);
     }
 }
 

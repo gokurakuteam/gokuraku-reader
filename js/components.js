@@ -16,14 +16,27 @@ export class AppHeader extends HTMLElement {
             <style>
                 :host {
                     display: block;
-                    padding: 1rem 2rem;
-                    background-color: var(--card-background);
-                    border-bottom: 1px solid var(--border-color);
+                    padding: 1rem;
+                    background: linear-gradient(to bottom, var(--background-dark) 60%, transparent);
+                    position: sticky;
+                    top: 0;
+                    z-index: 1000;
+                    pointer-events: none;
+                }
+                :host(.hidden) {
+                    display: none !important;
                 }
                 .header {
+                    pointer-events: auto;
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
+                    background-color: var(--card-background);
+                    padding: 0.5rem 1.5rem;
+                    border-radius: 100px;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                    margin: 0 auto;
+                    max-width: 1200px;
                 }
                 .logo {
                     font-size: 1.8rem;
@@ -36,25 +49,20 @@ export class AppHeader extends HTMLElement {
                 nav a {
                     color: var(--text-light);
                     text-decoration: none;
-                    margin-inline-start: 1.5rem;
+                    margin-inline-start: 0.5rem;
+                    padding: 0.5rem 1rem;
+                    border-radius: 100px;
                     display: flex;
                     align-items: center;
-                    font-weight: 500;
-                    position: relative;
+                    font-weight: 600;
+                    transition: background-color 0.3s ease, color 0.3s ease;
                 }
-                nav a::after {
-                    content: '';
-                    position: absolute;
-                    bottom: -5px;
-                    left: 0;
-                    width: 100%;
-                    height: 2px;
-                    background-color: var(--accent-color);
-                    transform: scaleX(0);
-                    transition: transform 0.3s ease;
+                nav a.active, nav a:hover {
+                    background-color: var(--hover-state);
                 }
-                nav a.active::after, nav a:hover::after {
-                    transform: scaleX(1);
+                nav a.active {
+                    color: var(--accent-color);
+                    background-color: var(--glow-color);
                 }
                 .icon {
                     display: none;
@@ -69,14 +77,14 @@ export class AppHeader extends HTMLElement {
                 @media (max-width: 768px) {
                     :host {
                         position: fixed;
+                        top: auto;
                         bottom: 0;
                         left: 0;
                         right: 0;
-                        border-top: 1px solid var(--border-color);
-                        border-bottom: none;
-                        background-color: var(--card-background);
+                        padding: 0;
                         z-index: 1000;
-                        padding: 0.5rem 0;
+                        background: none;
+                        pointer-events: auto;
                         transition: transform 0.3s ease;
                     }
                      :host(.hidden) {
@@ -84,6 +92,9 @@ export class AppHeader extends HTMLElement {
                     }
                     .header {
                         justify-content: center;
+                        border-radius: 32px 32px 0 0;
+                        padding: 0.5rem 1rem;
+                        box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
                     }
                     .logo {
                         display: none;
@@ -97,19 +108,18 @@ export class AppHeader extends HTMLElement {
                         margin-inline-start: 0;
                         padding: 0.5rem;
                         color: var(--secondary-text);
-                    }
-                     nav a::after {
-                        display: none;
+                        border-radius: 16px;
                     }
                     nav a.active {
                         color: var(--accent-color);
+                        background-color: var(--glow-color);
                     }
                     .icon {
                         display: inline;
+                        margin-bottom: 4px;
                     }
                     .text {
-                        font-size: 0.7rem;
-                        margin-top: 0.25rem;
+                        font-size: 0.75rem;
                     }
                 }
             </style>
@@ -169,50 +179,48 @@ export class MangaCard extends HTMLElement {
                 .card {
                     position: relative;
                     background-color: var(--card-background);
-                    border-radius: 12px;
+                    border-radius: 24px;
                     overflow: hidden;
                     text-decoration: none;
-                    color: var(--text-light); /* Колір за замовчуванням */
+                    color: var(--text-light);
                     display: flex;
                     flex-direction: column;
                     height: 100%;
-                    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-                    transition: transform 0.3s ease, box-shadow 0.3s ease;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+                    transition: transform 0.4s var(--md-sys-motion-easing-emphasized), box-shadow 0.4s var(--md-sys-motion-easing-emphasized);
                 }
                 .card:hover {
-                    transform: translateY(-5px);
-                    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3), 0 0 15px var(--glow-color);
+                    transform: translateY(-8px) scale(1.02);
+                    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.2), 0 0 20px var(--glow-color);
                 }
                 .card-image-container {
                     width: 100%;
                     aspect-ratio: 2 / 3;
                     position: relative;
-                    border-top-left-radius: 12px;
-                    border-top-right-radius: 12px;
+                    border-top-left-radius: 24px;
+                    border-top-right-radius: 24px;
                     overflow: hidden;
                 }
                 img {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
-                    transition: transform 0.4s ease;
-                    border-top-left-radius: 12px;
-                    border-top-right-radius: 12px;
+                    transition: transform 0.5s var(--md-sys-motion-easing-emphasized);
+                    border-top-left-radius: 24px;
+                    border-top-right-radius: 24px;
                 }
                 .card:hover img {
-                    transform: scale(1.05);
+                    transform: scale(1.08);
                 }
-                /* --- ГОЛОВНА ЗМІНА: ГРАДІЄНТ І ТЕКСТ --- */
                 .card-overlay {
                     position: absolute;
                     top: 0;
                     left: 0;
                     width: 100%;
                     height: 100%;
-                    /* Градієнт тепер залежить від теми (темний для темної, світлий для світлої) */
-                    background: linear-gradient(to top, var(--overlay-color-start) 25%, var(--overlay-color-end) 60%);
-                    border-top-left-radius: 12px;
-                    border-top-right-radius: 12px;
+                    background: linear-gradient(to top, var(--overlay-color-start) 25%, var(--overlay-color-end) 70%);
+                    border-top-left-radius: 24px;
+                    border-top-right-radius: 24px;
                     transition: background 0.3s ease;
                 }
                 .card-info {
@@ -249,22 +257,26 @@ export class MangaCard extends HTMLElement {
                 
                 .card-meta {
                     position: absolute;
-                    top: 0.75rem;
-                    left: 0.75rem;
-                    right: 0.75rem;
+                    top: 0.5rem;
+                    left: 0.5rem;
+                    right: 0.5rem;
                     display: flex;
                     justify-content: space-between;
-                    gap: 0.5rem;
+                    gap: 0.25rem;
                 }
                 .meta-tag {
                     background-color: rgba(20, 20, 20, 0.8);
                     backdrop-filter: blur(5px);
                     color: white; /* Мета-теги завжди темні з білим текстом для читабельності поверх картинки */
-                    padding: 0.3rem 0.6rem;
-                    border-radius: 8px;
-                    font-size: 0.8rem;
+                    padding: 0.2rem 0.4rem;
+                    border-radius: 6px;
+                    font-size: 0.7rem;
                     font-weight: 500;
                     text-transform: capitalize;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    max-width: 48%;
                 }
                 .status-tag {
                     color: white;

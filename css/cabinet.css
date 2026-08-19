@@ -1,41 +1,85 @@
 /* ... існуючий код ... */
 .tabs {
-    display: flex;
+    display: inline-flex;
     justify-content: center;
     margin-bottom: 2rem;
-    gap: 1rem;
+    gap: 0.25rem;
+    background-color: var(--card-background);
+    padding: 0.5rem;
+    border-radius: 100px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .tab-link {
-    background: none;
-    border: 1px solid transparent;
+    background: transparent;
+    border: none;
     color: var(--secondary-text);
     padding: 0.75rem 1.5rem;
-    border-radius: 25px;
+    border-radius: 100px;
     cursor: pointer;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
-    text-transform: uppercase;
-    transition: all 0.3s ease;
+    transition: all 0.4s cubic-bezier(0.2, 0, 0, 1);
     display: flex;
     align-items: center;
     justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.tab-link::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--text-light);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: 100px;
+    z-index: 0;
+}
+
+.tab-link:hover::before {
+    opacity: 0.08;
+}
+
+.tab-link:active {
+    transform: scale(0.95);
+}
+
+.tab-link > * {
+    z-index: 1; /* Keep text/icons above the state layer */
 }
 
 .tab-link.active {
-    color: var(--background-dark);
+    color: var(--text-light); /* Better contrast than just accent */
     background-color: var(--accent-color);
-    border-color: var(--accent-color);
-    box-shadow: 0 0 15px var(--glow-color);
+    box-shadow: 0 0 20px var(--glow-color);
 }
 
-/* Для світлої теми текст активної кнопки має бути білим */
-html[data-theme="light"] .tab-link.active {
-    color: #fff;
+.tab-link.active {
+    color: var(--text-light);
+    background-color: var(--background-dark);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    font-weight: 600;
 }
 
-.icon-tab-link { padding: 0.5rem 1rem; }
-.tab-icon { width: 24px; height: 24px; }
+/* Remove the old light theme fix that broke text */
+/* html[data-theme="light"] .tab-link.active { ... } is removed */
+
+.tab-content {
+    display: none;
+}
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.4s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.icon-tab-link { padding: 0.75rem; }
+.tab-icon { width: 20px; height: 20px; }
 
 #category-manager { background-color: var(--card-background); padding: 1.5rem; border-radius: 15px; margin-bottom: 2rem; }
 #category-manager h3 { margin-top: 0; text-align: center; }
@@ -44,48 +88,76 @@ html[data-theme="light"] .tab-link.active {
 #category-list { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.75rem; }
 #category-list li { display: flex; align-items: center; background-color: var(--background-dark); padding: 0.5rem 1rem; border-radius: 20px; border: 1px solid var(--border-color); }
 #category-list button { background: none; border: none; color: var(--secondary-text); margin-left: 0.5rem; cursor: pointer; font-size: 1.2rem; line-height: 1; }
-.category-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; border-bottom: 1px solid var(--border-color); margin-bottom: 1.5rem; }
-.category-tab { padding: 0.75rem 1.25rem; cursor: pointer; border-bottom: 2px solid transparent; color: var(--secondary-text); transition: all 0.3s ease; }
-.category-tab.active { color: var(--accent-color); border-bottom-color: var(--accent-color); }
+/* Removed duplicate category-tabs styles */
 .category-content { display: none; }
 .category-content.active { display: block; }
 @media (max-width: 768px) { .tabs { flex-wrap: wrap; gap: 0.5rem; } .tab-link { padding: 0.6rem 1rem; font-size: 0.9rem; flex: 1 1 auto; text-align: center; } }
 #bookmarks-container { margin-top: 1rem; }
 .category-tabs-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
-.category-tabs { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-.category-tab { padding: 0.75rem 1rem; cursor: pointer; color: var(--secondary-text); font-weight: 500; position: relative; border-bottom: 3px solid transparent; transition: all 0.3s ease; }
-.category-tab:hover { color: var(--text-light); }
-.category-tab.active { color: var(--accent-color); border-bottom-color: var(--accent-color); }
+.category-tabs { display: flex; flex-wrap: wrap; gap: 0.8rem; }
+.category-tab { 
+    padding: 0.6rem 1.2rem; 
+    cursor: pointer; 
+    color: var(--text-light); 
+    font-weight: 500; 
+    position: relative; 
+    background-color: var(--card-background);
+    border-radius: 100px; /* Pill shape */
+    border: 1px solid var(--border-color);
+    transition: all 0.3s cubic-bezier(0.2, 0, 0, 1); 
+}
+.category-tab:hover { 
+    background-color: var(--hover-state);
+    transform: translateY(-2px);
+    border-radius: 100px;
+}
+.category-tab.active { 
+    color: var(--background-dark); 
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    box-shadow: 0 4px 15px var(--glow-color);
+    border-radius: 100px;
+}
+html[data-theme="light"] .category-tab.active { color: #fff; }
 .category-content { display: none; }
-.category-content.active { display: block; }
+.category-content.active { display: block; animation: fadeIn 0.4s ease; }
 .empty-category-message { text-align: center; padding: 4rem 2rem; color: var(--secondary-text); background-color: var(--card-background); border-radius: 15px; border: 1px dashed var(--border-color); }
 .empty-category-message p { font-size: 1.2rem; margin: 0; }
 .category-manager-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); display: flex; justify-content: center; align-items: center; z-index: 1001; }
-.category-manager-modal { background-color: var(--card-background); padding: 2rem; border-radius: 15px; width: 90%; max-width: 450px; border: 1px solid var(--border-color); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-.category-manager-modal h3 { text-align: center; margin-top: 0; margin-bottom: 1.5rem; }
-.add-category-form { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; align-items: center; }
-#new-category-input { flex-grow: 1; padding: 0.7rem 1rem; border-radius: 20px; border: 1px solid var(--border-color); background-color: var(--background-dark); color: var(--text-light); font-size: 1rem; }
-#add-new-category-btn { flex-shrink: 0; width: 44px; height: 44px; padding: 0; font-size: 1.5rem; line-height: 1; }
-.category-manager-list { scrollbar-color: var(--border-color) var(--card-background); scrollbar-width: thin; list-style: none; padding: 0; max-height: 300px; overflow-y: auto; }
-.category-manager-list li { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0.5rem; border-radius: 10px; transition: background-color 0.2s ease; }
-.category-manager-list li:hover { background-color: #2a2a2a; }
-.category-text { font-weight: 500; flex-grow: 1; }
+.category-manager-modal { background-color: var(--card-background); padding: 2.5rem 2rem; border-radius: 32px; width: 90%; max-width: 450px; border: 1px solid var(--border-color); box-shadow: 0 20px 50px rgba(0,0,0,0.3); animation: scaleUp 0.4s cubic-bezier(0.2, 0, 0, 1); }
+@media (max-width: 768px) {
+    .category-manager-overlay { align-items: flex-end; }
+    .category-manager-modal { width: 100%; max-width: 100%; border-radius: 32px 32px 0 0; margin: 0; padding: 2rem 1.5rem; border-bottom: none; animation: slideUp 0.3s cubic-bezier(0.2, 0, 0, 1); }
+}
+@keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+.category-manager-modal h3 { text-align: center; margin-top: 0; margin-bottom: 2rem; font-size: 1.5rem; font-weight: 700; color: var(--text-light); }
+.add-category-form { display: flex; gap: 0.75rem; margin-bottom: 2rem; align-items: center; background-color: var(--background-dark); padding: 0.5rem; border-radius: 100px; border: 1px solid var(--border-color); }
+#new-category-input { flex-grow: 1; height: 44px; padding: 0 1rem; margin: 0; border: none; background: transparent; color: var(--text-light); font-size: 1rem; line-height: 44px; outline: none; box-sizing: border-box; -webkit-appearance: none; }
+#new-category-input::placeholder { color: var(--secondary-text); }
+#add-new-category-btn { flex-shrink: 0; width: 44px; height: 44px; padding: 0; font-size: 1.5rem; line-height: 1; border-radius: 50%; background-color: var(--accent-color); color: var(--background-dark); border: none; cursor: pointer; transition: transform 0.2s cubic-bezier(0.2, 0, 0, 1); display: flex; align-items: center; justify-content: center; }
+#add-new-category-btn:hover { transform: scale(1.1); }
+.category-manager-list { scrollbar-color: var(--border-color) transparent; scrollbar-width: thin; list-style: none; padding: 0; max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; padding-right: 0.5rem; }
+.category-manager-list li { display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border-radius: 20px; transition: all 0.2s ease; background-color: transparent; border: 1px solid transparent; }
+.category-manager-list li:hover { background-color: var(--hover-state); border-color: var(--border-color); transform: translateX(4px); }
+.category-text { font-weight: 500; font-size: 1.05rem; flex-grow: 1; color: var(--text-light); }
 .category-item-actions { display: flex; gap: 0.5rem; }
-.category-item-actions .icon-button { color: var(--secondary-text); }
-#new-category-color { -webkit-appearance: none; -moz-appearance: none; appearance: none; width: 44px; height: 44px; border: 1px solid var(--border-color); border-radius: 50%; cursor: pointer; background-color: transparent; }
-#new-category-color::-webkit-color-swatch { border-radius: 50%; border: none; }
-#new-category-color::-moz-color-swatch { border-radius: 50%; border: none; }
-.color-swatch { width: 16px; height: 16px; border-radius: 50%; margin-right: 1rem; border: 1px solid rgba(255, 255, 255, 0.2); flex-shrink: 0; }
+.category-item-actions .icon-button { color: var(--secondary-text); background-color: transparent; border: none; cursor: pointer; padding: 0.5rem; border-radius: 50%; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
+.category-item-actions .icon-button:hover { background-color: rgba(255, 255, 255, 0.1); color: var(--text-light); }
+#new-category-color { -webkit-appearance: none; -moz-appearance: none; appearance: none; width: 44px; height: 44px; min-width: 44px; min-height: 44px; border: none; border-radius: 50%; cursor: pointer; background-color: transparent; padding: 0; flex-shrink: 0; aspect-ratio: 1 / 1; }
+#new-category-color::-webkit-color-swatch-wrapper { padding: 0; }
+#new-category-color::-webkit-color-swatch { border-radius: 50%; border: 2px solid var(--background-dark); }
+#new-category-color::-moz-color-swatch { border-radius: 50%; border: 2px solid var(--background-dark); }
+.color-swatch { width: 16px; height: 16px; border-radius: 50%; margin-right: 1rem; border: none; box-shadow: 0 0 0 2px var(--card-background); flex-shrink: 0; }
 
 
-/* --- THEME SWITCHER --- */
 .theme-mode-container {
     background-color: var(--card-background);
-    padding: 1.5rem;
-    border-radius: 15px;
+    padding: 2rem;
+    border-radius: 32px; /* Consistent large radius */
     margin-bottom: 2rem;
     border: 1px solid var(--border-color);
     text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
 }
 
 .theme-mode-container h3 {
@@ -99,14 +171,14 @@ html[data-theme="light"] .tab-link.active {
     display: flex;
     justify-content: space-between;
     background-color: var(--background-dark);
-    border-radius: 30px;
-    padding: 5px;
+    border-radius: 100px;
+    padding: 6px;
     position: relative;
     border: 1px solid var(--border-color);
     max-width: 400px;
     margin: 0 auto;
-    /* Запобігаємо викривленню на малих екранах */
-    min-height: 50px;
+    min-height: 56px;
+    box-shadow: inset 0 4px 10px rgba(0,0,0,0.1);
 }
 
 .theme-switcher input[type="radio"] { display: none; }
@@ -132,11 +204,7 @@ html[data-theme="light"] .tab-link.active {
 .theme-switcher input[type="radio"]:checked + label {
     color: var(--background-dark);
 }
-/* Специфічно для світлої теми: коли активна, текст на пілюлі має бути білим для контрасту, 
-   якщо акцентний колір темний, або темним, якщо світлий. 
-   Оскільки accent-color зазвичай яскравий, краще залишити var(--background-dark), 
-   що в світлій темі дасть білий (ні, background-dark у світлій темі це фон).
-   Тому тут робимо фікс для тексту на пілюлі */
+/* Специфічно для світлої теми: текст активного (обраного) елемента має бути білим, бо фон акцентний */
 html[data-theme="light"] .theme-switcher input[type="radio"]:checked + label {
     color: #ffffff;
 }
@@ -148,13 +216,13 @@ html[data-theme="light"] .theme-switcher input[type="radio"]:checked + label {
     top: 5px;
     bottom: 5px;
     left: 5px;
-    /* Ширина: (100% - 10px (відступи зліва/справа)) / 3 */
-    width: calc((100% - 10px) / 3); 
+    /* Ширина: (100% - 12px (відступи зліва/справа)) / 3 */
+    width: calc((100% - 12px) / 3); 
     background-color: var(--accent-color);
-    border-radius: 25px;
-    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+    border-radius: 100px;
+    transition: transform 0.4s cubic-bezier(0.2, 0, 0, 1);
     z-index: 1;
-    box-shadow: 0 2px 10px var(--glow-color);
+    box-shadow: 0 4px 15px var(--glow-color);
 }
 
 /* Логіка переміщення: 0% -> 100% -> 200% від власної ширини */
@@ -210,49 +278,98 @@ html[data-theme="light"] .theme-switcher input[type="radio"]:checked + label {
 
 .clicker-bg-glow {
     position: absolute;
-    width: 80%;
-    height: 80%;
+    width: 90%;
+    height: 90%;
     background: radial-gradient(circle, var(--glow-color) 0%, transparent 70%);
     border-radius: 50%;
-    animation: pulse 2s infinite;
+    /* Додано анімацію обертання та пульсації тіні */
+    animation: pulse 3s infinite alternate, float-slow 4s ease-in-out infinite;
     z-index: 0;
+    filter: blur(10px);
 }
 @keyframes pulse {
-    0% { transform: scale(0.95); opacity: 0.5; }
-    50% { transform: scale(1.1); opacity: 0.8; }
-    100% { transform: scale(0.95); opacity: 0.5; }
+    0% { transform: scale(0.9); opacity: 0.6; }
+    100% { transform: scale(1.15); opacity: 1; }
 }
 
 .chibik-image {
     width: 100%; 
     height: 100%; 
     object-fit: contain;
-    filter: drop-shadow(0 0 15px var(--glow-color));
+    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
     z-index: 1;
-    transition: transform 0.1s ease;
+    transition: transform 0.1s cubic-bezier(0.2, 0, 0, 1);
+    /* Легке плавання */
+    animation: float-slow-rotate 5s ease-in-out infinite;
 }
 
-.chibik-image:active, .chibik-image.bounce {
-    transform: scale(0.95);
+.chibik-image:active {
+    transform: scale(0.9) scaleY(0.85); /* Squish effect */
+    animation: none;
+}
+
+.chibik-image.bounce {
+    animation: squish-click 0.2s cubic-bezier(0.2, 0, 0, 1) !important;
+}
+
+@keyframes squish-click {
+    0% { transform: scale(1); }
+    50% { transform: scale(0.9) scaleY(0.85); }
+    100% { transform: scale(1); }
+}
+
+/* Particles and Coins */
+.click-particle {
+    position: fixed; /* Fixed so it aligns with clientX/clientY */
+    pointer-events: none;
+    border-radius: 50%;
+    z-index: 10;
+    animation: particle-fly 0.6s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+@keyframes particle-fly {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--tx), var(--ty)) scale(0); opacity: 0; }
+}
+
+.clicker-coin {
+    position: fixed;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--accent-color);
+    text-shadow: 0 0 10px var(--glow-color);
+    pointer-events: none;
+    z-index: 200;
+    animation: coin-float 1s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
+@keyframes coin-float {
+    0% { transform: translateY(0) scale(1); opacity: 1; }
+    100% { transform: translateY(-50px) scale(1.5); opacity: 0; }
 }
 
 /* Хмаринка з текстом */
 .chibik-bubble {
     position: absolute;
-    top: 20%;
-    left: 80%; /* Збоку від персонажа */
+    bottom: 85%; /* Place above the character */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%) scale(0.8) translateY(10px);
     background-color: var(--card-background);
     color: var(--text-light);
-    border: 1px solid var(--accent-color);
-    padding: 0.5rem 1rem;
-    border-radius: 20px 20px 20px 4px; /* Material 3 Expressive Shape */
-    font-weight: bold;
-    font-size: 0.9rem;
+    border: 2px solid var(--accent-color);
+    padding: 0.75rem 1.25rem;
+    border-radius: 24px 24px 24px 8px; /* Material 3 Expressive Shape */
+    font-weight: 700;
+    font-size: 0.95rem;
     pointer-events: none;
     z-index: 100;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    white-space: nowrap;
-    transition: opacity 0.3s ease, transform 0.3s ease;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    
+    /* Make it responsive so it doesn't overflow */
+    white-space: normal;
+    text-align: center;
+    width: max-content;
+    max-width: 250px;
+    
+    transition: opacity 0.3s cubic-bezier(0.2, 0, 0, 1), transform 0.3s cubic-bezier(0.2, 0, 0, 1);
     opacity: 0; 
 }
 /* Прибрано хвостик-трикутник, бо асиметрична форма вже слугує вказівником */
@@ -261,50 +378,96 @@ html[data-theme="light"] .theme-switcher input[type="radio"]:checked + label {
 .shop-container {
     width: 100%;
     background-color: var(--card-background);
-    border-radius: 24px;
-    padding: 1.5rem;
+    border-radius: 32px;
+    padding: 2rem;
     border: 1px solid var(--border-color);
     margin-top: 2rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.shop-items-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1.25rem;
+    padding: 0.5rem;
+}
+
+.character-shop-wrapper {
+    background-color: var(--background-dark);
+    border-radius: 32px;
+    padding: 1.5rem;
+    border: 1px solid var(--border-color);
+    box-shadow: inset 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.skins-panel {
+    background-color: var(--card-background);
+    border-radius: 24px;
+    padding: 1.5rem;
+    margin-top: 1.5rem;
+    border: 1px solid var(--border-color);
+    animation: slideDown 0.4s cubic-bezier(0.2, 0, 0, 1);
+}
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .shop-items-row {
     display: flex;
-    gap: 1rem;
+    gap: 1.25rem;
     overflow-x: auto;
-    padding-bottom: 1rem;
+    padding: 1rem 0.5rem;
     scrollbar-color: var(--accent-color) var(--background-dark);
     scrollbar-width: thin;
-    padding-left: 5px;
-    padding-right: 5px;
 }
 
 .shop-item {
-    background-color: var(--background-dark);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 1rem;
-    min-width: 130px;
+    background-color: var(--card-background);
+    border: 2px solid transparent;
+    border-radius: 28px; /* Material 3 Expressive */
+    padding: 1.5rem;
+    min-width: 150px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
     flex-shrink: 0;
     cursor: pointer; 
-    transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), border-color 0.3s ease, background-color 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
 }
 
+.shop-item::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: var(--text-light);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 0;
+}
+.shop-item > * { z-index: 1; position: relative; }
+
 .shop-item:hover {
-    transform: translateY(-4px);
-    background-color: var(--border-color); /* State layer ефект */
+    transform: translateY(-6px);
+    border-radius: 24px; /* No morph */
+}
+
+.shop-item:hover::after {
+    opacity: 0.05;
 }
 
 .active-character-card {
     border-color: var(--accent-color);
-    box-shadow: 0 0 10px var(--glow-color);
+    box-shadow: 0 0 20px var(--glow-color);
+    animation: glow-pulse 3s infinite;
 }
 
 .shop-item.unlocked-item {
-    border-color: var(--accent-color);
+    border-color: var(--border-color);
 }
 
 .theme-preview {

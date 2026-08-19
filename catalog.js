@@ -41,11 +41,19 @@ export function initCatalog(mangaData, initialGenres = []) {
         return 'none';
     }
     
+    const collapseIconSVG = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="collapse-icon"><path d="m6 9 6 6 6-6"/></svg>`;
+
     function populateFilters(container) {
+        const isMobile = container.classList.contains('mobile-filters-content');
+        const defaultCollapsed = isMobile ? 'collapsed' : '';
+
         container.innerHTML = `
-            <div class="filter-group">
-                <h3>Жанри</h3>
-                <div class="filter-options genres-list">
+            <div class="filter-group ${defaultCollapsed}">
+                <div class="filter-header">
+                    <h3>Жанри</h3>
+                    ${collapseIconSVG}
+                </div>
+                <div class="filter-options genres-list collapsible-content">
                     ${allGenres.map(genre => `
                         <label data-type="genres" data-value="${genre}">
                             <span class="custom-checkbox" data-state="${getFilterState('genres', genre)}"></span>
@@ -54,9 +62,12 @@ export function initCatalog(mangaData, initialGenres = []) {
                     `).join('')}
                 </div>
             </div>
-            <div class="filter-group">
-                <h3>Тип</h3>
-                <div class="filter-options types-list">
+            <div class="filter-group ${defaultCollapsed}">
+                <div class="filter-header">
+                    <h3>Тип</h3>
+                    ${collapseIconSVG}
+                </div>
+                <div class="filter-options types-list collapsible-content">
                     ${allTypes.map(type => `
                         <label data-type="types" data-value="${type}">
                             <span class="custom-checkbox" data-state="${getFilterState('types', type)}"></span>
@@ -65,9 +76,12 @@ export function initCatalog(mangaData, initialGenres = []) {
                     `).join('')}
                 </div>
             </div>
-            <div class="filter-group">
-                <h3>Сортувати</h3>
-                <div class="filter-options sort-list">
+            <div class="filter-group ${defaultCollapsed}">
+                <div class="filter-header">
+                    <h3>Сортувати</h3>
+                    ${collapseIconSVG}
+                </div>
+                <div class="filter-options sort-list collapsible-content">
                      ${sortOptions.map(opt => `
                         <label>
                             <input type="radio" name="sort-group-${container.className}" data-type="sort" value="${opt.id}" ${activeFilters.sort === opt.id ? 'checked' : ''}>
@@ -128,16 +142,22 @@ export function initCatalog(mangaData, initialGenres = []) {
             return;
         }
 
-        filteredManga.forEach(manga => {
+        filteredManga.forEach((manga, index) => {
             const card = document.createElement('manga-card');
             card.setAttribute('name', manga.title);
             card.setAttribute('image', manga.coverImage);
             card.setAttribute('url', manga.pageUrl);
             card.setAttribute('type', manga.type);
             if (manga.chapters && manga.chapters.length > 0) {
-                 card.setAttribute('last-chapter', `Розділ ${manga.chapters[manga.chapters.length - 1].chapter}`);
+                 const maxChapter = manga.chapters.reduce((max, ch) => Math.max(max, parseFloat(ch.chapter)), -Infinity);
+                 card.setAttribute('last-chapter', `Розділ ${maxChapter}`);
             }
             card.setAttribute('status', manga.status);
+            
+            // Add pop animation (no fade-in cover)
+            card.classList.add('manga-card-animate');
+            card.style.animationDelay = `${index * 0.03}s`;
+            
             mangaGrid.appendChild(card);
         });
     }
@@ -169,11 +189,11 @@ export function initCatalog(mangaData, initialGenres = []) {
         const tag = document.createElement('div');
         tag.className = `filter-tag ${mode}`;
         tag.textContent = text;
+        tag.onclick = () => removeFilter(type, value, mode);
         
         const removeBtn = document.createElement('span');
         removeBtn.className = 'remove-tag';
         removeBtn.innerHTML = '&times;';
-        removeBtn.onclick = () => removeFilter(type, value, mode);
         
         tag.appendChild(removeBtn);
         activeFiltersContainer.appendChild(tag);
@@ -256,10 +276,24 @@ export function initCatalog(mangaData, initialGenres = []) {
         updateActiveFiltersUI();
     });
 
-    sidebarContent.addEventListener('click', handleFilterClick);
-    mobileFiltersContent.addEventListener('click', handleFilterClick);
+    function handleDelegatedClick(e) {
+        const header = e.target.closest('.filter-header');
+        if (header) {
+            const group = header.closest('.filter-group');
+            if (group) group.classList.toggle('collapsed');
+            return;
+        }
+        handleFilterClick(e);
+    }
+
+    sidebarContent.addEventListener('click', handleDelegatedClick);
+    mobileFiltersContent.addEventListener('click', handleDelegatedClick);
 
     // Mobile Panel Logic
+    if (mobilePanelOverlay && mobilePanelOverlay.parentNode !== document.body) {
+        document.body.appendChild(mobilePanelOverlay);
+    }
+    
     mobileFilterTrigger.addEventListener('click', () => {
         mobilePanelOverlay.style.display = 'block';
         setTimeout(() => { mobilePanel.style.transform = 'translateY(0)'; }, 10);

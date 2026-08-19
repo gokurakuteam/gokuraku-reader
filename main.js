@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (theme) applyTheme(theme);
     else applyTheme(SHOP_ITEMS.themes[0]);
 
-    await loadMangaData(); 
+    loadMangaData(); // Починаємо завантаження даних у фоні, не блокуючи рендер 
 
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {

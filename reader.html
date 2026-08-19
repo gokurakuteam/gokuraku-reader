@@ -1,7 +1,14 @@
 <section class="reader-page">
     <div class="reader-header">
-        <a href="#" class="back-button">&larr; Назад до розділів</a>
-        <h1 class="chapter-title"></h1>
+        <a href="#" class="back-button reader-header-circle" title="Назад до розділів">
+            <i data-lucide="arrow-left" class="icon"></i>
+        </a>
+        <div class="reader-header-pill">
+            <h1 class="chapter-title"></h1>
+        </div>
+        <button class="settings-btn reader-header-circle" id="reader-settings-btn" title="Налаштування читалки">
+            <i data-lucide="settings" class="icon"></i>
+        </button>
     </div>
 
     <div class="reader-alert">
@@ -33,3 +40,89 @@
     <section class="comments-section" style="margin-top: 2rem;">
         <div id="giscus-container"></div> <!-- І ТУТ ТАКОЖ -->  
     </section>
+
+    <!-- Settings Modal -->
+    <div id="reader-settings-modal" class="modal">
+        <div class="modal-content settings-modal-content">
+            <span class="close-modal" id="close-settings-modal">&times;</span>
+            <h2>Налаштування читалки</h2>
+            
+            <div class="settings-tabs">
+                <button class="settings-tab-btn active" data-tab="manga-settings">Манґа / Манхва</button>
+                <button class="settings-tab-btn" data-tab="novel-settings">Новели</button>
+            </div>
+
+            <div class="settings-tab-content active" id="manga-settings">
+                <div class="setting-group">
+                    <label>Режим читання:</label>
+                    <div class="segmented-control" id="setting-reading-mode">
+                        <button class="segment-btn" data-value="vertical">Вертикальний (Манхва)</button>
+                        <button class="segment-btn" data-value="horizontal-ltr">Горизонтальний (Зліва направо)</button>
+                        <button class="segment-btn" data-value="horizontal-rtl">Горизонтальний (Справа наліво)</button>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label>Масштабування:</label>
+                    <div class="segmented-control" id="setting-image-fit">
+                        <button class="segment-btn" data-value="width">По ширині</button>
+                        <button class="segment-btn" data-value="height">По висоті</button>
+                        <button class="segment-btn" data-value="original">Оригінал</button>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label>Передзавантаження зображень:</label>
+                    <div class="segmented-control" id="setting-preload-images">
+                        <button class="segment-btn" data-value="0">Вимкнено</button>
+                        <button class="segment-btn" data-value="1">1 сторінка</button>
+                        <button class="segment-btn" data-value="3">3 сторінки</button>
+                        <button class="segment-btn" data-value="5">5 сторінок</button>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label>Яскравість зображень (<span id="brightness-val">100</span>%):</label>
+                    <input type="range" id="setting-brightness" min="20" max="100" value="100" step="5">
+                </div>
+                <div class="setting-group" style="display: none;">
+                    <label>
+                        <input type="checkbox" id="setting-tap-scroll"> 
+                        Перемикання сторінок дотиком (tap)
+                    </label>
+                </div>
+            </div>
+
+            <div class="settings-tab-content" id="novel-settings">
+                <div class="setting-group">
+                    <label>Розмір шрифту:</label>
+                    <div class="font-size-controls">
+                        <button id="btn-font-decrease" class="button">А-</button>
+                        <span id="novel-font-val">1.1rem</span>
+                        <button id="btn-font-increase" class="button">А+</button>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label>Міжрядковий інтервал:</label>
+                    <div class="line-height-controls">
+                        <button id="btn-line-decrease" class="button">-</button>
+                        <span id="novel-line-val">1.6</span>
+                        <button id="btn-line-increase" class="button">+</button>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label>Шрифт:</label>
+                    <div class="segmented-control" id="setting-novel-font">
+                        <button class="segment-btn" data-value="sans-serif">Без зарубок (Sans-serif)</button>
+                        <button class="segment-btn" data-value="serif">З зарубками (Serif)</button>
+                    </div>
+                </div>
+                <div class="setting-group">
+                    <label>Тема:</label>
+                    <div class="segmented-control" id="setting-novel-theme">
+                        <button class="segment-btn" data-value="dark">Темна</button>
+                        <button class="segment-btn" data-value="light">Світла</button>
+                        <button class="segment-btn" data-value="sepia">Сепія</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>

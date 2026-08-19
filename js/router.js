@@ -1,8 +1,8 @@
-import { getAllManga, getMangaById, getLatestUpdates, getChapterById } from '../data-manager.js';
+import { loadMangaData, fetchMangaDetails, getAllManga, getMangaById, getLatestUpdates, getChapterById } from '../data-manager.js';
 import { getBookmarks, isBookmarked, addBookmark, removeBookmark, getHistory, addChapterToHistory, addCategory, deleteCategory, getMangaCategory } from '../storage-manager.js';
 import { initCatalog } from '../catalog.js';
 import { setupDynamicCarousel } from './carousel.js';
-import { setupTabs, timeAgo, renderChapterList, updateReadButton, getStatusClass, handleChapterListClicks, showBookmarkModal, updateBookmarkButton, showCategoryManagerModal } from './ui.js';
+import { setupTabs, timeAgo, renderChapterList, updateReadButton, getStatusClass, handleChapterListClicks, showBookmarkModal, updateBookmarkButton, showCategoryManagerModal, initReaderSettings, initReaderHeaderBehavior } from './ui.js';
 import { loadGiscusForPage } from './giscus-loader.js';
 import { initClicker } from './clicker.js';
 
@@ -38,6 +38,10 @@ async function loadPage(page, params, routeId) {
         const content = await response.text();
         
         if (routeId !== currentRouteId) return; 
+
+        // Очікуємо завантаження даних ПЕРЕД рендерингом сторінки, 
+        // поки користувач бачить спінер
+        await loadMangaData();
 
         main.classList.add('fade-out');
         await new Promise(resolve => setTimeout(resolve, 150));
@@ -82,6 +86,7 @@ async function loadPage(page, params, routeId) {
         initCatalog(allManga, genres ? genres.split(',') : []);
     } else if (page === 'title') {
         const mangaId = params.get('id');
+        await fetchMangaDetails(mangaId);
         const manga = getMangaById(mangaId);
 
         if (manga) {
@@ -180,6 +185,7 @@ async function loadPage(page, params, routeId) {
 
     } else if (page === 'reader') {
         const mangaId = params.get('mangaId');
+        await fetchMangaDetails(mangaId);
         const chapterIdParam = parseFloat(params.get('chapterId'));
         const manga = getMangaById(mangaId);
         let chapter = manga?.chapters.find(ch => ch.chapter === chapterIdParam);
@@ -203,15 +209,62 @@ async function loadPage(page, params, routeId) {
             main.querySelector('.back-button').href = `#title?id=${manga.slug || manga.id}`;
             main.querySelector('.chapter-title').textContent = `Том ${chapter.volume}, Розділ ${chapter.chapter}${chapter.title ? `: ${chapter.title}` : ''}`;
             
+            const readerContentWrapper = main.querySelector('.reader-content-wrapper');
             const readerContent = main.querySelector('.reader-content');
+            
+            // Initialize settings FIRST so we know how to render
+            const settings = initReaderSettings(readerContentWrapper, manga, !!chapter.content);
+            initReaderHeaderBehavior(readerContentWrapper);
+
             if (chapter.content) {
                 // Novel content
                 readerContent.innerHTML = `<div class="novel-content">${chapter.content}</div>`;
                 readerContent.classList.add('novel-view');
             } else if (chapter.pages) {
                 // Manga content
-                readerContent.innerHTML = chapter.pages.map(pageUrl => `<img src="${pageUrl}" alt="Сторінка розділу" loading="lazy">`).join('');
+                const preloadCount = settings.preloadImages || 3;
+                
+                readerContent.innerHTML = chapter.pages.map((pageUrl, index) => {
+                    const lazyAttr = index < preloadCount ? '' : 'loading="lazy"';
+                    return `
+                        <div class="page-wrapper loading" id="page-wrapper-${index}">
+                            <img src="${pageUrl}" alt="Сторінка ${index + 1}" ${lazyAttr} 
+                                 onload="this.parentElement.classList.remove('loading')">
+                        </div>
+                    `;
+                }).join('');
+                
                 readerContent.classList.remove('novel-view');
+
+                // Dynamic tap to scroll on reader content
+                readerContentWrapper.addEventListener('click', (e) => {
+                    // Check current settings dynamically
+                    const currentSettings = JSON.parse(localStorage.getItem('reader-settings') || '{}');
+                    const tapEnabled = currentSettings.tapToScroll ?? true;
+                    // Get current mode directly from DOM class or settings
+                    const mode = currentSettings.mangaReadingMode || 'horizontal-ltr';
+
+                    if (!tapEnabled || !mode.startsWith('horizontal')) return;
+                    
+                    // Don't trigger if clicked on UI elements
+                    if (e.target.closest('a') || e.target.closest('button') || e.target.closest('.reader-header')) return;
+
+                    const rect = readerContentWrapper.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    
+                    const scrollContent = (direction) => {
+                        const amount = direction === 'left' ? -readerContent.clientWidth : readerContent.clientWidth;
+                        readerContent.scrollBy({ left: amount, behavior: 'smooth' });
+                    };
+
+                    if (x < rect.width * 0.3) {
+                        if (mode === 'horizontal-ltr') scrollContent('left');
+                        else scrollContent('right');
+                    } else if (x > rect.width * 0.7) {
+                        if (mode === 'horizontal-ltr') scrollContent('right');
+                        else scrollContent('left');
+                    }
+                });
             }
 
             const chapterIndex = manga.chapters.findIndex(ch => ch.id === chapter.id);
@@ -237,7 +290,7 @@ async function loadPage(page, params, routeId) {
             main.querySelector('.home-btn').href = `#title?id=${manga.slug || manga.id}`;
 
             const appHeader = document.querySelector('app-header');
-            if (window.innerWidth <= 768) {
+            if (appHeader) {
                 appHeader.classList.add('hidden');
             }
         } else {
@@ -296,8 +349,8 @@ function setupCabinetBookmarks() {
                 card.setAttribute('url', manga.pageUrl);
                 card.setAttribute('type', manga.type);
                  if (manga.chapters && manga.chapters.length > 0) {
-                    const lastChapter = manga.chapters[manga.chapters.length - 1];
-                    card.setAttribute('last-chapter', `Розділ ${lastChapter.chapter}`);
+                    const maxChapter = manga.chapters.reduce((max, ch) => Math.max(max, parseFloat(ch.chapter)), -Infinity);
+                    card.setAttribute('last-chapter', `Розділ ${maxChapter}`);
                 }
                 card.setAttribute('status', manga.status);
                 grid.appendChild(card);

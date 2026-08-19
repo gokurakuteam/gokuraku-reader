@@ -182,7 +182,26 @@ export function loadGiscusForPage(pageType, mangaId, chapterId = null) {
     const container = document.getElementById('giscus-container');
     if (!container) return;
 
-    container.innerHTML = '';
+    container.innerHTML = `
+        <div id="giscus-skeleton" style="padding: 20px; border-radius: 15px; background: var(--card-background); border: 1px solid var(--border-color); display: flex; flex-direction: column; gap: 15px;">
+            <div style="height: 30px; background: var(--background-dark); border-radius: 8px; width: 30%; animation: skeleton-loading 1.5s infinite;"></div>
+            <div style="height: 80px; background: var(--background-dark); border-radius: 10px; width: 100%; animation: skeleton-loading 1.5s infinite;"></div>
+            <div style="display: flex; gap: 15px; margin-top: 10px;">
+                <div style="height: 45px; background: var(--background-dark); border-radius: 50%; width: 45px; animation: skeleton-loading 1.5s infinite;"></div>
+                <div style="height: 45px; background: var(--background-dark); border-radius: 10px; flex: 1; animation: skeleton-loading 1.5s infinite;"></div>
+            </div>
+        </div>
+    `;
+
+    const handleGiscusLoad = (event) => {
+        if (event.origin !== 'https://giscus.app') return;
+        if (!(typeof event.data === 'object' && event.data.giscus)) return;
+        
+        const skeleton = document.getElementById('giscus-skeleton');
+        if (skeleton) skeleton.remove();
+        window.removeEventListener('message', handleGiscusLoad);
+    };
+    window.addEventListener('message', handleGiscusLoad);
 
     const themeId = getSavedThemeId();
     const themeMode = getThemeMode(); 

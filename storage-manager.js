@@ -131,16 +131,33 @@ export function getHistory() {
 
 export function addChapterToHistory(mangaId, chapterId) {
     let history = getHistory();
+    const wasRead = history.some(item => item.mangaId === mangaId && item.chapterId === chapterId);
+    
     history = history.filter(item => !(item.mangaId === mangaId && item.chapterId === chapterId));
     history.unshift({ mangaId, chapterId, timestamp: new Date().toISOString() });
     if (history.length > 200) history.pop();
     localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+
+    if (!wasRead) {
+        const clickerData = getClickerData();
+        clickerData.coins += 50; // Бонус за новий прочитаний розділ
+        saveClickerData(clickerData);
+    }
 }
 
 export function addAllChaptersToHistory(mangaId) {
     const manga = getMangaById(mangaId);
     if (!manga || !manga.chapters || manga.chapters.length === 0) return;
     let history = getHistory();
+    
+    // Count how many are newly read
+    let newChaptersCount = 0;
+    manga.chapters.forEach(ch => {
+        if (!history.some(item => item.mangaId === mangaId && item.chapterId === ch.id)) {
+            newChaptersCount++;
+        }
+    });
+
     history = history.filter(item => item.mangaId !== mangaId);
     const chaptersToAdd = manga.chapters.map(ch => ({
         mangaId: mangaId, chapterId: ch.id, timestamp: new Date().toISOString()
@@ -148,6 +165,12 @@ export function addAllChaptersToHistory(mangaId) {
     const updatedHistory = [...chaptersToAdd, ...history];
     if (updatedHistory.length > 200) updatedHistory.length = 200;
     localStorage.setItem(HISTORY_KEY, JSON.stringify(updatedHistory));
+
+    if (newChaptersCount > 0) {
+        const clickerData = getClickerData();
+        clickerData.coins += 50 * newChaptersCount;
+        saveClickerData(clickerData);
+    }
 }
 
 export function removeChapterFromHistory(mangaId, chapterId) {
@@ -222,4 +245,34 @@ export function saveThemeMode(mode) {
 
 export function getThemeMode() {
     return localStorage.getItem(THEME_MODE_KEY) || 'system';
+}
+
+// --- Reader Settings ---
+const READER_SETTINGS_KEY = 'gokuReaderSettings';
+
+const defaultReaderSettings = {
+    mangaReadingMode: 'vertical', // 'vertical', 'horizontal-rtl', 'horizontal-ltr'
+    imageFit: 'width', // 'width', 'height', 'original'
+    preloadImages: 3, // 0, 1, 3, 5
+    brightness: 100, // 50 to 100
+    tapToScroll: true, // boolean
+    novelFontSize: 1.1, // in rem
+    novelLineHeight: 1.6, // multiplier
+    novelFontFamily: 'sans-serif', // 'sans-serif', 'serif'
+    novelTheme: 'dark' // 'dark', 'light', 'sepia'
+};
+
+export function getReaderSettings() {
+    const data = localStorage.getItem(READER_SETTINGS_KEY);
+    if (!data) return defaultReaderSettings;
+    try {
+        const parsed = JSON.parse(data);
+        return { ...defaultReaderSettings, ...parsed };
+    } catch (e) {
+        return defaultReaderSettings;
+    }
+}
+
+export function saveReaderSettings(settings) {
+    localStorage.setItem(READER_SETTINGS_KEY, JSON.stringify(settings));
 }
