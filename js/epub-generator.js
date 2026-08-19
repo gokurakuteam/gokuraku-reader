@@ -1,7 +1,8 @@
 import { getMangaById, getChapterById } from '../data-manager.js';
 
-export async function downloadChapterAsEpub(mangaId, chapterId, { onProgress = () => {} }) {
+export async function downloadChapterAsEpub(mangaId, chapterId, { onProgress = () => {}, signal }) {
     try {
+        if (signal?.aborted) throw new Error('Aborted');
         onProgress(10, 'Підготовка до створення EPUB...');
 
         const manga = getMangaById(mangaId);
@@ -101,8 +102,10 @@ export async function downloadChapterAsEpub(mangaId, chapterId, { onProgress = (
         oebps.file("chapter.html", chapterHtml);
 
         onProgress(70, 'Пакування EPUB...');
+        if (signal?.aborted) throw new Error('Aborted');
         
         const content = await zip.generateAsync({ type: "blob" });
+        if (signal?.aborted) throw new Error('Aborted');
         
         onProgress(100, 'Збереження файлу...');
         
@@ -124,8 +127,9 @@ export async function downloadChapterAsEpub(mangaId, chapterId, { onProgress = (
     }
 }
 
-export async function downloadMultipleChaptersAsEpub(mangaId, chapters, { onProgress = () => {} }) {
+export async function downloadMultipleChaptersAsEpub(mangaId, chapters, { onProgress = () => {}, signal }) {
     try {
+        if (signal?.aborted) throw new Error('Aborted');
         onProgress(10, 'Підготовка до створення єдиного EPUB...');
         const manga = getMangaById(mangaId);
 
@@ -156,6 +160,7 @@ export async function downloadMultipleChaptersAsEpub(mangaId, chapters, { onProg
         const oebps = zip.folder("OEBPS");
 
         for (let i = 0; i < chapters.length; i++) {
+            if (signal?.aborted) throw new Error('Aborted');
             const chapter = chapters[i];
             if (!chapter.content) continue;
 
@@ -233,8 +238,10 @@ export async function downloadMultipleChaptersAsEpub(mangaId, chapters, { onProg
         oebps.file("style.css", styleCss);
 
         onProgress(70, 'Пакування єдиного EPUB...');
+        if (signal?.aborted) throw new Error('Aborted');
         
         const content = await zip.generateAsync({ type: "blob" });
+        if (signal?.aborted) throw new Error('Aborted');
         
         onProgress(100, 'Збереження файлу...');
         

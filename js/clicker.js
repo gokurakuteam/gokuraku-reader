@@ -5,12 +5,12 @@ import { loadGiscusForPage } from './giscus-loader.js';
 
 export const SHOP_ITEMS = {
     themes: [
-        { id: 'theme_gokuraku', type: 'theme', name: 'Gokuraku', price: 0, colors: { primary: '#2A5AFF', glow: 'rgba(143, 69, 161, 0.5)' } },
-        { id: 'theme_love_is_an_illusion', type: 'theme', name: 'Кохання — це ілюзія', price: 500, colors: { primary: '#6E3E92', glow: 'rgba(240, 140, 85,  0.5)' } },
-        { id: 'theme_shape_of_symphaty', type: 'theme', name: 'Форма симпатії', price: 1000, colors: { primary: '#7a4945ff', glow: 'rgba(179, 153, 134, 0.5)' } },
-        { id: 'theme_merry_marbling', type: 'theme', name: 'Щасливий Мармур', price: 1500, colors: { primary: '#48776dff', glow: 'rgba(150, 230, 240, 0.5)' } },
-        { id: 'theme_ichi_the_witch', type: 'theme', name: 'Відьма Ічі', price: 2000, colors: { primary: '#ecba30ff', glow: 'rgba(143, 69, 161, 0.5)' } },
-        { id: 'theme_old_style', type: 'theme', name: 'Старий колір', price: 0, colors: { primary: '#00ff99', glow: 'rgba(0, 255, 153, 0.5)' } } 
+        { id: 'theme_gokuraku', type: 'theme', name: 'Gokuraku', price: 0, colors: { primary: '#2A5AFF', primaryLight: '#1d4ed8', glow: 'rgba(143, 69, 161, 0.5)', glowLight: 'rgba(29, 78, 216, 0.3)' } },
+        { id: 'theme_old_style', type: 'theme', name: 'Старий колір', price: 0, colors: { primary: '#00ff99', primaryLight: '#00824e', glow: 'rgba(0, 255, 153, 0.5)', glowLight: 'rgba(0, 130, 78, 0.3)' } },
+        { id: 'theme_love_is_an_illusion', type: 'theme', name: 'Кохання — це ілюзія', price: 200, colors: { primary: '#a875cc', primaryLight: '#6E3E92', glow: 'rgba(240, 140, 85, 0.5)', glowLight: 'rgba(110, 62, 146, 0.3)' } },
+        { id: 'theme_shape_of_symphaty', type: 'theme', name: 'Форма симпатії', price: 500, colors: { primary: '#b67f7a', primaryLight: '#7a4945', glow: 'rgba(179, 153, 134, 0.5)', glowLight: 'rgba(122, 73, 69, 0.3)' } },
+        { id: 'theme_merry_marbling', type: 'theme', name: 'Щасливий Мармур', price: 800, colors: { primary: '#5c9589', primaryLight: '#3a6159', glow: 'rgba(150, 230, 240, 0.5)', glowLight: 'rgba(58, 97, 89, 0.3)' } },
+        { id: 'theme_ichi_the_witch', type: 'theme', name: 'Відьма Ічі', price: 1200, colors: { primary: '#ecba30', primaryLight: '#b38810', glow: 'rgba(143, 69, 161, 0.5)', glowLight: 'rgba(179, 136, 16, 0.3)' } }
     ],
     characters: [
         {
@@ -20,7 +20,7 @@ export const SHOP_ITEMS = {
             image: 'https://files.catbox.moe/u03qqs.webp', // Базове фото для списку персонажів
             skins: [
                 { id: 'yugun_default', name: 'Зимовий', image: 'https://files.catbox.moe/u03qqs.webp', price: 0, phrases: ["Чого тобі? Клікай далі.", "Не лізь, холодно.", "Набридло! Відчепись!", "Це не усмішка. Капюшон заважає.", "Ще один клік і пошкодуєш.", "Швидше, бо мерзну!", "Слабко!", "Тихіше. Голова болить.", "Я не граюся!", "Сам напросився..."] },
-                { id: 'yugun_dino', name: 'Динозаврик', image: 'https://files.catbox.moe/bw40gw.webp', price: 500, phrases: ["Я не милий! Я хижак!", "Р-р-р! (Невпевнено)", "Ян, це твоя витівка?!", "У ньому жарко, перестань!", "Якого динозавра я нагадую?", "Мої ручки не дістають до тебе.", "Навіщо так багато кліків?!", "Це для маскування.", "Не фотографуй!", "Відстань, рогатий! (Він сам рогатий)"] } 
+                { id: 'yugun_dino', name: 'Динозаврик', image: 'https://files.catbox.moe/bw40gw.webp', price: 1000, phrases: ["Я не милий! Я хижак!", "Р-р-р! (Невпевнено)", "Ян, це твоя витівка?!", "У ньому жарко, перестань!", "Якого динозавра я нагадую?", "Мої ручки не дістають до тебе.", "Навіщо так багато кліків?!", "Це для маскування.", "Не фотографуй!", "Відстань, рогатий! (Він сам рогатий)"] } 
             ]
         },
         {
@@ -30,7 +30,7 @@ export const SHOP_ITEMS = {
             image: 'https://files.catbox.moe/yo2ra0.webp',
             skins: [
                 { id: 'kyungbin_default', name: 'Пінгвінчик', image: 'https://files.catbox.moe/yo2ra0.webp', price: 0, phrases: ["Пін-пін! Це я!", "Я вже сходив до тата!", "Ой, я впав!", "Ти бачив Юґуна?", "Морська рибка? Ні?", "Хочу спати...", "У цьому костюмі не поб'єш!", "Ого, ти так швидко клікаєш!", "Оце клац-клац!", "Ти мій друг!"] },
-                { id: 'kyungbin_wrapped', name: 'Замотаний', image: 'https://files.catbox.moe/1ywz38.webp', price: 2000, phrases: ["Тепло... Як млинці.", "Сім'я - це важливо.", "Чи можу я ще поспати?", "Я не можу рухатися!", "Ой, здається, я заснув.", "Ти обіймаєш мене?", "Кінець гри? Чи початок?", "Клікай, щоб принести мені чаю!", "Я не зможу тренуватися...", "Баю-бай!"] }
+                { id: 'kyungbin_wrapped', name: 'Замотаний', image: 'https://files.catbox.moe/1ywz38.webp', price: 1500, phrases: ["Тепло... Як млинці.", "Сім'я - це важливо.", "Чи можу я ще поспати?", "Я не можу рухатися!", "Ой, здається, я заснув.", "Ти обіймаєш мене?", "Кінець гри? Чи початок?", "Клікай, щоб принести мені чаю!", "Я не зможу тренуватися...", "Баю-бай!"] }
             ]
         },
         {
@@ -148,6 +148,7 @@ function setupClickerListeners() {
             saveClickerData(state);
 
             spawnCoin(e.clientX, e.clientY);
+            spawnParticles(e.clientX, e.clientY);
 
             if (Math.random() < 0.1) showPhrase(newArea);
         });
@@ -308,6 +309,40 @@ function spawnCoin(x, y) {
     setTimeout(() => coin.remove(), 1000);
 }
 
+function spawnParticles(x, y) {
+    const numParticles = 5 + Math.random() * 5; // 5-10 particles
+    const colors = ['#2A5AFF', '#8F45A1', '#00ff99', '#f08c55', '#ecba30'];
+    
+    for (let i = 0; i < numParticles; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'click-particle';
+        
+        // Random size
+        const size = 4 + Math.random() * 6;
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+        
+        // Random color
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Position
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+        
+        // Direction
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = 30 + Math.random() * 50;
+        const tx = Math.cos(angle) * velocity;
+        const ty = Math.sin(angle) * velocity;
+        
+        particle.style.setProperty('--tx', `${tx}px`);
+        particle.style.setProperty('--ty', `${ty}px`);
+        
+        document.body.appendChild(particle);
+        setTimeout(() => particle.remove(), 600);
+    }
+}
+
 function showPhrase(container) {
     const char = SHOP_ITEMS.characters.find(c => c.id === state.activeCharacterId);
     let currentSkin = char?.skins.find(s => s.id === state.activeSkinId);
@@ -323,22 +358,33 @@ function showPhrase(container) {
     // Центруємо бульбашку над клікером
     container.appendChild(bubble);
     
-    // Анімація (з'являється збоку)
+    // Анімація (поява)
     setTimeout(() => {
         bubble.style.opacity = '1';
-        bubble.style.transform = 'translate(10px, -10px)';
+        bubble.style.transform = 'translateX(-50%) scale(1) translateY(0)';
     }, 10);
 
     setTimeout(() => {
         bubble.style.opacity = '0';
-        bubble.style.transform = 'translate(20px, -20px)';
+        bubble.style.transform = 'translateX(-50%) scale(0.8) translateY(-10px)';
         setTimeout(() => bubble.remove(), 300);
     }, 1500);
 }
 
 export function applyTheme(themeObj) {
     if (!themeObj) return;
-    document.documentElement.style.setProperty('--accent-color', themeObj.colors.primary);
-    document.documentElement.style.setProperty('--glow-color', themeObj.colors.glow);
+    
+    const root = document.documentElement;
+    // Очищаємо старі inline-стилі, якщо вони були
+    root.style.removeProperty('--accent-color');
+    root.style.removeProperty('--glow-color');
+    
+    // Встановлюємо нові змінні для світлої та темної тем
+    root.style.setProperty('--theme-accent-dark', themeObj.colors.primary);
+    root.style.setProperty('--theme-glow-dark', themeObj.colors.glow);
+    
+    root.style.setProperty('--theme-accent-light', themeObj.colors.primaryLight || themeObj.colors.primary);
+    root.style.setProperty('--theme-glow-light', themeObj.colors.glowLight || themeObj.colors.glow);
+    
     saveThemeId(themeObj.id);
 }

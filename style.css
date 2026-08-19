@@ -1,7 +1,7 @@
 @import url('css/main.css');
 @import url('css/home.css');
 @import url('css/catalog.css');
-@import url('css/title.css');
-@import url('css/reader.css');
+@import url('css/title.css?v=2');
+@import url('css/reader.css?v=4');
 @import url('css/cabinet.css');
 @import url('css/404.css');

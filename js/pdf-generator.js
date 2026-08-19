@@ -5,9 +5,9 @@ import { getMangaById, getChapterById } from '../data-manager.js';
  * @param {string} url - URL зображення.
  * @returns {Promise<string>} - Promise, що повертає Data URL.
  */
-async function loadImageAsDataURL(url) {
+async function loadImageAsDataURL(url, signal) {
     try {
-        const response = await fetch(url, { mode: 'cors' }); // Додано CORS для кращої сумісності
+        const response = await fetch(url, { mode: 'cors', signal });
         if (!response.ok) {
             throw new Error(`Помилка мережі: статус ${response.status} для ${url}`);
         }
@@ -58,8 +58,9 @@ async function compressImage(dataUrl) {
 }
 
 
-export async function downloadChapterAsPdf(mangaId, chapterId, { quality = 'original', onProgress = () => {} }) {
+export async function downloadChapterAsPdf(mangaId, chapterId, { quality = 'original', onProgress = () => {}, signal }) {
     try {
+        if (signal?.aborted) throw new Error('Aborted');
         onProgress(0, 'Починаємо...');
 
         const manga = getMangaById(mangaId);
@@ -77,9 +78,10 @@ export async function downloadChapterAsPdf(mangaId, chapterId, { quality = 'orig
 
         // Завантаження та обробка зображень
         for (let i = 0; i < totalImages; i++) {
+            if (signal?.aborted) throw new Error('Aborted');
             const url = imageUrls[i];
             try {
-                let dataUrl = await loadImageAsDataURL(url);
+                let dataUrl = await loadImageAsDataURL(url, signal);
                 if (quality === 'compressed') {
                     dataUrl = await compressImage(dataUrl);
                 }
@@ -116,6 +118,7 @@ export async function downloadChapterAsPdf(mangaId, chapterId, { quality = 'orig
 
         // Додавання сторінок до PDF
         for (let i = 0; i < processedImages.length; i++) {
+            if (signal?.aborted) throw new Error('Aborted');
             const dataUrl = processedImages[i];
              const imgProps = await new Promise(resolve => {
                 const img = new Image();

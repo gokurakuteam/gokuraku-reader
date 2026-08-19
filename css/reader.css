@@ -5,23 +5,88 @@
 
 .reader-header {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 2rem;
-    text-align: center;
+    gap: 0.5rem;
+    position: fixed;
+    top: 1rem;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    pointer-events: none;
+    transition: transform 0.3s cubic-bezier(0.2, 0, 0, 1), top 0.3s, background-color 0.3s, padding 0.3s, justify-content 0.3s;
+    padding: 0 1rem;
 }
 
-.reader-header .back-button {
-    align-self: flex-start;
-    margin-bottom: 1rem;
-    color: var(--secondary-text);
+.reader-header.is-top {
+    top: 1rem;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, var(--card-background) 0%, var(--background-hover) 100%);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+    justify-content: space-between;
+    width: 95%;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.reader-header.is-top .reader-header-pill, 
+.reader-header.is-top .reader-header-circle {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+}
+
+.reader-header.hidden {
+    transform: translateY(-150%);
+}
+
+.reader-header-pill, .reader-header-circle {
+    pointer-events: auto;
+    background-color: var(--card-background);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.reader-header-pill {
+    display: flex;
+    align-items: center;
+    padding: 0 1rem;
+    height: 44px;
+    border-radius: 100px;
+    max-width: 60%;
+}
+
+.reader-header-circle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
     text-decoration: none;
-    font-weight: 500;
+    flex-shrink: 0;
+    background: var(--card-background);
+}
+
+.reader-header-circle:hover {
+    background-color: var(--hover-state);
 }
 
 .reader-header .chapter-title {
-    font-size: 1.8rem;
+    font-size: 1rem;
+    font-weight: 600;
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /* ВИПРАВЛЕННЯ: Використовуємо змінні, визначені в main.css для теми */
@@ -49,6 +114,11 @@
 
 .reader-content-wrapper {
     background-color: #000; /* Завжди темний фон під сторінками манґи */
+    position: relative;
+}
+
+.reader-page.is-novel .reader-content-wrapper {
+    background-color: transparent;
 }
 
 .reader-content {
@@ -67,8 +137,6 @@
     padding: 2rem;
     font-size: 1.1rem;
     line-height: 1.6;
-    background-color: var(--background-main, #fff);
-    color: var(--main-text, #333);
 }
 
 .novel-content p {
@@ -94,7 +162,7 @@
 
 .reader-content.novel-view {
     /* override wrapper background if it's novel */
-    background-color: var(--background-main, #fff);
+    background-color: var(--background-dark);
 }
 
 .reader-nav {
@@ -144,4 +212,287 @@
     .reader-content-wrapper {
         margin: 0;
     }
+}
+
+/* --- Settings Modal --- */
+.reader-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.settings-modal-content {
+    max-width: 400px;
+    max-height: 90vh;
+    overflow-y: auto;
+    margin: 5vh auto;
+    border-radius: 28px;
+    background-color: var(--card-background);
+    padding: 2.5rem 2rem;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    border: 1px solid var(--border-color);
+    position: relative;
+}
+
+.settings-modal-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.close-modal {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.5rem;
+    font-size: 1.5rem;
+    color: var(--secondary-text);
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+    z-index: 10;
+}
+.close-modal:hover {
+    color: var(--text-light);
+}
+
+.settings-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 1.5rem;
+}
+
+.settings-tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    padding: 0.75rem;
+    color: var(--secondary-text);
+    cursor: pointer;
+    font-weight: 500;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.settings-tab-btn.active {
+    color: var(--accent-color);
+    border-bottom-color: var(--accent-color);
+}
+
+.settings-tab-content {
+    display: none;
+}
+
+.settings-tab-content.active {
+    display: block;
+}
+
+.setting-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.setting-group label {
+    font-weight: 500;
+    color: var(--text-light);
+}
+
+.setting-group input[type="range"] {
+    width: 100%;
+    margin-top: 0.5rem;
+}
+
+/* --- Segmented Controls --- */
+.segmented-control {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    background-color: var(--background-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    overflow: hidden;
+    padding: 4px;
+    gap: 4px;
+}
+
+#setting-reading-mode {
+    grid-template-columns: 1fr 1fr;
+}
+
+#setting-reading-mode .segment-btn[data-value="vertical"] {
+    grid-column: 1 / -1;
+}
+
+#setting-novel-theme {
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+.segment-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-light);
+    padding: 0.5rem 1rem;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.9rem;
+    transition: all 0.3s var(--md-sys-motion-easing-emphasized);
+    text-align: center;
+    white-space: normal;
+    line-height: 1.2;
+}
+
+.segment-btn:hover {
+    background-color: var(--hover-state);
+}
+
+.segment-btn.active {
+    background-color: var(--accent-color);
+    color: var(--background-dark);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.font-size-controls, .line-height-controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.font-size-controls .button, .line-height-controls .button {
+    padding: 0.5rem 1rem;
+    border-radius: 100px;
+}
+
+/* --- Reading Modes & Skeleton --- */
+.reader-content.mode-horizontal-ltr {
+    flex-direction: row;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+}
+
+.reader-content.mode-horizontal-rtl {
+    flex-direction: row-reverse;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+}
+
+.reader-content.mode-horizontal-ltr .page-wrapper,
+.reader-content.mode-horizontal-rtl .page-wrapper {
+    flex: 0 0 100%;
+    scroll-snap-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.reader-content.fit-width img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.reader-content.fit-height img {
+    width: auto;
+    height: 100vh;
+    object-fit: contain;
+}
+
+.reader-content.fit-original img {
+    width: auto;
+    height: auto;
+}
+
+/* Яскравість для зображень манґи */
+.reader-content img {
+    filter: brightness(var(--reader-brightness, 1));
+    transition: filter 0.3s ease;
+}
+
+/* Яскравість для новел не потрібна (там є теми), але якщо захочуть, можна додати */
+
+.page-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 50vh; /* Minimum height for skeleton */
+    background-color: #111; /* Dark background for skeleton */
+    overflow: hidden;
+}
+
+.page-wrapper.loading::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, #111 25%, #222 50%, #111 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+}
+
+@keyframes skeleton-loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.reader-page {
+    position: relative;
+    padding-bottom: 2rem;
+    padding-top: 7rem;
+    min-height: 100vh;
+    background-color: var(--background-dark);
+    color: var(--text-light);
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.page-wrapper img {
+    position: relative;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.page-wrapper:not(.loading) img {
+    opacity: 1;
+}
+
+/* --- Tap Zones --- */
+/* Deleted as they are now handled via JS events directly on reader-content */
+
+/* --- Novel Themes --- */
+.reader-page.novel-theme-light {
+    --background-dark: #f4f4f4;
+    --text-light: #333;
+    --secondary-text: #666;
+    --card-background: #ffffff;
+    --border-color: #ddd;
+    --accent-color: #6750A4;
+    --alert-bg: #fff3cd;
+    --alert-border: #ffeeba;
+    --alert-text: #856404;
+}
+
+.reader-page.novel-theme-dark {
+    --background-dark: #141218;
+    --text-light: #E6E0E9;
+    --secondary-text: #CAC4D0;
+    --card-background: #2B2930;
+    --border-color: #49454F;
+    --accent-color: #D0BCFF;
+    --alert-bg: rgba(255, 180, 171, 0.1);
+    --alert-border: rgba(255, 180, 171, 0.5);
+    --alert-text: #FFB4AB;
+}
+
+.reader-page.novel-theme-sepia {
+    --background-dark: #f4ecd8;
+    --text-light: #5b4636;
+    --secondary-text: #7a6350;
+    --card-background: #e6dfc8;
+    --border-color: #d4c5ab;
+    --accent-color: #8c6d53;
+    --alert-bg: #faebcc;
+    --alert-border: #f2dede;
+    --alert-text: #8a6d3b;
 }

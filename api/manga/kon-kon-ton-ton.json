@@ -1,0 +1,19 @@
+{
+  "id": 10,
+  "title": "Кон-кон Тон-тон",
+  "description": "Манґа, в якій нічого не відбувається, оскільки жоден персонаж не може піддатися іншому.",
+  "type": "Манґа",
+  "status": "Завершено",
+  "coverImage": "https://files.catbox.moe/c2d0y2.webp",
+  "backgroundImage": "https://files.catbox.moe/6v5ttv.webp",
+  "pageUrl": "#title?id=kon-kon-ton-ton",
+  "genres": [
+    "Ваншот",
+    "Яой",
+    "Романтика",
+    "Шьонен-ай"
+  ],
+  "latestUpdate": "2025-11-05T19:10:57.265861Z",
+  "chapters": [],
+  "slug": "kon-kon-ton-ton"
+}

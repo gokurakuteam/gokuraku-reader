@@ -1,6 +1,6 @@
 // Версія кешу. Змінюйте це значення (наприклад, 'gokuraku-cache-v2'),
 // коли ви оновлюєте основні файли (css, js, html), щоб примусово оновити кеш.
-const CACHE_NAME = 'gokuraku-cache-v1';
+const CACHE_NAME = 'gokuraku-cache-v3';
 
 // Список статичних файлів для початкового кешування
 const STATIC_ASSETS = [
@@ -32,7 +32,7 @@ self.addEventListener('install', event => {
         // Кешуємо статичні файли
         cache.addAll(STATIC_ASSETS);
         // Додатково кешуємо файли з даними, щоб вони були доступні офлайн при першому завантаженні
-        return cache.addAll(['/site-data.json', '/manga-data.json']);
+        return cache.addAll(['/site-data.json', '/api/manga-list.json']);
       })
   );
 });
@@ -57,22 +57,24 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // --- СТРАТЕГІЯ ДЛЯ ФАЙЛІВ З ДАНИМИ (Network First) ---
-  // Якщо запит іде до manga-data.json або site-data.json
-  if (url.pathname === '/manga-data.json' || url.pathname === '/site-data.json') {
+  // --- СТРАТЕГІЯ ДЛЯ ФАЙЛІВ З ДАНИМИ (Stale-While-Revalidate) ---
+  // Якщо запит іде до api/ (нові дані) або site-data.json
+  if (url.pathname.startsWith('/api/') || url.pathname === '/site-data.json') {
     event.respondWith(
-      // 1. Спочатку намагаємось отримати дані з мережі
-      fetch(event.request).then(networkResponse => {
-        // Якщо вдалося, оновлюємо кеш і повертаємо відповідь
-        return caches.open(CACHE_NAME).then(cache => {
-          console.log(`Оновлюю кеш для: ${url.pathname}`);
-          cache.put(event.request, networkResponse.clone());
+      caches.match(event.request).then(cachedResponse => {
+        // Незалежно від того, чи є кеш, робимо запит для його оновлення у фоні
+        const fetchPromise = fetch(event.request).then(networkResponse => {
+          caches.open(CACHE_NAME).then(cache => {
+            console.log(`Оновлюю кеш у фоні для: ${url.pathname}`);
+            cache.put(event.request, networkResponse.clone());
+          });
           return networkResponse;
+        }).catch(() => {
+          console.log(`Немає інтернету для фонового оновлення: ${url.pathname}`);
         });
-      }).catch(() => {
-        // 2. Якщо мережа недоступна, повертаємо дані з кешу
-        console.log(`Немає інтернету. Беру з кешу: ${url.pathname}`);
-        return caches.match(event.request);
+        
+        // Повертаємо кеш одразу, якщо він є. Якщо ні - чекаємо на відповідь мережі
+        return cachedResponse || fetchPromise;
       })
     );
     return; // Важливо завершити виконання тут

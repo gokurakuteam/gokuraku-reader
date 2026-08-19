@@ -1,0 +1,85 @@
+{
+  "id": 6,
+  "title": "Мій кіт трохи інший",
+  "description": "Повсякденне життя кота та його молодого власника.",
+  "type": "Маньхва",
+  "status": "Завершено",
+  "coverImage": "https://files.catbox.moe/ftcjz4.webp",
+  "backgroundImage": "https://files.catbox.moe/wcsx2d.webp",
+  "pageUrl": "#title?id=mii-kit-trokhy-inshyi",
+  "genres": [
+    "Побут",
+    "Тварини",
+    "Комедія"
+  ],
+  "latestUpdate": "2025-11-12T18:58:46.800912Z",
+  "chapters": [
+    {
+      "id": 117,
+      "title": "",
+      "volume": 1,
+      "chapter": 1.0,
+      "date": "2025-11-12",
+      "pages": [
+        "https://files.catbox.moe/d05vd4.jpg",
+        "https://files.catbox.moe/vl2hds.jpg"
+      ]
+    },
+    {
+      "id": 118,
+      "title": "",
+      "volume": 1,
+      "chapter": 2.0,
+      "date": "2025-11-12",
+      "pages": [
+        "https://files.catbox.moe/pmshez.jpg",
+        "https://files.catbox.moe/vvhadr.jpg"
+      ]
+    },
+    {
+      "id": 119,
+      "title": "",
+      "volume": 1,
+      "chapter": 3.0,
+      "date": "2025-11-12",
+      "pages": [
+        "https://files.catbox.moe/mrxoru.jpg",
+        "https://files.catbox.moe/z6z8ly.jpg"
+      ]
+    },
+    {
+      "id": 120,
+      "title": "",
+      "volume": 1,
+      "chapter": 4.0,
+      "date": "2025-11-12",
+      "pages": [
+        "https://files.catbox.moe/3nmnf0.jpg",
+        "https://files.catbox.moe/pcx18p.jpg"
+      ]
+    },
+    {
+      "id": 121,
+      "title": "",
+      "volume": 1,
+      "chapter": 5.0,
+      "date": "2025-11-12",
+      "pages": [
+        "https://files.catbox.moe/ia56y2.jpg",
+        "https://files.catbox.moe/w7hpup.jpg"
+      ]
+    },
+    {
+      "id": 122,
+      "title": "",
+      "volume": 1,
+      "chapter": 6.0,
+      "date": "2025-11-12",
+      "pages": [
+        "https://files.catbox.moe/kykg4o.jpg",
+        "https://files.catbox.moe/79pddd.jpg"
+      ]
+    }
+  ],
+  "slug": "mii-kit-trokhy-inshyi"
+}
