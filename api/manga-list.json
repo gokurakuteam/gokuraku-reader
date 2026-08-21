@@ -888,7 +888,7 @@
       "Яой",
       "Шьонен-ай"
     ],
-    "latestUpdate": "2026-08-14T20:17:25.574923Z",
+    "latestUpdate": "2026-08-21T21:14:24.355783Z",
     "slug": "shchaslyvyi-marmur",
     "chapters": [
       {
@@ -1177,6 +1177,13 @@
         "volume": 1,
         "chapter": 41.0,
         "date": "2026-08-14"
+      },
+      {
+        "id": 678,
+        "title": "",
+        "volume": 1,
+        "chapter": 42.0,
+        "date": "2026-08-21"
       }
     ]
   },
