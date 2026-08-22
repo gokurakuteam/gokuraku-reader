@@ -15,7 +15,7 @@
     "Фентезі",
     "Магія"
   ],
-  "latestUpdate": "2026-08-15T19:12:01.593713Z",
+  "latestUpdate": "2026-08-22T20:42:00.877470Z",
   "chapters": [
     {
       "id": 153,
@@ -1397,6 +1397,60 @@
         "https://files.catbox.moe/lpuy02.webp",
         "https://files.catbox.moe/n255p9.webp",
         "https://files.catbox.moe/gsk3yc.webp"
+      ]
+    },
+    {
+      "id": 679,
+      "title": "До нового часу!",
+      "volume": 6,
+      "chapter": 51.0,
+      "date": "2026-08-22",
+      "pages": [
+        "https://files.catbox.moe/i2l0f3.webp",
+        "https://files.catbox.moe/xbpeo2.webp",
+        "https://files.catbox.moe/kgz1l4.webp",
+        "https://files.catbox.moe/a3fnbd.webp",
+        "https://files.catbox.moe/ofzw3b.webp",
+        "https://files.catbox.moe/63b5h5.webp",
+        "https://files.catbox.moe/gk22or.webp",
+        "https://files.catbox.moe/yf8eue.webp",
+        "https://files.catbox.moe/uryv3x.webp",
+        "https://files.catbox.moe/mnm4pk.webp",
+        "https://files.catbox.moe/yk1ypw.webp",
+        "https://files.catbox.moe/hs21p7.webp",
+        "https://files.catbox.moe/n3uccl.webp",
+        "https://files.catbox.moe/s3ftv6.webp",
+        "https://files.catbox.moe/vzyjxh.webp",
+        "https://files.catbox.moe/2ghzfm.webp",
+        "https://files.catbox.moe/ujl5sc.webp",
+        "https://files.catbox.moe/bctkkw.webp"
+      ]
+    },
+    {
+      "id": 680,
+      "title": "Завмри",
+      "volume": 6,
+      "chapter": 52.0,
+      "date": "2026-08-22",
+      "pages": [
+        "https://files.catbox.moe/sa6322.webp",
+        "https://files.catbox.moe/e0ut5s.webp",
+        "https://files.catbox.moe/fijpzk.webp",
+        "https://files.catbox.moe/cjhmft.webp",
+        "https://files.catbox.moe/97xiho.webp",
+        "https://files.catbox.moe/iqlixg.webp",
+        "https://files.catbox.moe/hhr2kr.webp",
+        "https://files.catbox.moe/5awdqy.webp",
+        "https://files.catbox.moe/aovof5.webp",
+        "https://files.catbox.moe/1pab43.webp",
+        "https://files.catbox.moe/a757eb.webp",
+        "https://files.catbox.moe/dxpj5j.webp",
+        "https://files.catbox.moe/u3cjs8.webp",
+        "https://files.catbox.moe/yd08h9.webp",
+        "https://files.catbox.moe/96b2qx.webp",
+        "https://files.catbox.moe/3vlczw.webp",
+        "https://files.catbox.moe/orao0j.webp",
+        "https://files.catbox.moe/kmp51g.webp"
       ]
     }
   ],

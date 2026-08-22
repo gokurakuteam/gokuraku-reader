@@ -14,7 +14,7 @@
     "Яой",
     "Буденність"
   ],
-  "latestUpdate": "2026-08-19T15:47:48.776323Z",
+  "latestUpdate": "2026-08-22T20:43:02.788998Z",
   "chapters": [
     {
       "id": 346,
@@ -730,6 +730,52 @@
       "chapter": 37.5,
       "date": "2026-08-19",
       "externalUrl": "https://manga.in.ua/chapters/77532-shah-i-mat-tom-1-rozdil-375.html"
+    },
+    {
+      "id": 681,
+      "title": "",
+      "volume": 2,
+      "chapter": 53.0,
+      "date": "2026-08-22",
+      "pages": [
+        "https://files.catbox.moe/4sbfra.webp",
+        "https://files.catbox.moe/wf8twr.webp",
+        "https://files.catbox.moe/kyx7qd.webp",
+        "https://files.catbox.moe/41lhye.webp",
+        "https://files.catbox.moe/7t0pie.webp",
+        "https://files.catbox.moe/tt7vls.webp",
+        "https://files.catbox.moe/85crxm.webp",
+        "https://files.catbox.moe/8bzrzd.webp",
+        "https://files.catbox.moe/o82hwt.webp",
+        "https://files.catbox.moe/c0xso6.webp",
+        "https://files.catbox.moe/18ji7i.webp",
+        "https://files.catbox.moe/vaj0tk.webp",
+        "https://files.catbox.moe/veg4f9.webp",
+        "https://files.catbox.moe/u69hv4.webp",
+        "https://files.catbox.moe/apyfod.webp",
+        "https://files.catbox.moe/ty7spk.webp",
+        "https://files.catbox.moe/8aaej0.webp",
+        "https://files.catbox.moe/9cnac9.webp",
+        "https://files.catbox.moe/5ih07h.webp",
+        "https://files.catbox.moe/0qezir.webp",
+        "https://files.catbox.moe/6flcsr.webp",
+        "https://files.catbox.moe/1l485z.webp",
+        "https://files.catbox.moe/6ptx24.webp",
+        "https://files.catbox.moe/zl7s6l.webp",
+        "https://files.catbox.moe/m2r93q.webp",
+        "https://files.catbox.moe/qovnzy.webp",
+        "https://files.catbox.moe/m6afo8.webp",
+        "https://files.catbox.moe/3a4b7d.webp",
+        "https://files.catbox.moe/dq4iku.webp",
+        "https://files.catbox.moe/77roz2.webp",
+        "https://files.catbox.moe/dykxhu.webp",
+        "https://files.catbox.moe/5xypwv.webp",
+        "https://files.catbox.moe/4dodma.webp",
+        "https://files.catbox.moe/a7uyqj.webp",
+        "https://files.catbox.moe/3f7xsp.webp",
+        "https://files.catbox.moe/stmgcr.webp",
+        "https://files.catbox.moe/vtbxnw.webp"
+      ]
     }
   ],
   "slug": "shakh-i-mat"
