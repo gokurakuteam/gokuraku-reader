@@ -185,17 +185,22 @@ export function setupTabs() {
 }
 
 export function timeAgo(date) {
-    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
+    const past = new Date(date);
+    const now = new Date();
+    let seconds = Math.floor((now - past) / 1000);
+    
+    if (seconds < 0) seconds = 0;
+    
     let interval = seconds / 31536000;
-    if (interval > 1) return Math.floor(interval) + " р. тому";
+    if (interval >= 1) return Math.floor(interval) + " р. тому";
     interval = seconds / 2592000;
-    if (interval > 1) return Math.floor(interval) + " міс. тому";
+    if (interval >= 1) return Math.floor(interval) + " міс. тому";
     interval = seconds / 86400;
-    if (interval > 1) return Math.floor(interval) + " д. тому";
+    if (interval >= 1) return Math.floor(interval) + " д. тому";
     interval = seconds / 3600;
-    if (interval > 1) return Math.floor(interval) + " г. тому";
+    if (interval >= 1) return Math.floor(interval) + " год. тому";
     interval = seconds / 60;
-    if (interval > 1) return Math.floor(interval) + " хв. тому";
+    if (interval >= 1) return Math.floor(interval) + " хв. тому";
     return "Щойно";
 }
 
@@ -215,12 +220,16 @@ export function renderChapterList(manga, sortOrder) {
         const targetAttr = ch.externalUrl ? 'target="_blank" rel="noopener noreferrer"' : '';
         const externalIcon = ch.externalUrl ? `<i data-lucide="external-link" style="width: 14px; height: 14px; margin-left: 4px; vertical-align: middle;"></i>` : '';
         
+        let dateStr = ch.date || '';
+        if (dateStr.length === 10) dateStr += 'T00:00:00';
+        const displayDate = dateStr ? new Date(dateStr).toLocaleDateString('uk-UA') : '';
+
         return `
             <li class="${isRead ? 'read-chapter' : ''}">
                 <a href="${chapterUrl}" ${targetAttr}>Том ${ch.volume}, Розділ ${ch.chapter}${ch.title ? `: ${ch.title}` : ''}${externalIcon}</a>
                 <span class="chapter-meta">
                     <i data-lucide="eye" class="eye-icon ${isRead ? 'read' : ''}" data-manga-id="${manga.id}" data-chapter-id="${ch.id}"></i>
-                    ${new Date(ch.date).toLocaleDateString()}
+                    ${displayDate}
                     <button class="icon-button download-chapter-btn" title="Завантажити розділ" data-manga-id="${manga.id}" data-chapter-id="${ch.id}">
                         <i data-lucide="download"></i>
                     </button>

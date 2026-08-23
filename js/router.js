@@ -1,5 +1,5 @@
 import { loadMangaData, fetchMangaDetails, getAllManga, getMangaById, getLatestUpdates, getChapterById } from '../data-manager.js';
-import { getBookmarks, isBookmarked, addBookmark, removeBookmark, getHistory, addChapterToHistory, addCategory, deleteCategory, getMangaCategory } from '../storage-manager.js';
+import { getBookmarks, isBookmarked, addBookmark, removeBookmark, getHistory, addChapterToHistory, addCategory, deleteCategory, getMangaCategory, getSelectedCover, saveSelectedCover } from '../storage-manager.js';
 import { initCatalog } from '../catalog.js';
 import { setupDynamicCarousel } from './carousel.js';
 import { setupTabs, timeAgo, renderChapterList, updateReadButton, getStatusClass, handleChapterListClicks, showBookmarkModal, updateBookmarkButton, showCategoryManagerModal, initReaderSettings, initReaderHeaderBehavior } from './ui.js';
@@ -70,7 +70,7 @@ async function loadPage(page, params, routeId) {
             return `
                 <li>
                     <a href="${manga.pageUrl}">
-                        <img src="${manga.coverImage}" alt="${manga.title}">
+                        <img src="${getSelectedCover(manga.id) || manga.coverImage}" alt="${manga.title}">
                         <div class="update-info">
                             <h3>${manga.title}</h3>
                             <p>Том ${latestChapter.volume}, Розділ ${latestChapter.chapter}</p>
@@ -90,11 +90,90 @@ async function loadPage(page, params, routeId) {
         const manga = getMangaById(mangaId);
 
         if (manga) {
-            if (manga.backgroundImage) {
-                const bgImageDiv = main.querySelector('#background-image');
-                if (bgImageDiv) bgImageDiv.style.backgroundImage = `url(${manga.backgroundImage})`;
+            // -- Covers Logic --
+            let currentCoverUrl = getSelectedCover(manga.id);
+            if (!currentCoverUrl) {
+                currentCoverUrl = manga.coverImage;
+                // Determine active cover from history
+                const history = getHistory();
+                const mangaHistory = history.filter(item => item.mangaId === manga.id);
+                if (mangaHistory.length > 0 && manga.volumeCovers && manga.chapters) {
+                    // Find highest read volume
+                    let maxReadVol = -1;
+                    for (const h of mangaHistory) {
+                        const chapter = getChapterById(h.chapterId);
+                        if (chapter && chapter.volume > maxReadVol) {
+                            maxReadVol = chapter.volume;
+                        }
+                    }
+                    if (maxReadVol > 0 && manga.volumeCovers[maxReadVol]) {
+                        currentCoverUrl = manga.volumeCovers[maxReadVol];
+                    }
+                }
             }
-            main.querySelector('.title-cover img').src = manga.coverImage;
+
+            const coverImgEl = main.querySelector('.title-cover img');
+            const bgImageDiv = main.querySelector('#background-image');
+            
+            const setCover = (url, isInitial = false) => {
+                if (isInitial) {
+                    if (coverImgEl) coverImgEl.src = url;
+                    if (bgImageDiv) bgImageDiv.style.backgroundImage = `url(${url})`;
+                    return;
+                }
+                if (coverImgEl) {
+                    coverImgEl.style.opacity = '0';
+                    setTimeout(() => {
+                        coverImgEl.src = url;
+                        coverImgEl.onload = () => {
+                            coverImgEl.style.opacity = '1';
+                        };
+                    }, 300);
+                }
+                if (bgImageDiv) {
+                    bgImageDiv.style.opacity = '0';
+                    setTimeout(() => {
+                        bgImageDiv.style.backgroundImage = `url(${url})`;
+                        bgImageDiv.style.opacity = '0.2';
+                    }, 300);
+                }
+            };
+            
+            setCover(currentCoverUrl, true);
+
+            // Populate Covers Tab
+            const coversGrid = main.querySelector('.covers-grid');
+            if (coversGrid) {
+                coversGrid.innerHTML = '';
+                
+                const addCoverItem = (title, url) => {
+                    const item = document.createElement('div');
+                    item.className = 'cover-item';
+                    if (url === currentCoverUrl) item.classList.add('active');
+                    item.innerHTML = `
+                        <img src="${url}" alt="${title}">
+                        <span>${title}</span>
+                    `;
+                    item.addEventListener('click', () => {
+                        coversGrid.querySelectorAll('.cover-item').forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        setCover(url);
+                        saveSelectedCover(manga.id, url);
+                    });
+                    coversGrid.appendChild(item);
+                };
+                
+                addCoverItem('Головна', manga.coverImage);
+                if (manga.volumeCovers) {
+                    // Sort volumes numerically
+                    const vols = Object.keys(manga.volumeCovers).sort((a,b) => parseFloat(a) - parseFloat(b));
+                    vols.forEach(v => {
+                        addCoverItem(`Том ${v}`, manga.volumeCovers[v]);
+                    });
+                }
+            }
+            // -- End Covers Logic --
+
             main.querySelector('.title-info h1').textContent = manga.title;
             main.querySelector('.title-info p').textContent = manga.description;
 
@@ -148,7 +227,9 @@ async function loadPage(page, params, routeId) {
         } else {
             await showNotFoundPage();
         }
-        loadGiscusForPage('title', mangaId);
+        setTimeout(() => {
+            loadGiscusForPage('title', mangaId);
+        }, 500);
     } else if (page === 'cabinet') {
         setupTabs();
         setupCabinetBookmarks();
@@ -169,7 +250,7 @@ async function loadPage(page, params, routeId) {
                  return `
                     <li>
                         <a href="#reader?mangaId=${manga.slug || manga.id}&chapterId=${chapter.chapter}">
-                            <img src="${manga.coverImage}" alt="${manga.title}">
+                            <img src="${getSelectedCover(manga.id) || manga.coverImage}" alt="${manga.title}">
                             <div class="update-info">
                                 <h3>${manga.title}</h3>
                                 <p>Том ${chapter.volume}, Розділ ${chapter.chapter}</p>
@@ -226,9 +307,10 @@ async function loadPage(page, params, routeId) {
                 
                 readerContent.innerHTML = chapter.pages.map((pageUrl, index) => {
                     const lazyAttr = index < preloadCount ? '' : 'loading="lazy"';
+                    const fetchPriority = index === 0 ? 'fetchpriority="high"' : '';
                     return `
                         <div class="page-wrapper loading" id="page-wrapper-${index}">
-                            <img src="${pageUrl}" alt="Сторінка ${index + 1}" ${lazyAttr} 
+                            <img src="${pageUrl}" alt="Сторінка ${index + 1}" ${lazyAttr} ${fetchPriority}
                                  onload="this.parentElement.classList.remove('loading')">
                         </div>
                     `;
@@ -296,7 +378,9 @@ async function loadPage(page, params, routeId) {
         } else {
             await showNotFoundPage();
         }
-        loadGiscusForPage('reader', mangaId, chapter?.id);
+        setTimeout(() => {
+            loadGiscusForPage('reader', mangaId, chapter?.id);
+        }, 500);
     }
 }
 
@@ -345,7 +429,7 @@ function setupCabinetBookmarks() {
                 if (!manga) return;
                 const card = document.createElement('manga-card');
                 card.setAttribute('name', manga.title);
-                card.setAttribute('image', manga.coverImage);
+                card.setAttribute('image', getSelectedCover(manga.id) || manga.coverImage);
                 card.setAttribute('url', manga.pageUrl);
                 card.setAttribute('type', manga.type);
                  if (manga.chapters && manga.chapters.length > 0) {

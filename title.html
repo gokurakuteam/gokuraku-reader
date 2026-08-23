@@ -2,7 +2,7 @@
 <section class="title-page" style="position: relative;">
     <header class="title-header">
         <div class="title-cover">
-            <img src="" alt="Обкладинка манги">
+            <img src="" alt="Обкладинка манги" fetchpriority="high">
         </div>
         <div class="title-info">
             <h1></h1>
@@ -23,6 +23,7 @@
         <!-- СТВОРЮЄМО КОНТЕЙНЕР ДЛЯ ВКЛАДОК -->
         <div class="tabs">
             <button class="tab-link active" data-tab="chapters">Розділи</button>
+            <button class="tab-link" data-tab="covers">Обкладинки</button>
             <button class="tab-link" data-tab="comments">Коментарі</button>
         </div>
 
@@ -47,6 +48,13 @@
                     <!-- Розділи будуть динамічно вставлені сюди -->
                 </ul>
             </section>
+        </div>
+
+        <!-- ВКЛАДКА З ОБКЛАДИНКАМИ -->
+        <div id="covers" class="tab-content">
+            <div class="covers-grid">
+                <!-- Обкладинки будуть динамічно вставлені сюди -->
+            </div>
         </div>
 
         <!-- ВКЛАДКА З КОМЕНТАРЯМИ -->

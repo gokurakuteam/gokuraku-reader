@@ -121,7 +121,7 @@
 }
 
 .gsc-direct-reaction-button[class*="has-reacted"] {
-    background-color: rgba(0, 255, 153, 0.1) !important;
+    background-color: var(--giscus-accent-color-light) !important;
     border-color: var(--giscus-accent-color) !important;
     color: var(--giscus-accent-color) !important;
 }
@@ -188,7 +188,7 @@ a.color-text-primary.underline:hover {
 
 /* Статус "Власник" */
 .gsc-comment-header span[class*="border-box-border-info"] {
-    background-color: rgba(0, 255, 153, 0.1) !important;
+    background-color: var(--giscus-accent-color-light) !important;
     color: var(--giscus-accent-color) !important;
     border-color: var(--giscus-accent-color) !important;
     font-weight: 600 !important;
@@ -211,7 +211,7 @@ a.color-text-primary.underline:hover {
 }
 
 .gsc-right-header .BtnGroup-item--selected .btn {
-    background-color: rgba(0, 255, 153, 0.1) !important;
+    background-color: var(--giscus-accent-color-light) !important;
     color: var(--giscus-accent-color) !important;
     border-color: rgba(0, 0, 0, 0) !important;
     font-weight: bold;

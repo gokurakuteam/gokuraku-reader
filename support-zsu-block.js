@@ -8,19 +8,19 @@ class SupportZSUBlock extends HTMLElement {
                 title: "Повернись живим",
                 desc: "Фонд компетентної допомоги армії. Кожен ваш внесок наближає нашу перемогу.",
                 url: "https://savelife.in.ua/",
-                image: "images/savelife_bg.png"
+                image: "images/savelife_bg.webp"
             },
             {
                 title: "Фонд Притули",
                 desc: "Забезпечення військових всім необхідним: від дронів до бронетехніки.",
                 url: "https://prytulafoundation.org/",
-                image: "images/prytula_bg.png"
+                image: "images/prytula_bg.webp"
             },
             {
                 title: "United24",
                 desc: "Глобальна ініціатива на підтримку України, започаткована Президентом.",
                 url: "https://u24.gov.ua/",
-                image: "images/u24_bg.png"
+                image: "images/u24_bg.webp"
             }
         ];
     }

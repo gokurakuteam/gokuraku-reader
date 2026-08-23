@@ -1,4 +1,5 @@
 import { MangaCard } from './js/components.js';
+import { getSelectedCover } from './storage-manager.js';
 
 export function initCatalog(mangaData, initialGenres = []) {
     // DOM Elements
@@ -145,7 +146,7 @@ export function initCatalog(mangaData, initialGenres = []) {
         filteredManga.forEach((manga, index) => {
             const card = document.createElement('manga-card');
             card.setAttribute('name', manga.title);
-            card.setAttribute('image', manga.coverImage);
+            card.setAttribute('image', getSelectedCover(manga.id) || manga.coverImage);
             card.setAttribute('url', manga.pageUrl);
             card.setAttribute('type', manga.type);
             if (manga.chapters && manga.chapters.length > 0) {

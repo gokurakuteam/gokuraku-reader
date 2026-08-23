@@ -18,7 +18,7 @@ const GiscusConfig = {
     }
 };
 
-function generateThemeDataUrl(colors, themeMode) {
+function generateThemeDataUrl(colors, themeMode, baseCss = '') {
     if (!colors) {
          colors = { primary: '#00ff99', glow: 'rgba(0, 255, 153, 0.5)' };
     }
@@ -46,17 +46,23 @@ function generateThemeDataUrl(colors, themeMode) {
         btnText: '#ffffff'   /* Білий текст на кнопці акцентного кольору */
     };
 
-    const css = `
+    let primaryLight = 'rgba(0, 255, 153, 0.1)';
+    if (colors.primary.startsWith('#')) {
+        primaryLight = colors.primary + '1a';
+    }
+
+    const dynamicCss = `
         :root {
-            --giscus-main-background: transparent;
-            --giscus-card-background: ${vars.bg};
-            --giscus-input-background: ${vars.inputBg};
-            --giscus-border-color: ${vars.border};
-            --giscus-text-color: ${vars.text};
-            --giscus-secondary-text-color: ${vars.secText};
-            --giscus-accent-color: ${colors.primary};
-            --giscus-button-text-color: ${vars.btnText};
-            --giscus-glow-color: ${colors.glow};
+            --giscus-main-background: transparent !important;
+            --giscus-card-background: ${vars.bg} !important;
+            --giscus-input-background: ${vars.inputBg} !important;
+            --giscus-border-color: ${vars.border} !important;
+            --giscus-text-color: ${vars.text} !important;
+            --giscus-secondary-text-color: ${vars.secText} !important;
+            --giscus-accent-color: ${colors.primary} !important;
+            --giscus-accent-color-light: ${primaryLight} !important;
+            --giscus-button-text-color: ${vars.btnText} !important;
+            --giscus-glow-color: ${colors.glow} !important;
         }
         main {
             --color-prettylights-syntax-comment: #8b949e;
@@ -86,99 +92,13 @@ function generateThemeDataUrl(colors, themeMode) {
             --color-btn-primary-hover-border: ${vars.border};
             --color-btn-primary-selected-bg: ${colors.primary};
         }
-        .gsc-main { font-family: 'Montserrat', sans-serif !important; }
-        
-        .gsc-comment-box {
-            background-color: ${vars.bg} !important;
-            border-radius: 15px !important;
-        }
-        
-        .gsc-comment-box-textarea {
-            background-color: ${vars.inputBg} !important;
-            color: ${vars.text} !important;
-            border: 1px solid ${vars.border} !important;
-            border-radius: 10px !important;
-        }
-        
-        .gsc-comment-box-textarea:focus {
-
-            box-shadow: 0 0 8px ${colors.glow} !important;
-        }
-        
-        button.btn-primary {
-            background-color: ${colors.primary} !important;
-            color: ${vars.btnText} !important;
-            border: 1px solid ${colors.primary} !important;
-            border-radius: 25px !important;
-            font-weight: bold !important;
-            text-transform: uppercase !important;
-        }
-        
-        button.btn-primary:hover { opacity: 0.9; box-shadow: 0 0 10px ${colors.glow} !important; }
-        
-        .gsc-timeline > .gsc-comment-anchor > .gsc-comment {
-            background-color: transparent !important;
-            border: none !important;
-        }
-        
-        .gsc-comment > .color-bg-primary.border {
-            background-color: ${vars.bg} !important;
-            border: 1px solid ${vars.border} !important;
-            border-radius: 15px !important;
-            padding: 1rem !important;
-        }
-        
-        .gsc-comment-header {
-            color: ${vars.secText} !important;
-        }
-        
-        .gsc-comment-body {
-            color: ${vars.text} !important;
-        }
-
-        .gsc-reply-box button {
-            background-color: ${vars.inputBg} !important;
-            border: 1px solid ${vars.border} !important;
-            border-radius: 10px !important;
-            color: ${vars.secText} !important;
-        }
-        
-        a { color: ${vars.secText} !important; text-decoration: none !important; }
-        a:hover { color: ${colors.primary} !important; text-decoration: underline !important; }
-
-        /* --- POPOVER --- */
-        .gsc-reactions-popover {
-            background-color: ${vars.bg} !important;
-            border: 1px solid ${colors.primary} !important;
-            border-radius: 16px !important;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2) !important;
-        }
-        .gsc-reactions-popover p {
-            color: ${vars.text} !important;
-            font-weight: 700 !important;
-        }
-        .gsc-reactions-popover .my-2 {
-            border-color: ${vars.border} !important;
-        }
-        .gsc-emoji-button:hover {
-            background-color: ${vars.inputBg} !important;
-            border: 1px solid ${colors.primary} !important;
-            transform: scale(1.15) !important;
-        }
-
-        .gsc-comment-box-textarea-extras {
-            display: none !important;
-        }
-
-        #__next > main > div > div.gsc-comments > div.gsc-header > div > em {
-            display: none !important;
-        }
     `;
     
-    return `data:text/css;base64,${btoa(unescape(encodeURIComponent(css)))}`;
+    const finalCss = baseCss + "\n" + dynamicCss;
+    return `data:text/css;base64,${btoa(unescape(encodeURIComponent(finalCss)))}`;
 }
 
-export function loadGiscusForPage(pageType, mangaId, chapterId = null) {
+export async function loadGiscusForPage(pageType, mangaId, chapterId = null) {
     const container = document.getElementById('giscus-container');
     if (!container) return;
 
@@ -214,7 +134,15 @@ export function loadGiscusForPage(pageType, mangaId, chapterId = null) {
         }
     }
 
-    const themeUrl = generateThemeDataUrl(activeColors, themeMode);
+    let baseCss = '';
+    try {
+        const resp = await fetch('css/giscus-theme.css');
+        if (resp.ok) baseCss = await resp.text();
+    } catch (e) {
+        console.error('Failed to load giscus theme CSS', e);
+    }
+
+    const themeUrl = generateThemeDataUrl(activeColors, themeMode, baseCss);
 
     const script = document.createElement('script');
     script.src = 'https://giscus.app/client.js';
@@ -228,7 +156,6 @@ export function loadGiscusForPage(pageType, mangaId, chapterId = null) {
     script.setAttribute('data-reactions-enabled', '1');
     script.setAttribute('data-emit-metadata', '0');
     script.setAttribute('data-input-position', 'top');
-    script.setAttribute('data-loading', 'lazy');
     script.setAttribute('data-mapping', 'specific');
 
     let term;

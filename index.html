@@ -6,14 +6,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gokuraku</title>
     <link rel="icon" type="image/x-icon" href="/icons/icon-256.ico">
-    <link rel="stylesheet" href="style.css">
+    
+    <!-- DNS Prefetch для зовнішніх ресурсів -->
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://files.catbox.moe">
+
+    <!-- Попереднє підключення до зовнішніх сервісів -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://giscus.app">
+    <link rel="preconnect" href="https://api.github.com">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" as="style">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Попереднє завантаження стилів -->
+    <link rel="preload" href="style.css" as="style">
+    <link rel="stylesheet" href="style.css">
+    
     <link rel="manifest" href="manifest.json">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Відкладене завантаження скриптів (defer), щоб вони не блокували рендеринг сторінки -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script defer src="https://unpkg.com/lucide@latest"></script>
+    <script defer src="support-zsu-block.js"></script>
 </head>
 <body>
     <app-header></app-header>
@@ -37,6 +54,5 @@
         </div>
     </footer>
     <script src="main.js" type="module"></script>
-    <script src="support-zsu-block.js"></script>
 </body>
 </html>

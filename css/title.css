@@ -13,6 +13,7 @@
     background-position: center;
     opacity: 0.2;
     z-index: -1;
+    transition: opacity 0.3s ease-in-out;
 }
 
 .background-image::after {
@@ -38,6 +39,7 @@
     width: 220px;
     border-radius: 24px; /* Consistent radius */
     box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 5px 15px var(--glow-color);
+    transition: opacity 0.3s ease-in-out, transform 0.3s ease;
 }
 
 .title-info h1 {
@@ -91,6 +93,7 @@
 .title-info p {
     color: var(--secondary-text);
     line-height: 1.6;
+    white-space: pre-wrap;
 }
 
 .title-actions {
@@ -747,4 +750,44 @@
 
 .chapter-list .list-header h2 {
     display: none;
+}
+
+/* --- СТИЛІ ДЛЯ ОБКЛАДИНОК ТОМІВ --- */
+.covers-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1.5rem;
+    padding: 1rem 0;
+}
+
+.cover-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.cover-item:hover {
+    transform: translateY(-5px);
+}
+
+.cover-item img {
+    width: 100%;
+    border-radius: 16px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.cover-item.active img {
+    border-color: var(--accent-color);
+    box-shadow: 0 10px 25px var(--glow-color);
+}
+
+.cover-item span {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-light);
 }
