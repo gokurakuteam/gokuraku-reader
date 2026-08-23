@@ -5,6 +5,7 @@ const HISTORY_KEY = 'mangaHistory';
 const CLICKER_KEY = 'gokuClickerData';
 const THEME_KEY = 'gokuActiveThemeId';
 const THEME_MODE_KEY = 'gokuThemeMode'; // 'light', 'dark', 'system'
+const SELECTED_COVER_KEY = 'gokuSelectedCover';
 
 // --- Bookmarks ---
 // ... (код закладок без змін) ...
@@ -275,4 +276,28 @@ export function getReaderSettings() {
 
 export function saveReaderSettings(settings) {
     localStorage.setItem(READER_SETTINGS_KEY, JSON.stringify(settings));
+}
+
+// --- Selected Cover ---
+export function getSelectedCover(mangaId) {
+    const data = localStorage.getItem(SELECTED_COVER_KEY);
+    if (!data) return null;
+    try {
+        const parsed = JSON.parse(data);
+        return parsed[mangaId] || null;
+    } catch (e) {
+        return null;
+    }
+}
+
+export function saveSelectedCover(mangaId, coverUrl) {
+    let data = localStorage.getItem(SELECTED_COVER_KEY);
+    let parsed = {};
+    if (data) {
+        try {
+            parsed = JSON.parse(data);
+        } catch (e) {}
+    }
+    parsed[mangaId] = coverUrl;
+    localStorage.setItem(SELECTED_COVER_KEY, JSON.stringify(parsed));
 }

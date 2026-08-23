@@ -79,3 +79,22 @@ main.js: Added theme initialization on app load.
 storage-manager.js: Added data persistence functions for the game and theme.
 
 This addition gamifies the user experience and allows for personalization of the website's interface.
+
+## Recent Updates
+
+**Material 3 Expressive Redesign (August 2026):**
+The Cabinet and Title pages have been completely redesigned to follow the Material 3 Expressive aesthetic. This update introduces:
+- **Asymmetric and Unusual Shapes:** Replaced standard pill shapes with asymmetric border-radii for cards, categories, and tags to create a more dynamic and playful interface.
+- **Looped Animations:** Added subtle background animations (like slow floating, pulsing glows, and rotating elements) to make the UI feel alive.
+- **Enhanced Tonal Surfaces:** Increased the use of soft background colors and state layers for better visual feedback on interactive elements.
+- **Deeper Shadows:** Upgraded shadows to be multi-layered and softer, enhancing the perception of depth for covers and prominent UI cards.
+
+**Reader Improvements (August 2026):**
+Enhanced the reading experience with new settings and better loading states:
+- **Settings Modal:** Added a dedicated settings modal in the reader.
+- **Manga/Manhwa Settings:** Users can now change reading direction (Vertical, Horizontal LTR/RTL), image fit (Width, Height, Original), configure image preloading, artificially adjust image brightness, and toggle tap-to-scroll for horizontal modes.
+- **Novel Settings:** Added customizable font sizes, line height, font family (serif/sans-serif), and reading themes (Light, Dark, Sepia).
+- **Skeleton Loading:** Replaced blank spaces during image loading with dynamic skeleton animations that act as placeholders until pages fully load, preventing layout shifts and providing visual feedback.
+- **Data Persistence:** All reader preferences are saved in localStorage and automatically applied on the next visit.
+
+Files updated: `css/main.css`, `css/cabinet.css`, `css/title.css`, `css/home.css`, `cabinet.html`.

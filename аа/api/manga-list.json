@@ -20,15 +20,6 @@
     "status": "Завершено",
     "latestUpdate": "2026-02-23T20:38:15.368610Z",
     "slug": "kokhannia-tse-iliuziia",
-    "volumeCovers": {
-      "1": "https://files.catbox.moe/9he3a1.webp",
-      "2": "https://files.catbox.moe/byxlbx.webp",
-      "3": "https://files.catbox.moe/k4r902.webp",
-      "4": "https://files.catbox.moe/csjndd.webp",
-      "5": "https://files.catbox.moe/nrx273.webp",
-      "6": "https://files.catbox.moe/3r09ql.webp",
-      "7": "https://files.catbox.moe/j0axla.webp"
-    },
     "chapters": [
       {
         "id": 1,
@@ -899,16 +890,6 @@
     ],
     "latestUpdate": "2026-08-21T21:14:24.355783Z",
     "slug": "shchaslyvyi-marmur",
-    "volumeCovers": {
-      "1": "https://files.catbox.moe/wqcsda.webp",
-      "2": "https://files.catbox.moe/ssvuw2.webp",
-      "3": "https://files.catbox.moe/q4rjil.webp",
-      "4": "https://files.catbox.moe/m13ls3.webp",
-      "5": "https://files.catbox.moe/rmx6cu.webp",
-      "6": "https://files.catbox.moe/ox29rh.webp",
-      "7": "https://files.catbox.moe/5a8x7m.webp",
-      "8": "https://files.catbox.moe/rwhvf0.webp"
-    },
     "chapters": [
       {
         "id": 113,
@@ -1223,7 +1204,7 @@
       "Фентезі",
       "Школа"
     ],
-    "latestUpdate": "2026-08-23T13:13:06.101219Z",
+    "latestUpdate": "2026-07-28T20:51:01.580626Z",
     "slug": "khlopets-u-meni",
     "chapters": [
       {
@@ -1437,6 +1418,13 @@
         "date": "2026-07-14"
       },
       {
+        "id": 538,
+        "title": "На захист хулігана",
+        "volume": 1,
+        "chapter": 53.0,
+        "date": "2026-07-15"
+      },
+      {
         "id": 542,
         "title": "Вщипни мене",
         "volume": 1,
@@ -1512,13 +1500,6 @@
         "volume": 1,
         "chapter": 63.5,
         "date": "2026-07-28"
-      },
-      {
-        "id": 682,
-        "title": "На захист хулігана",
-        "volume": 1,
-        "chapter": 53.0,
-        "date": "2026-08-23"
       }
     ]
   },
@@ -2015,14 +1996,6 @@
     ],
     "latestUpdate": "2026-08-22T20:42:00.877470Z",
     "slug": "vidma-ichi",
-    "volumeCovers": {
-      "1": "https://files.catbox.moe/ecbh3i.webp",
-      "2": "https://files.catbox.moe/lg1iba.webp",
-      "3": "https://files.catbox.moe/59ldkb.webp",
-      "4": "https://files.catbox.moe/4gmwue.webp",
-      "5": "https://files.catbox.moe/mc04oc.webp",
-      "6": "https://files.catbox.moe/o6bkz8.webp"
-    },
     "chapters": [
       {
         "id": 153,
