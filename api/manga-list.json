@@ -4096,7 +4096,7 @@
       "Магія",
       "Перше кохання."
     ],
-    "latestUpdate": "2026-08-16T20:28:50.845900Z",
+    "latestUpdate": "2026-08-23T20:18:40.955794Z",
     "slug": "nevdalyi-pryklad-bezdohannoho-prokliattia",
     "chapters": [
       {
@@ -4322,6 +4322,20 @@
         "volume": 1,
         "chapter": 32.0,
         "date": "2026-08-16"
+      },
+      {
+        "id": 683,
+        "title": "",
+        "volume": 1,
+        "chapter": 33.0,
+        "date": "2026-08-23"
+      },
+      {
+        "id": 684,
+        "title": "",
+        "volume": 1,
+        "chapter": 34.0,
+        "date": "2026-08-23"
       }
     ]
   },
