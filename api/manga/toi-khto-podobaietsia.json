@@ -14,7 +14,35 @@
     "Шьонен-ай",
     "Школа"
   ],
-  "latestUpdate": "2025-11-05T19:13:17.794158Z",
-  "chapters": [],
+  "latestUpdate": "2026-08-25T19:46:39.680263Z",
+  "chapters": [
+    {
+      "id": 695,
+      "title": "",
+      "volume": 1,
+      "chapter": 1.0,
+      "date": "2026-08-25",
+      "pages": [
+        "https://files.catbox.moe/34noor.webp",
+        "https://files.catbox.moe/0i8oji.webp",
+        "https://files.catbox.moe/j35tb6.webp",
+        "https://files.catbox.moe/dc8bte.webp",
+        "https://files.catbox.moe/l6vqvq.webp"
+      ]
+    },
+    {
+      "id": 696,
+      "title": "",
+      "volume": 1,
+      "chapter": 2.0,
+      "date": "2026-08-25",
+      "pages": [
+        "https://files.catbox.moe/rsmwn1.webp",
+        "https://files.catbox.moe/7zfeef.webp",
+        "https://files.catbox.moe/h1utod.webp",
+        "https://files.catbox.moe/24gxv1.webp"
+      ]
+    }
+  ],
   "slug": "toi-khto-podobaietsia"
 }
