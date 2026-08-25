@@ -2432,9 +2432,17 @@
       "Романтика",
       "Шьонен-ай"
     ],
-    "latestUpdate": "2025-11-05T19:10:57.265861Z",
+    "latestUpdate": "2026-08-25T19:50:01.749547Z",
     "slug": "kon-kon-ton-ton",
-    "chapters": []
+    "chapters": [
+      {
+        "id": 697,
+        "title": "",
+        "volume": 1,
+        "chapter": 1.0,
+        "date": "2026-08-25"
+      }
+    ]
   },
   {
     "id": 11,
@@ -2453,9 +2461,17 @@
       "Драма",
       "Ваншот"
     ],
-    "latestUpdate": "2025-11-05T19:12:43.748728Z",
+    "latestUpdate": "2026-08-25T19:53:58.841914Z",
     "slug": "mahichna-bytva-prysviachuietsia-tobi",
-    "chapters": []
+    "chapters": [
+      {
+        "id": 698,
+        "title": "",
+        "volume": 1,
+        "chapter": 1.0,
+        "date": "2026-08-25"
+      }
+    ]
   },
   {
     "id": 12,
@@ -2473,9 +2489,24 @@
       "Шьонен-ай",
       "Школа"
     ],
-    "latestUpdate": "2025-11-05T19:13:17.794158Z",
+    "latestUpdate": "2026-08-25T19:46:39.680263Z",
     "slug": "toi-khto-podobaietsia",
-    "chapters": []
+    "chapters": [
+      {
+        "id": 695,
+        "title": "",
+        "volume": 1,
+        "chapter": 1.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 696,
+        "title": "",
+        "volume": 1,
+        "chapter": 2.0,
+        "date": "2026-08-25"
+      }
+    ]
   },
   {
     "id": 13,
@@ -2656,9 +2687,73 @@
       "Фентезі",
       "Яой"
     ],
-    "latestUpdate": "2025-11-05T19:13:56.969287Z",
+    "latestUpdate": "2026-08-25T19:45:30.497090Z",
     "slug": "khaski-ta-ioho-vchytel-bilyi-kit",
-    "chapters": []
+    "chapters": [
+      {
+        "id": 686,
+        "title": "Пролог",
+        "volume": 1,
+        "chapter": 0.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 687,
+        "title": "Третій рік епохи Дзіба",
+        "volume": 1,
+        "chapter": 1.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 688,
+        "title": "Час вирушати до пекла",
+        "volume": 1,
+        "chapter": 2.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 689,
+        "title": "Цей Вельмишановний повернувся до життя",
+        "volume": 1,
+        "chapter": 3.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 690,
+        "title": "Прекрасний та недосяжний старший брат!",
+        "volume": 1,
+        "chapter": 4.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 691,
+        "title": "Учитель цього Вельмишановного",
+        "volume": 1,
+        "chapter": 5.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 692,
+        "title": "",
+        "volume": 1,
+        "chapter": 6.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 693,
+        "title": "",
+        "volume": 1,
+        "chapter": 7.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 694,
+        "title": "",
+        "volume": 1,
+        "chapter": 8.0,
+        "date": "2026-08-25"
+      }
+    ]
   },
   {
     "id": 15,
@@ -2726,9 +2821,66 @@
       "Романтика",
       "Трагедія"
     ],
-    "latestUpdate": "2025-11-05T19:16:09.681570Z",
+    "latestUpdate": "2026-08-25T19:57:18.080536Z",
     "slug": "pislia-moho-vidkhodu-korol-ne-mih-znaity-v-sobi-syly-zhyty",
-    "chapters": []
+    "chapters": [
+      {
+        "id": 699,
+        "title": "Він помирає",
+        "volume": 1,
+        "chapter": 1.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 700,
+        "title": "Лікарська отрута",
+        "volume": 1,
+        "chapter": 2.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 701,
+        "title": "Маленький блазень, що скаче",
+        "volume": 1,
+        "chapter": 3.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 702,
+        "title": "Було би чудово померти",
+        "volume": 1,
+        "chapter": 4.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 703,
+        "title": "Навіть зненавидіти не встиг",
+        "volume": 1,
+        "chapter": 5.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 704,
+        "title": "Мовчи!",
+        "volume": 1,
+        "chapter": 6.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 705,
+        "title": "Навіть якщо воно буде знищене, я не віддам його іншим",
+        "volume": 1,
+        "chapter": 7.0,
+        "date": "2026-08-25"
+      },
+      {
+        "id": 706,
+        "title": "Безсоромний нікчемний покидьок",
+        "volume": 1,
+        "chapter": 8.0,
+        "date": "2026-08-25"
+      }
+    ]
   },
   {
     "id": 17,
