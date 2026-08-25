@@ -5397,5 +5397,47 @@
         "date": "2026-08-21"
       }
     ]
+  },
+  {
+    "id": 31,
+    "title": "Грабіжник ставкових равликів",
+    "slug": "hrabizhnyk-stavkovykh-ravlykiv",
+    "description": "Тиждень Джі Хо, м’яко кажучи, був доволі насиченим. Він усе ще звикає до повернення в університет після академічної відпустки і йому вдається вигідно орендувати житло в центрі Сеула, та в перший же день у новому будинку він наштовхується на грабіжника! Дивно в цьому грабіжникові (?) те, що, схоже, його не цікавлять гроші. Натомість, він захоплений історією, яку Джі Хо накидав у старих записниках. Настільки захоплений, що пропонує ведення домашнього господарства в обмін на те, щоб Джі Хо міг зосередитися на написанні продовження. Спочатку Джі Хо відхиляє таку дивну пропозицію, але що більше він про це думає, то менше йому є що втрачати...",
+    "type": "Манхва",
+    "status": "Виходить",
+    "coverImage": "https://files.catbox.moe/6j7nzh.webp",
+    "backgroundImage": "",
+    "pageUrl": "#title?id=hrabizhnyk-stavkovykh-ravlykiv",
+    "genres": [
+      "Буденність",
+      "Побут",
+      "Комедія",
+      "Романтика",
+      "Яой",
+      "ГГ чоловік",
+      "Епізод життя"
+    ],
+    "latestUpdate": "2026-08-25T17:39:12.917691Z",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/6j7nzh.webp",
+      "2": "https://files.catbox.moe/5ijt6l.webp",
+      "3": "https://files.catbox.moe/06sdx8.webp",
+      "4": "https://files.catbox.moe/z05uag.webp",
+      "5": "https://files.catbox.moe/az8mig.webp",
+      "6": "https://files.catbox.moe/kuwzto.webp",
+      "7": "https://files.catbox.moe/4u5hty.webp",
+      "8": "https://files.catbox.moe/84mp8i.webp",
+      "9": "https://files.catbox.moe/fe8vc6.webp",
+      "10": "https://files.catbox.moe/jiztji.webp"
+    },
+    "chapters": [
+      {
+        "id": 685,
+        "title": "",
+        "volume": 1,
+        "chapter": 1.0,
+        "date": "2026-08-25"
+      }
+    ]
   }
 ]
