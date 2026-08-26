@@ -1537,7 +1537,7 @@
       "Шьонен-ай",
       "Школа"
     ],
-    "latestUpdate": "2026-08-19T20:30:16.143199Z",
+    "latestUpdate": "2026-08-26T19:57:36.054231Z",
     "slug": "forma-sympatii",
     "chapters": [
       {
@@ -1763,6 +1763,13 @@
         "volume": 3,
         "chapter": 72.0,
         "date": "2026-08-19"
+      },
+      {
+        "id": 709,
+        "title": "",
+        "volume": 3,
+        "chapter": 73.0,
+        "date": "2026-08-26"
       }
     ]
   },
@@ -3620,7 +3627,7 @@
       "Привиди",
       "Надприродне"
     ],
-    "latestUpdate": "2026-08-19T20:30:56.524034Z",
+    "latestUpdate": "2026-08-26T19:56:32.122173Z",
     "slug": "dusha-zahublena-gou",
     "chapters": [
       {
@@ -3685,6 +3692,13 @@
         "volume": 1,
         "chapter": 6.0,
         "date": "2026-08-19"
+      },
+      {
+        "id": 708,
+        "title": "",
+        "volume": 1,
+        "chapter": 7.0,
+        "date": "2026-08-26"
       }
     ]
   },
@@ -5569,7 +5583,7 @@
       "ГГ чоловік",
       "Епізод життя"
     ],
-    "latestUpdate": "2026-08-25T17:39:12.917691Z",
+    "latestUpdate": "2026-08-26T19:54:47.727268Z",
     "volumeCovers": {
       "1": "https://files.catbox.moe/6j7nzh.webp",
       "2": "https://files.catbox.moe/5ijt6l.webp",
@@ -5589,6 +5603,13 @@
         "volume": 1,
         "chapter": 1.0,
         "date": "2026-08-25"
+      },
+      {
+        "id": 707,
+        "title": "",
+        "volume": 1,
+        "chapter": 2.0,
+        "date": "2026-08-26"
       }
     ]
   }

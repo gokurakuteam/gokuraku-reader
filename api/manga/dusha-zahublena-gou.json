@@ -17,7 +17,7 @@
     "Привиди",
     "Надприродне"
   ],
-  "latestUpdate": "2026-08-19T20:30:56.524034Z",
+  "latestUpdate": "2026-08-26T19:56:32.122173Z",
   "chapters": [
     {
       "id": 207,
@@ -210,6 +210,40 @@
         "https://files.catbox.moe/9rwbq8.webp",
         "https://files.catbox.moe/4mt0vb.webp",
         "https://files.catbox.moe/mq2ifg.webp"
+      ]
+    },
+    {
+      "id": 708,
+      "title": "",
+      "volume": 1,
+      "chapter": 7.0,
+      "date": "2026-08-26",
+      "pages": [
+        "https://files.catbox.moe/sf1unj.webp",
+        "https://files.catbox.moe/v9ok4b.webp",
+        "https://files.catbox.moe/vxzooh.webp",
+        "https://files.catbox.moe/f72ox3.webp",
+        "https://files.catbox.moe/12abof.webp",
+        "https://files.catbox.moe/bl2wdo.webp",
+        "https://files.catbox.moe/rhp464.webp",
+        "https://files.catbox.moe/7bz142.webp",
+        "https://files.catbox.moe/eekhcs.webp",
+        "https://files.catbox.moe/w0l2z5.webp",
+        "https://files.catbox.moe/r6b6tz.webp",
+        "https://files.catbox.moe/pevbr0.webp",
+        "https://files.catbox.moe/bg3k2s.webp",
+        "https://files.catbox.moe/0wgfox.webp",
+        "https://files.catbox.moe/31yca7.webp",
+        "https://files.catbox.moe/fwx34l.webp",
+        "https://files.catbox.moe/uwk34t.webp",
+        "https://files.catbox.moe/3k03r7.webp",
+        "https://files.catbox.moe/in6321.webp",
+        "https://files.catbox.moe/08e4on.webp",
+        "https://files.catbox.moe/i7i415.webp",
+        "https://files.catbox.moe/1xfq90.webp",
+        "https://files.catbox.moe/t0ii0q.webp",
+        "https://files.catbox.moe/nxi9kf.webp",
+        "https://files.catbox.moe/m73u6w.webp"
       ]
     }
   ],
