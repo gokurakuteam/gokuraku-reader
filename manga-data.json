@@ -4156,7 +4156,7 @@
       "Яой",
       "Шьонен-ай"
     ],
-    "latestUpdate": "2026-08-21T21:14:24.355783Z",
+    "latestUpdate": "2026-08-28T20:10:28.933197Z",
     "chapters": [
       {
         "id": 113,
@@ -4929,7 +4929,7 @@
       {
         "id": 141,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 15.0,
         "date": "2025-11-13",
         "pages": [
@@ -4967,7 +4967,7 @@
       {
         "id": 142,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 16.0,
         "date": "2025-11-13",
         "pages": [
@@ -5004,7 +5004,7 @@
       {
         "id": 226,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 17.0,
         "date": "2025-12-14",
         "pages": [
@@ -5047,7 +5047,7 @@
       {
         "id": 238,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 18.0,
         "date": "2025-12-22",
         "pages": [
@@ -5093,7 +5093,7 @@
       {
         "id": 256,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 19.0,
         "date": "2026-01-05",
         "pages": [
@@ -5128,7 +5128,7 @@
       {
         "id": 265,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 20.0,
         "date": "2026-01-11",
         "pages": [
@@ -5169,7 +5169,7 @@
       {
         "id": 277,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 21.0,
         "date": "2026-01-18",
         "pages": [
@@ -5211,7 +5211,7 @@
       {
         "id": 291,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 22.0,
         "date": "2026-01-25",
         "pages": [
@@ -5256,7 +5256,7 @@
       {
         "id": 301,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 23.0,
         "date": "2026-02-01",
         "pages": [
@@ -5292,7 +5292,7 @@
       {
         "id": 312,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 24.0,
         "date": "2026-02-08",
         "pages": [
@@ -5325,7 +5325,7 @@
       {
         "id": 322,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 25.0,
         "date": "2026-02-15",
         "pages": [
@@ -5354,7 +5354,7 @@
       {
         "id": 335,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 26.0,
         "date": "2026-02-23",
         "pages": [
@@ -5390,7 +5390,7 @@
       {
         "id": 341,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 27.0,
         "date": "2026-03-01",
         "pages": [
@@ -5421,7 +5421,7 @@
       {
         "id": 348,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 28.0,
         "date": "2026-03-08",
         "pages": [
@@ -5457,7 +5457,7 @@
       {
         "id": 359,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 29.0,
         "date": "2026-03-15",
         "pages": [
@@ -5490,7 +5490,7 @@
       {
         "id": 374,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 30.0,
         "date": "2026-03-22",
         "pages": [
@@ -5527,49 +5527,9 @@
         ]
       },
       {
-        "id": 386,
-        "title": "",
-        "volume": 1,
-        "chapter": 31.0,
-        "date": "2026-03-29",
-        "pages": [
-          "https://files.catbox.moe/1wfz7j.webp",
-          "https://files.catbox.moe/xbvpqm.webp",
-          "https://files.catbox.moe/zijpng.webp",
-          "https://files.catbox.moe/651rvg.webp",
-          "https://files.catbox.moe/6ybt1h.webp",
-          "https://files.catbox.moe/bhcclb.webp",
-          "https://files.catbox.moe/1h1t0h.webp",
-          "https://files.catbox.moe/w0504f.webp",
-          "https://files.catbox.moe/8beqhx.webp",
-          "https://files.catbox.moe/6uzqfv.webp",
-          "https://files.catbox.moe/pmctcq.webp",
-          "https://files.catbox.moe/sz5mvx.webp",
-          "https://files.catbox.moe/3hsw2e.webp",
-          "https://files.catbox.moe/ws3e72.webp",
-          "https://files.catbox.moe/vqvcmk.webp",
-          "https://files.catbox.moe/q2axci.webp",
-          "https://files.catbox.moe/fqdgwt.webp",
-          "https://files.catbox.moe/yd11zf.webp",
-          "https://files.catbox.moe/z7azfm.webp",
-          "",
-          "https://files.catbox.moe/ndy820.webp",
-          "https://files.catbox.moe/sn36io.webp",
-          "https://files.catbox.moe/zuhsbq.webp",
-          "https://files.catbox.moe/wi0v5c.webp",
-          "https://files.catbox.moe/45m2ta.webp",
-          "https://files.catbox.moe/w8m1f6.webp",
-          "https://files.catbox.moe/8kiz9f.webp",
-          "https://files.catbox.moe/ezvqzn.webp",
-          "https://files.catbox.moe/lyfl5a.webp",
-          "https://files.catbox.moe/83r7m7.webp",
-          "https://files.catbox.moe/y0g570.webp"
-        ]
-      },
-      {
         "id": 410,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 32.0,
         "date": "2026-04-05",
         "pages": [
@@ -5606,7 +5566,7 @@
       {
         "id": 426,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 33.0,
         "date": "2026-04-14",
         "pages": [
@@ -5643,7 +5603,7 @@
       {
         "id": 435,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 34.0,
         "date": "2026-04-19",
         "pages": [
@@ -5684,7 +5644,7 @@
       {
         "id": 446,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 35.0,
         "date": "2026-04-26",
         "pages": [
@@ -5722,7 +5682,7 @@
       {
         "id": 454,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 36.0,
         "date": "2026-05-17",
         "pages": [
@@ -5753,7 +5713,7 @@
       {
         "id": 498,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 37.0,
         "date": "2026-06-28",
         "pages": [
@@ -5794,7 +5754,7 @@
       {
         "id": 511,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 38.0,
         "date": "2026-07-05",
         "pages": [
@@ -5831,7 +5791,7 @@
       {
         "id": 565,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 39.0,
         "date": "2026-07-28",
         "pages": [
@@ -5864,7 +5824,7 @@
       {
         "id": 593,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 40.0,
         "date": "2026-08-07",
         "pages": [
@@ -5893,7 +5853,7 @@
       {
         "id": 612,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 41.0,
         "date": "2026-08-14",
         "pages": [
@@ -5929,7 +5889,7 @@
       {
         "id": 678,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 42.0,
         "date": "2026-08-21",
         "pages": [
@@ -5960,6 +5920,87 @@
           "https://files.catbox.moe/2muomq.webp",
           "https://files.catbox.moe/6f8za7.webp",
           "https://files.catbox.moe/tr99yl.webp"
+        ]
+      },
+      {
+        "id": 715,
+        "title": "",
+        "volume": 4,
+        "chapter": 43.0,
+        "date": "2026-08-28",
+        "pages": [
+          "https://files.catbox.moe/yvtfok.webp",
+          "https://files.catbox.moe/kln6xn.webp",
+          "https://files.catbox.moe/oc73m8.webp",
+          "https://files.catbox.moe/r7yj8j.webp",
+          "https://files.catbox.moe/r62o45.webp",
+          "https://files.catbox.moe/n369cw.webp",
+          "https://files.catbox.moe/yqbcin.webp",
+          "https://files.catbox.moe/joxdzf.webp",
+          "https://files.catbox.moe/cu1ie6.webp",
+          "https://files.catbox.moe/0kjzlp.webp",
+          "https://files.catbox.moe/eui4uy.webp",
+          "https://files.catbox.moe/9unkdm.webp",
+          "https://files.catbox.moe/br834i.webp",
+          "https://files.catbox.moe/yeixa7.webp",
+          "https://files.catbox.moe/7i1q42.webp",
+          "https://files.catbox.moe/041gem.webp",
+          "https://files.catbox.moe/ggw65e.webp",
+          "https://files.catbox.moe/c4ef3j.webp",
+          "https://files.catbox.moe/qkq2ji.webp",
+          "https://files.catbox.moe/9ukouo.webp",
+          "https://files.catbox.moe/lqmz41.webp",
+          "https://files.catbox.moe/4lb4jj.webp",
+          "https://files.catbox.moe/rd9qhm.webp",
+          "https://files.catbox.moe/0qlbdm.webp",
+          "https://files.catbox.moe/ycv64w.webp",
+          "https://files.catbox.moe/xymn4u.webp",
+          "https://files.catbox.moe/ptajtb.webp",
+          "https://files.catbox.moe/h7zaht.webp",
+          "https://files.catbox.moe/c9936w.webp",
+          "https://files.catbox.moe/oghbyc.webp",
+          "https://files.catbox.moe/dkz132.webp",
+          "https://files.catbox.moe/oij2mw.webp"
+        ]
+      },
+      {
+        "id": 717,
+        "title": "",
+        "volume": 3,
+        "chapter": 31.0,
+        "date": "2026-08-28",
+        "pages": [
+          "https://files.catbox.moe/96jy1n.webp",
+          "https://files.catbox.moe/c7z6v4.webp",
+          "https://files.catbox.moe/v5cqby.webp",
+          "https://files.catbox.moe/e23vow.webp",
+          "https://files.catbox.moe/n1v1uv.webp",
+          "https://files.catbox.moe/vftuen.webp",
+          "https://files.catbox.moe/28qpdv.webp",
+          "https://files.catbox.moe/d1o3r2.webp",
+          "https://files.catbox.moe/8ym6pf.webp",
+          "https://files.catbox.moe/el2wbk.webp",
+          "https://files.catbox.moe/korx48.webp",
+          "https://files.catbox.moe/0vd3ay.webp",
+          "https://files.catbox.moe/w5aq7p.webp",
+          "https://files.catbox.moe/qr2v4g.webp",
+          "https://files.catbox.moe/3b4ax6.webp",
+          "https://files.catbox.moe/4tjlsa.webp",
+          "https://files.catbox.moe/s0orm2.webp",
+          "https://files.catbox.moe/nc69ew.webp",
+          "https://files.catbox.moe/bts6do.webp",
+          "https://files.catbox.moe/rdw68a.webp",
+          "https://files.catbox.moe/c7hdl2.webp",
+          "https://files.catbox.moe/p9nxgf.webp",
+          "https://files.catbox.moe/viwtqc.webp",
+          "https://files.catbox.moe/y1qy0s.webp",
+          "https://files.catbox.moe/t72lf8.webp",
+          "https://files.catbox.moe/t67wr4.webp",
+          "https://files.catbox.moe/lya085.webp",
+          "https://files.catbox.moe/3gq3ng.webp",
+          "https://files.catbox.moe/kylnrk.webp",
+          "https://files.catbox.moe/y1iwc4.webp",
+          "https://files.catbox.moe/18ffvg.webp"
         ]
       }
     ],
@@ -28448,7 +28489,7 @@
       "ГГ чоловік",
       "Епізод життя"
     ],
-    "latestUpdate": "2026-08-27T20:25:34.121840Z",
+    "latestUpdate": "2026-08-28T20:06:50.205732Z",
     "chapters": [
       {
         "id": 685,
@@ -28549,6 +28590,47 @@
           "https://files.catbox.moe/iedqkf.webp",
           "https://files.catbox.moe/foo5rp.webp",
           "https://files.catbox.moe/fh371p.webp"
+        ]
+      },
+      {
+        "id": 716,
+        "title": "",
+        "volume": 1,
+        "chapter": 4.0,
+        "date": "2026-08-28",
+        "pages": [
+          "https://files.catbox.moe/dok99n.webp",
+          "https://files.catbox.moe/11pvwm.webp",
+          "https://files.catbox.moe/3a4ain.webp",
+          "https://files.catbox.moe/30rm9j.webp",
+          "https://files.catbox.moe/3jwduc.webp",
+          "https://files.catbox.moe/1u6ge0.webp",
+          "https://files.catbox.moe/1sf6sw.webp",
+          "https://files.catbox.moe/4nvehf.webp",
+          "https://files.catbox.moe/w1drbh.webp",
+          "https://files.catbox.moe/38w4ml.webp",
+          "https://files.catbox.moe/qlxqfz.webp",
+          "https://files.catbox.moe/q0t8wu.webp",
+          "https://files.catbox.moe/3empb6.webp",
+          "https://files.catbox.moe/xzibdc.webp",
+          "https://files.catbox.moe/u5ljzm.webp",
+          "https://files.catbox.moe/r5do1e.webp",
+          "https://files.catbox.moe/44l4vr.webp",
+          "https://files.catbox.moe/vdwbtz.webp",
+          "https://files.catbox.moe/1psbrv.webp",
+          "https://files.catbox.moe/31wbpn.webp",
+          "https://files.catbox.moe/5md8gf.webp",
+          "https://files.catbox.moe/wq57jo.webp",
+          "https://files.catbox.moe/pmwag0.webp",
+          "https://files.catbox.moe/bjlw03.webp",
+          "https://files.catbox.moe/jckmr4.webp",
+          "https://files.catbox.moe/5kp1my.webp",
+          "https://files.catbox.moe/p7736s.webp",
+          "https://files.catbox.moe/35yap4.webp",
+          "https://files.catbox.moe/40p938.webp",
+          "https://files.catbox.moe/ouvkwg.webp",
+          "https://files.catbox.moe/ta8yd7.webp",
+          "https://files.catbox.moe/3wsphn.webp"
         ]
       }
     ],
