@@ -897,7 +897,7 @@
       "Яой",
       "Шьонен-ай"
     ],
-    "latestUpdate": "2026-08-21T21:14:24.355783Z",
+    "latestUpdate": "2026-08-28T20:10:28.933197Z",
     "slug": "shchaslyvyi-marmur",
     "volumeCovers": {
       "1": "https://files.catbox.moe/wqcsda.webp",
@@ -1011,198 +1011,205 @@
       {
         "id": 141,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 15.0,
         "date": "2025-11-13"
       },
       {
         "id": 142,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 16.0,
         "date": "2025-11-13"
       },
       {
         "id": 226,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 17.0,
         "date": "2025-12-14"
       },
       {
         "id": 238,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 18.0,
         "date": "2025-12-22"
       },
       {
         "id": 256,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 19.0,
         "date": "2026-01-05"
       },
       {
         "id": 265,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 20.0,
         "date": "2026-01-11"
       },
       {
         "id": 277,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 21.0,
         "date": "2026-01-18"
       },
       {
         "id": 291,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 22.0,
         "date": "2026-01-25"
       },
       {
         "id": 301,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 23.0,
         "date": "2026-02-01"
       },
       {
         "id": 312,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 24.0,
         "date": "2026-02-08"
       },
       {
         "id": 322,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 25.0,
         "date": "2026-02-15"
       },
       {
         "id": 335,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 26.0,
         "date": "2026-02-23"
       },
       {
         "id": 341,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 27.0,
         "date": "2026-03-01"
       },
       {
         "id": 348,
         "title": "",
-        "volume": 1,
+        "volume": 2,
         "chapter": 28.0,
         "date": "2026-03-08"
       },
       {
         "id": 359,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 29.0,
         "date": "2026-03-15"
       },
       {
         "id": 374,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 30.0,
         "date": "2026-03-22"
       },
       {
-        "id": 386,
-        "title": "",
-        "volume": 1,
-        "chapter": 31.0,
-        "date": "2026-03-29"
-      },
-      {
         "id": 410,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 32.0,
         "date": "2026-04-05"
       },
       {
         "id": 426,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 33.0,
         "date": "2026-04-14"
       },
       {
         "id": 435,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 34.0,
         "date": "2026-04-19"
       },
       {
         "id": 446,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 35.0,
         "date": "2026-04-26"
       },
       {
         "id": 454,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 36.0,
         "date": "2026-05-17"
       },
       {
         "id": 498,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 37.0,
         "date": "2026-06-28"
       },
       {
         "id": 511,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 38.0,
         "date": "2026-07-05"
       },
       {
         "id": 565,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 39.0,
         "date": "2026-07-28"
       },
       {
         "id": 593,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 40.0,
         "date": "2026-08-07"
       },
       {
         "id": 612,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 41.0,
         "date": "2026-08-14"
       },
       {
         "id": 678,
         "title": "",
-        "volume": 1,
+        "volume": 3,
         "chapter": 42.0,
         "date": "2026-08-21"
+      },
+      {
+        "id": 715,
+        "title": "",
+        "volume": 4,
+        "chapter": 43.0,
+        "date": "2026-08-28"
+      },
+      {
+        "id": 717,
+        "title": "",
+        "volume": 3,
+        "chapter": 31.0,
+        "date": "2026-08-28"
       }
     ]
   },
@@ -5597,7 +5604,7 @@
       "ГГ чоловік",
       "Епізод життя"
     ],
-    "latestUpdate": "2026-08-27T20:25:34.121840Z",
+    "latestUpdate": "2026-08-28T20:06:50.205732Z",
     "volumeCovers": {
       "1": "https://files.catbox.moe/6j7nzh.webp",
       "2": "https://files.catbox.moe/5ijt6l.webp",
@@ -5631,6 +5638,13 @@
         "volume": 1,
         "chapter": 3.0,
         "date": "2026-08-27"
+      },
+      {
+        "id": 716,
+        "title": "",
+        "volume": 1,
+        "chapter": 4.0,
+        "date": "2026-08-28"
       }
     ]
   }

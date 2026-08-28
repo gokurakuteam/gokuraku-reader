@@ -17,7 +17,7 @@
     "ГГ чоловік",
     "Епізод життя"
   ],
-  "latestUpdate": "2026-08-27T20:25:34.121840Z",
+  "latestUpdate": "2026-08-28T20:06:50.205732Z",
   "chapters": [
     {
       "id": 685,
@@ -118,6 +118,47 @@
         "https://files.catbox.moe/iedqkf.webp",
         "https://files.catbox.moe/foo5rp.webp",
         "https://files.catbox.moe/fh371p.webp"
+      ]
+    },
+    {
+      "id": 716,
+      "title": "",
+      "volume": 1,
+      "chapter": 4.0,
+      "date": "2026-08-28",
+      "pages": [
+        "https://files.catbox.moe/dok99n.webp",
+        "https://files.catbox.moe/11pvwm.webp",
+        "https://files.catbox.moe/3a4ain.webp",
+        "https://files.catbox.moe/30rm9j.webp",
+        "https://files.catbox.moe/3jwduc.webp",
+        "https://files.catbox.moe/1u6ge0.webp",
+        "https://files.catbox.moe/1sf6sw.webp",
+        "https://files.catbox.moe/4nvehf.webp",
+        "https://files.catbox.moe/w1drbh.webp",
+        "https://files.catbox.moe/38w4ml.webp",
+        "https://files.catbox.moe/qlxqfz.webp",
+        "https://files.catbox.moe/q0t8wu.webp",
+        "https://files.catbox.moe/3empb6.webp",
+        "https://files.catbox.moe/xzibdc.webp",
+        "https://files.catbox.moe/u5ljzm.webp",
+        "https://files.catbox.moe/r5do1e.webp",
+        "https://files.catbox.moe/44l4vr.webp",
+        "https://files.catbox.moe/vdwbtz.webp",
+        "https://files.catbox.moe/1psbrv.webp",
+        "https://files.catbox.moe/31wbpn.webp",
+        "https://files.catbox.moe/5md8gf.webp",
+        "https://files.catbox.moe/wq57jo.webp",
+        "https://files.catbox.moe/pmwag0.webp",
+        "https://files.catbox.moe/bjlw03.webp",
+        "https://files.catbox.moe/jckmr4.webp",
+        "https://files.catbox.moe/5kp1my.webp",
+        "https://files.catbox.moe/p7736s.webp",
+        "https://files.catbox.moe/35yap4.webp",
+        "https://files.catbox.moe/40p938.webp",
+        "https://files.catbox.moe/ouvkwg.webp",
+        "https://files.catbox.moe/ta8yd7.webp",
+        "https://files.catbox.moe/3wsphn.webp"
       ]
     }
   ],
