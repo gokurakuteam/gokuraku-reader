@@ -2027,7 +2027,7 @@
       "Фентезі",
       "Магія"
     ],
-    "latestUpdate": "2026-08-22T20:42:00.877470Z",
+    "latestUpdate": "2026-08-29T19:59:32.999827Z",
     "slug": "vidma-ichi",
     "volumeCovers": {
       "1": "https://files.catbox.moe/ecbh3i.webp",
@@ -2035,7 +2035,8 @@
       "3": "https://files.catbox.moe/59ldkb.webp",
       "4": "https://files.catbox.moe/4gmwue.webp",
       "5": "https://files.catbox.moe/mc04oc.webp",
-      "6": "https://files.catbox.moe/o6bkz8.webp"
+      "6": "https://files.catbox.moe/o6bkz8.webp",
+      "7": "https://files.catbox.moe/c2447b.webp"
     },
     "chapters": [
       {
@@ -2401,6 +2402,20 @@
         "volume": 6,
         "chapter": 52.0,
         "date": "2026-08-22"
+      },
+      {
+        "id": 718,
+        "title": "Сильний порив",
+        "volume": 7,
+        "chapter": 53.0,
+        "date": "2026-08-29"
+      },
+      {
+        "id": 719,
+        "title": "Зловмисник",
+        "volume": 7,
+        "chapter": 54.0,
+        "date": "2026-08-29"
       }
     ]
   },
@@ -4602,7 +4617,7 @@
       "Яой",
       "Буденність"
     ],
-    "latestUpdate": "2026-08-22T20:43:02.788998Z",
+    "latestUpdate": "2026-08-29T21:01:42.096611Z",
     "slug": "shakh-i-mat",
     "chapters": [
       {
@@ -4954,6 +4969,13 @@
         "volume": 2,
         "chapter": 53.0,
         "date": "2026-08-22"
+      },
+      {
+        "id": 720,
+        "title": "",
+        "volume": 2,
+        "chapter": 54.0,
+        "date": "2026-08-29"
       }
     ]
   },
@@ -5604,7 +5626,7 @@
       "ГГ чоловік",
       "Епізод життя"
     ],
-    "latestUpdate": "2026-08-28T20:06:50.205732Z",
+    "latestUpdate": "2026-08-29T21:05:53.097838Z",
     "volumeCovers": {
       "1": "https://files.catbox.moe/6j7nzh.webp",
       "2": "https://files.catbox.moe/5ijt6l.webp",
@@ -5645,6 +5667,13 @@
         "volume": 1,
         "chapter": 4.0,
         "date": "2026-08-28"
+      },
+      {
+        "id": 721,
+        "title": "",
+        "volume": 1,
+        "chapter": 5.0,
+        "date": "2026-08-29"
       }
     ]
   }

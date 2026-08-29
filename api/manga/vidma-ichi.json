@@ -15,7 +15,7 @@
     "Фентезі",
     "Магія"
   ],
-  "latestUpdate": "2026-08-22T20:42:00.877470Z",
+  "latestUpdate": "2026-08-29T19:59:32.999827Z",
   "chapters": [
     {
       "id": 153,
@@ -1452,6 +1452,58 @@
         "https://files.catbox.moe/orao0j.webp",
         "https://files.catbox.moe/kmp51g.webp"
       ]
+    },
+    {
+      "id": 718,
+      "title": "Сильний порив",
+      "volume": 7,
+      "chapter": 53.0,
+      "date": "2026-08-29",
+      "pages": [
+        "https://files.catbox.moe/3kt2kz.webp",
+        "https://files.catbox.moe/0o03f6.webp",
+        "https://files.catbox.moe/cf0q6s.webp",
+        "https://files.catbox.moe/6iekhe.webp",
+        "https://files.catbox.moe/3m20yz.webp",
+        "https://files.catbox.moe/hmpez0.webp",
+        "https://files.catbox.moe/0ex9wi.webp",
+        "https://files.catbox.moe/fv3ygk.webp",
+        "https://files.catbox.moe/xsawa0.webp",
+        "https://files.catbox.moe/c9p7de.webp",
+        "https://files.catbox.moe/fsegk8.webp",
+        "https://files.catbox.moe/okhous.webp",
+        "https://files.catbox.moe/0og4vk.webp",
+        "https://files.catbox.moe/4lsdaw.webp",
+        "https://files.catbox.moe/cooom5.webp",
+        "https://files.catbox.moe/pjfgmg.webp",
+        "https://files.catbox.moe/18ildd.webp"
+      ]
+    },
+    {
+      "id": 719,
+      "title": "Зловмисник",
+      "volume": 7,
+      "chapter": 54.0,
+      "date": "2026-08-29",
+      "pages": [
+        "https://files.catbox.moe/lq0jp6.webp",
+        "https://files.catbox.moe/j50zu8.webp",
+        "https://files.catbox.moe/dvfp68.webp",
+        "https://files.catbox.moe/5qq7wt.webp",
+        "https://files.catbox.moe/9qyq7w.webp",
+        "https://files.catbox.moe/tswch1.webp",
+        "https://files.catbox.moe/82q1z1.webp",
+        "https://files.catbox.moe/9bg1uj.webp",
+        "https://files.catbox.moe/6r07i4.webp",
+        "https://files.catbox.moe/h8fjom.webp",
+        "https://files.catbox.moe/ldxu8z.webp",
+        "https://files.catbox.moe/bkwhv4.webp",
+        "https://files.catbox.moe/8rdh3v.webp",
+        "https://files.catbox.moe/dh7xoz.webp",
+        "https://files.catbox.moe/xrjpba.webp",
+        "https://files.catbox.moe/4o0pbg.webp",
+        "https://files.catbox.moe/s6azc0.webp"
+      ]
     }
   ],
   "slug": "vidma-ichi",
@@ -1461,6 +1513,7 @@
     "3": "https://files.catbox.moe/59ldkb.webp",
     "4": "https://files.catbox.moe/4gmwue.webp",
     "5": "https://files.catbox.moe/mc04oc.webp",
-    "6": "https://files.catbox.moe/o6bkz8.webp"
+    "6": "https://files.catbox.moe/o6bkz8.webp",
+    "7": "https://files.catbox.moe/c2447b.webp"
   }
 }
