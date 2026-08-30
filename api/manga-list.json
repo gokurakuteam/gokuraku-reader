@@ -4291,7 +4291,7 @@
       "Магія",
       "Перше кохання."
     ],
-    "latestUpdate": "2026-08-23T20:18:40.955794Z",
+    "latestUpdate": "2026-08-30T20:25:56.349793Z",
     "slug": "nevdalyi-pryklad-bezdohannoho-prokliattia",
     "chapters": [
       {
@@ -4531,6 +4531,20 @@
         "volume": 1,
         "chapter": 34.0,
         "date": "2026-08-23"
+      },
+      {
+        "id": 722,
+        "title": "",
+        "volume": 1,
+        "chapter": 35.0,
+        "date": "2026-08-30"
+      },
+      {
+        "id": 723,
+        "title": "",
+        "volume": 1,
+        "chapter": 36.0,
+        "date": "2026-08-30"
       }
     ]
   },
@@ -5626,7 +5640,7 @@
       "ГГ чоловік",
       "Епізод життя"
     ],
-    "latestUpdate": "2026-08-29T21:05:53.097838Z",
+    "latestUpdate": "2026-08-30T20:28:57.421569Z",
     "volumeCovers": {
       "1": "https://files.catbox.moe/6j7nzh.webp",
       "2": "https://files.catbox.moe/5ijt6l.webp",
@@ -5674,6 +5688,13 @@
         "volume": 1,
         "chapter": 5.0,
         "date": "2026-08-29"
+      },
+      {
+        "id": 724,
+        "title": "",
+        "volume": 1,
+        "chapter": 6.0,
+        "date": "2026-08-30"
       }
     ]
   }
