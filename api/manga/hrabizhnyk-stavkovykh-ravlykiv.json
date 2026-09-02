@@ -17,7 +17,7 @@
     "ГГ чоловік",
     "Епізод життя"
   ],
-  "latestUpdate": "2026-09-01T20:11:14.436245Z",
+  "latestUpdate": "2026-09-02T18:23:26.338858Z",
   "chapters": [
     {
       "id": 685,
@@ -318,6 +318,44 @@
         "https://files.catbox.moe/0dfrfb.webp",
         "https://files.catbox.moe/7tlgph.webp",
         "https://files.catbox.moe/68hca2.webp"
+      ]
+    },
+    {
+      "id": 729,
+      "title": "",
+      "volume": 1,
+      "chapter": 9.0,
+      "date": "2026-09-02",
+      "pages": [
+        "https://files.catbox.moe/05oazu.webp",
+        "https://files.catbox.moe/h9m87b.webp",
+        "https://files.catbox.moe/poonp9.webp",
+        "https://files.catbox.moe/11zo46.webp",
+        "https://files.catbox.moe/7v1etn.webp",
+        "https://files.catbox.moe/h5r3h3.webp",
+        "https://files.catbox.moe/aqqq5t.webp",
+        "https://files.catbox.moe/61zvb7.webp",
+        "https://files.catbox.moe/zcdbe6.webp",
+        "https://files.catbox.moe/phd8r5.webp",
+        "https://files.catbox.moe/rjcytt.webp",
+        "https://files.catbox.moe/wacz27.webp",
+        "https://files.catbox.moe/5qaksf.webp",
+        "https://files.catbox.moe/pm9581.webp",
+        "https://files.catbox.moe/n7sy3q.webp",
+        "https://files.catbox.moe/hy5jda.webp",
+        "https://files.catbox.moe/ooz0sh.webp",
+        "https://files.catbox.moe/a7wo9n.webp",
+        "https://files.catbox.moe/3qprpl.webp",
+        "https://files.catbox.moe/9spmz1.webp",
+        "https://files.catbox.moe/bimy95.webp",
+        "https://files.catbox.moe/t1lqy3.webp",
+        "https://files.catbox.moe/8iaft7.webp",
+        "https://files.catbox.moe/35w8wj.webp",
+        "https://files.catbox.moe/k8smcr.webp",
+        "https://files.catbox.moe/vx84lc.webp",
+        "https://files.catbox.moe/5jja09.webp",
+        "https://files.catbox.moe/m9mn5h.webp",
+        "https://files.catbox.moe/b964tl.webp"
       ]
     }
   ],

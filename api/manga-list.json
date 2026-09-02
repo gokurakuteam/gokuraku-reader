@@ -1544,7 +1544,7 @@
       "Шьонен-ай",
       "Школа"
     ],
-    "latestUpdate": "2026-08-26T19:57:36.054231Z",
+    "latestUpdate": "2026-09-02T17:32:29.576628Z",
     "slug": "forma-sympatii",
     "chapters": [
       {
@@ -1777,6 +1777,13 @@
         "volume": 3,
         "chapter": 73.0,
         "date": "2026-08-26"
+      },
+      {
+        "id": 727,
+        "title": "",
+        "volume": 3,
+        "chapter": 74.0,
+        "date": "2026-09-02"
       }
     ]
   },
@@ -3748,7 +3755,7 @@
       "Драма",
       "Психологія"
     ],
-    "latestUpdate": "2026-04-14T19:57:39.135048Z",
+    "latestUpdate": "2026-09-02T17:45:28.673141Z",
     "slug": "ian-ilvu-ta-ia",
     "chapters": [
       {
@@ -3960,6 +3967,13 @@
         "volume": 2,
         "chapter": 29.0,
         "date": "2026-04-14"
+      },
+      {
+        "id": 728,
+        "title": "",
+        "volume": 2,
+        "chapter": 30.0,
+        "date": "2026-09-02"
       }
     ]
   },
@@ -5640,7 +5654,7 @@
       "ГГ чоловік",
       "Епізод життя"
     ],
-    "latestUpdate": "2026-09-01T20:11:14.436245Z",
+    "latestUpdate": "2026-09-02T18:23:26.338858Z",
     "volumeCovers": {
       "1": "https://files.catbox.moe/6j7nzh.webp",
       "2": "https://files.catbox.moe/5ijt6l.webp",
@@ -5709,6 +5723,13 @@
         "volume": 1,
         "chapter": 8.0,
         "date": "2026-09-01"
+      },
+      {
+        "id": 729,
+        "title": "",
+        "volume": 1,
+        "chapter": 9.0,
+        "date": "2026-09-02"
       }
     ]
   }
