@@ -2938,7 +2938,7 @@
       "Трилер",
       "Подорожі в часі"
     ],
-    "latestUpdate": "2026-08-27T20:17:07.215178Z",
+    "latestUpdate": "2026-09-03T20:26:31.706244Z",
     "slug": "11-ta-shkilna-poizdka",
     "chapters": [
       {
@@ -3115,6 +3115,13 @@
         "volume": 1,
         "chapter": 24.0,
         "date": "2026-08-27"
+      },
+      {
+        "id": 731,
+        "title": "",
+        "volume": 1,
+        "chapter": 25.0,
+        "date": "2026-09-03"
       }
     ]
   },
@@ -5023,7 +5030,7 @@
       "Яой",
       "Шкільне життя"
     ],
-    "latestUpdate": "2026-08-27T20:21:15.424159Z",
+    "latestUpdate": "2026-09-03T20:31:12.083773Z",
     "slug": "taktyka-podavacha",
     "chapters": [
       {
@@ -5186,6 +5193,13 @@
         "volume": 1,
         "chapter": 8.0,
         "date": "2026-08-27"
+      },
+      {
+        "id": 732,
+        "title": "",
+        "volume": 1,
+        "chapter": 9.0,
+        "date": "2026-09-03"
       }
     ]
   },
@@ -5654,7 +5668,7 @@
       "ГГ чоловік",
       "Епізод життя"
     ],
-    "latestUpdate": "2026-09-02T18:23:26.338858Z",
+    "latestUpdate": "2026-09-03T20:25:40.223321Z",
     "volumeCovers": {
       "1": "https://files.catbox.moe/6j7nzh.webp",
       "2": "https://files.catbox.moe/5ijt6l.webp",
@@ -5730,6 +5744,13 @@
         "volume": 1,
         "chapter": 9.0,
         "date": "2026-09-02"
+      },
+      {
+        "id": 730,
+        "title": "",
+        "volume": 1,
+        "chapter": 10.0,
+        "date": "2026-09-03"
       }
     ]
   }
