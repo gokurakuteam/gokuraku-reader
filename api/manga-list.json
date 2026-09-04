@@ -897,7 +897,7 @@
       "Яой",
       "Шьонен-ай"
     ],
-    "latestUpdate": "2026-08-28T20:10:28.933197Z",
+    "latestUpdate": "2026-09-04T20:05:41.035122Z",
     "slug": "shchaslyvyi-marmur",
     "volumeCovers": {
       "1": "https://files.catbox.moe/wqcsda.webp",
@@ -1210,6 +1210,13 @@
         "volume": 3,
         "chapter": 31.0,
         "date": "2026-08-28"
+      },
+      {
+        "id": 734,
+        "title": "",
+        "volume": 4,
+        "chapter": 44.0,
+        "date": "2026-09-04"
       }
     ]
   },
@@ -2938,7 +2945,7 @@
       "Трилер",
       "Подорожі в часі"
     ],
-    "latestUpdate": "2026-09-03T20:26:31.706244Z",
+    "latestUpdate": "2026-09-04T19:55:22.027919Z",
     "slug": "11-ta-shkilna-poizdka",
     "chapters": [
       {
@@ -3117,11 +3124,11 @@
         "date": "2026-08-27"
       },
       {
-        "id": 731,
+        "id": 733,
         "title": "",
         "volume": 1,
         "chapter": 25.0,
-        "date": "2026-09-03"
+        "date": "2026-09-04"
       }
     ]
   },
@@ -5030,7 +5037,7 @@
       "Яой",
       "Шкільне життя"
     ],
-    "latestUpdate": "2026-09-03T20:31:12.083773Z",
+    "latestUpdate": "2026-09-04T19:53:52.630030Z",
     "slug": "taktyka-podavacha",
     "chapters": [
       {
@@ -5195,11 +5202,11 @@
         "date": "2026-08-27"
       },
       {
-        "id": 732,
+        "id": 731,
         "title": "",
         "volume": 1,
-        "chapter": 9.0,
-        "date": "2026-09-03"
+        "chapter": 24.0,
+        "date": "2026-09-04"
       }
     ]
   },
@@ -5378,7 +5385,7 @@
       "Фентезі",
       "Еротика"
     ],
-    "latestUpdate": "2026-08-21T20:41:19.282693Z",
+    "latestUpdate": "2026-09-04T19:49:23.987970Z",
     "slug": "rabovlasnyk-z-inshoho-svitu",
     "chapters": [
       {
@@ -5646,6 +5653,13 @@
         "volume": 2,
         "chapter": 37.0,
         "date": "2026-08-21"
+      },
+      {
+        "id": 730,
+        "title": "",
+        "volume": 2,
+        "chapter": 38.0,
+        "date": "2026-09-04"
       }
     ]
   },
@@ -5668,7 +5682,7 @@
       "ГГ чоловік",
       "Епізод життя"
     ],
-    "latestUpdate": "2026-09-03T20:25:40.223321Z",
+    "latestUpdate": "2026-09-04T20:20:14.825342Z",
     "volumeCovers": {
       "1": "https://files.catbox.moe/6j7nzh.webp",
       "2": "https://files.catbox.moe/5ijt6l.webp",
@@ -5746,11 +5760,18 @@
         "date": "2026-09-02"
       },
       {
-        "id": 730,
+        "id": 732,
         "title": "",
         "volume": 1,
         "chapter": 10.0,
-        "date": "2026-09-03"
+        "date": "2026-09-04"
+      },
+      {
+        "id": 735,
+        "title": "",
+        "volume": 1,
+        "chapter": 11.0,
+        "date": "2026-09-04"
       }
     ]
   }
