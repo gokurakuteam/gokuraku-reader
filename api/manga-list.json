@@ -2041,7 +2041,7 @@
       "Фентезі",
       "Магія"
     ],
-    "latestUpdate": "2026-08-29T19:59:32.999827Z",
+    "latestUpdate": "2026-09-06T19:58:23.119426Z",
     "slug": "vidma-ichi",
     "volumeCovers": {
       "1": "https://files.catbox.moe/ecbh3i.webp",
@@ -2430,6 +2430,13 @@
         "volume": 7,
         "chapter": 54.0,
         "date": "2026-08-29"
+      },
+      {
+        "id": 736,
+        "title": "Вклонись",
+        "volume": 7,
+        "chapter": 55.0,
+        "date": "2026-09-06"
       }
     ]
   },
@@ -4319,7 +4326,7 @@
       "Магія",
       "Перше кохання."
     ],
-    "latestUpdate": "2026-08-30T20:25:56.349793Z",
+    "latestUpdate": "2026-09-06T20:02:53.967612Z",
     "slug": "nevdalyi-pryklad-bezdohannoho-prokliattia",
     "chapters": [
       {
@@ -4573,6 +4580,20 @@
         "volume": 1,
         "chapter": 36.0,
         "date": "2026-08-30"
+      },
+      {
+        "id": 739,
+        "title": "",
+        "volume": 1,
+        "chapter": 37.0,
+        "date": "2026-09-06"
+      },
+      {
+        "id": 740,
+        "title": "",
+        "volume": 1,
+        "chapter": 38.0,
+        "date": "2026-09-06"
       }
     ]
   },
@@ -4659,7 +4680,7 @@
       "Яой",
       "Буденність"
     ],
-    "latestUpdate": "2026-08-29T21:01:42.096611Z",
+    "latestUpdate": "2026-09-06T19:59:25.691522Z",
     "slug": "shakh-i-mat",
     "chapters": [
       {
@@ -5018,6 +5039,13 @@
         "volume": 2,
         "chapter": 54.0,
         "date": "2026-08-29"
+      },
+      {
+        "id": 737,
+        "title": "",
+        "volume": 2,
+        "chapter": 55.0,
+        "date": "2026-09-06"
       }
     ]
   },
@@ -5682,7 +5710,7 @@
       "ГГ чоловік",
       "Епізод життя"
     ],
-    "latestUpdate": "2026-09-04T20:20:14.825342Z",
+    "latestUpdate": "2026-09-06T20:00:08.911743Z",
     "volumeCovers": {
       "1": "https://files.catbox.moe/6j7nzh.webp",
       "2": "https://files.catbox.moe/5ijt6l.webp",
@@ -5772,6 +5800,13 @@
         "volume": 1,
         "chapter": 11.0,
         "date": "2026-09-04"
+      },
+      {
+        "id": 738,
+        "title": "",
+        "volume": 1,
+        "chapter": 12.0,
+        "date": "2026-09-06"
       }
     ]
   }

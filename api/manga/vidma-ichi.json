@@ -15,7 +15,7 @@
     "Фентезі",
     "Магія"
   ],
-  "latestUpdate": "2026-08-29T19:59:32.999827Z",
+  "latestUpdate": "2026-09-06T19:58:23.119426Z",
   "chapters": [
     {
       "id": 153,
@@ -1503,6 +1503,32 @@
         "https://files.catbox.moe/xrjpba.webp",
         "https://files.catbox.moe/4o0pbg.webp",
         "https://files.catbox.moe/s6azc0.webp"
+      ]
+    },
+    {
+      "id": 736,
+      "title": "Вклонись",
+      "volume": 7,
+      "chapter": 55.0,
+      "date": "2026-09-06",
+      "pages": [
+        "https://files.catbox.moe/877sdh.webp",
+        "https://files.catbox.moe/0ucp11.webp",
+        "https://files.catbox.moe/vd79sn.webp",
+        "https://files.catbox.moe/majtje.webp",
+        "https://files.catbox.moe/mtmlcv.webp",
+        "https://files.catbox.moe/hv5owk.webp",
+        "https://files.catbox.moe/mejnny.webp",
+        "https://files.catbox.moe/oy20ic.webp",
+        "https://files.catbox.moe/w9ab9e.webp",
+        "https://files.catbox.moe/g9lznk.webp",
+        "https://files.catbox.moe/6y734v.webp",
+        "https://files.catbox.moe/mg5aug.webp",
+        "https://files.catbox.moe/csum3i.webp",
+        "https://files.catbox.moe/10abvu.webp",
+        "https://files.catbox.moe/lzubmb.webp",
+        "https://files.catbox.moe/wk891y.webp",
+        "https://files.catbox.moe/f73wrx.webp"
       ]
     }
   ],
