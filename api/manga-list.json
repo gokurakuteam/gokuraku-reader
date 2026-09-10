@@ -2959,7 +2959,7 @@
       "Трилер",
       "Подорожі в часі"
     ],
-    "latestUpdate": "2026-09-04T19:55:22.027919Z",
+    "latestUpdate": "2026-09-10T20:12:55.663129Z",
     "slug": "11-ta-shkilna-poizdka",
     "chapters": [
       {
@@ -3143,6 +3143,13 @@
         "volume": 1,
         "chapter": 25.0,
         "date": "2026-09-04"
+      },
+      {
+        "id": 746,
+        "title": "",
+        "volume": 1,
+        "chapter": 26.0,
+        "date": "2026-09-10"
       }
     ]
   },
@@ -5086,7 +5093,7 @@
       "Яой",
       "Шкільне життя"
     ],
-    "latestUpdate": "2026-09-04T19:53:52.630030Z",
+    "latestUpdate": "2026-09-10T20:11:47.713726Z",
     "slug": "taktyka-podavacha",
     "chapters": [
       {
@@ -5256,6 +5263,13 @@
         "volume": 1,
         "chapter": 24.0,
         "date": "2026-09-04"
+      },
+      {
+        "id": 745,
+        "title": "",
+        "volume": 1,
+        "chapter": 25.0,
+        "date": "2026-09-10"
       }
     ]
   },
