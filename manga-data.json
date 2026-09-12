@@ -11236,7 +11236,7 @@
       "Фентезі",
       "Магія"
     ],
-    "latestUpdate": "2026-09-06T19:58:23.119426Z",
+    "latestUpdate": "2026-09-12T20:20:17.290797Z",
     "chapters": [
       {
         "id": 153,
@@ -12750,6 +12750,32 @@
           "https://files.catbox.moe/lzubmb.webp",
           "https://files.catbox.moe/wk891y.webp",
           "https://files.catbox.moe/f73wrx.webp"
+        ]
+      },
+      {
+        "id": 750,
+        "title": "Екстра",
+        "volume": 7,
+        "chapter": 56.0,
+        "date": "2026-09-12",
+        "pages": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
         ]
       }
     ],
@@ -25237,7 +25263,7 @@
       "Яой",
       "Буденність"
     ],
-    "latestUpdate": "2026-09-06T19:59:25.691522Z",
+    "latestUpdate": "2026-09-12T20:09:34.300317Z",
     "chapters": [
       {
         "id": 346,
@@ -26083,6 +26109,46 @@
           "https://files.catbox.moe/tp3u8m.webp",
           "https://files.catbox.moe/wpjj2z.webp",
           "https://files.catbox.moe/17xo0b.webp"
+        ]
+      },
+      {
+        "id": 749,
+        "title": "",
+        "volume": 2,
+        "chapter": 56.0,
+        "date": "2026-09-12",
+        "pages": [
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          ""
         ]
       }
     ],

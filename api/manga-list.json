@@ -2055,7 +2055,7 @@
       "Фентезі",
       "Магія"
     ],
-    "latestUpdate": "2026-09-06T19:58:23.119426Z",
+    "latestUpdate": "2026-09-12T20:20:17.290797Z",
     "slug": "vidma-ichi",
     "volumeCovers": {
       "1": "https://files.catbox.moe/ecbh3i.webp",
@@ -2451,6 +2451,13 @@
         "volume": 7,
         "chapter": 55.0,
         "date": "2026-09-06"
+      },
+      {
+        "id": 750,
+        "title": "Екстра",
+        "volume": 7,
+        "chapter": 56.0,
+        "date": "2026-09-12"
       }
     ]
   },
@@ -4715,7 +4722,7 @@
       "Яой",
       "Буденність"
     ],
-    "latestUpdate": "2026-09-06T19:59:25.691522Z",
+    "latestUpdate": "2026-09-12T20:09:34.300317Z",
     "slug": "shakh-i-mat",
     "chapters": [
       {
@@ -5081,6 +5088,13 @@
         "volume": 2,
         "chapter": 55.0,
         "date": "2026-09-06"
+      },
+      {
+        "id": 749,
+        "title": "",
+        "volume": 2,
+        "chapter": 56.0,
+        "date": "2026-09-12"
       }
     ]
   },
