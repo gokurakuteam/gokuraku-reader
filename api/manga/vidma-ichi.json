@@ -15,7 +15,7 @@
     "Фентезі",
     "Магія"
   ],
-  "latestUpdate": "2026-09-06T19:58:23.119426Z",
+  "latestUpdate": "2026-09-12T20:20:17.290797Z",
   "chapters": [
     {
       "id": 153,
@@ -1529,6 +1529,32 @@
         "https://files.catbox.moe/lzubmb.webp",
         "https://files.catbox.moe/wk891y.webp",
         "https://files.catbox.moe/f73wrx.webp"
+      ]
+    },
+    {
+      "id": 750,
+      "title": "Екстра",
+      "volume": 7,
+      "chapter": 56.0,
+      "date": "2026-09-12",
+      "pages": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
       ]
     }
   ],
