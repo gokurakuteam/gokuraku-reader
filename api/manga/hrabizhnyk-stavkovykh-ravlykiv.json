@@ -17,7 +17,7 @@
     "ГГ чоловік",
     "Епізод життя"
   ],
-  "latestUpdate": "2026-09-08T20:21:01.197400Z",
+  "latestUpdate": "2026-09-15T20:03:22.263083Z",
   "chapters": [
     {
       "id": 685,
@@ -510,6 +510,46 @@
         "https://files.catbox.moe/spb6e9.webp",
         "https://files.catbox.moe/xc7ezf.webp",
         "https://files.catbox.moe/e22iwe.webp"
+      ]
+    },
+    {
+      "id": 757,
+      "title": "",
+      "volume": 2,
+      "chapter": 14.0,
+      "date": "2026-09-15",
+      "pages": [
+        "https://files.catbox.moe/tx7d9q.webp",
+        "https://files.catbox.moe/nmd470.webp",
+        "https://files.catbox.moe/b7w578.webp",
+        "https://files.catbox.moe/5mh2vc.webp",
+        "https://files.catbox.moe/h2qogb.webp",
+        "https://files.catbox.moe/ue8f5b.webp",
+        "https://files.catbox.moe/uomhi2.webp",
+        "https://files.catbox.moe/w1x37v.webp",
+        "https://files.catbox.moe/hwci3r.webp",
+        "https://files.catbox.moe/uzabms.webp",
+        "https://files.catbox.moe/mbrvk3.webp",
+        "https://files.catbox.moe/u5tt3l.webp",
+        "https://files.catbox.moe/euq89s.webp",
+        "https://files.catbox.moe/qbxjnu.webp",
+        "https://files.catbox.moe/gl5hv6.webp",
+        "https://files.catbox.moe/2vb9me.webp",
+        "https://files.catbox.moe/0cxj8w.webp",
+        "https://files.catbox.moe/kdxpqz.webp",
+        "https://files.catbox.moe/jme97b.webp",
+        "https://files.catbox.moe/l1sg2s.webp",
+        "https://files.catbox.moe/n8wmly.webp",
+        "https://files.catbox.moe/ipatfr.webp",
+        "https://files.catbox.moe/qzt852.webp",
+        "https://files.catbox.moe/tf4oq5.webp",
+        "https://files.catbox.moe/jzcm1g.webp",
+        "https://files.catbox.moe/23yxpo.webp",
+        "https://files.catbox.moe/18j3fn.webp",
+        "https://files.catbox.moe/2sdhwo.webp",
+        "https://files.catbox.moe/ieq16u.webp",
+        "https://files.catbox.moe/68fbye.webp",
+        "https://files.catbox.moe/hi7nvq.webp"
       ]
     }
   ],
