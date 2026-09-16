@@ -1558,7 +1558,7 @@
       "Шьонен-ай",
       "Школа"
     ],
-    "latestUpdate": "2026-09-09T19:34:04.837900Z",
+    "latestUpdate": "2026-09-16T21:00:19.808042Z",
     "slug": "forma-sympatii",
     "chapters": [
       {
@@ -1805,6 +1805,13 @@
         "volume": 3,
         "chapter": 75.0,
         "date": "2026-09-09"
+      },
+      {
+        "id": 759,
+        "title": "",
+        "volume": 3,
+        "chapter": 76.0,
+        "date": "2026-09-16"
       }
     ]
   },
@@ -3712,7 +3719,7 @@
       "Привиди",
       "Надприродне"
     ],
-    "latestUpdate": "2026-09-09T19:55:26.990924Z",
+    "latestUpdate": "2026-09-16T21:00:59.354605Z",
     "slug": "dusha-zahublena-gou",
     "chapters": [
       {
@@ -3791,6 +3798,13 @@
         "volume": 1,
         "chapter": 8.0,
         "date": "2026-09-09"
+      },
+      {
+        "id": 760,
+        "title": "",
+        "volume": 1,
+        "chapter": 9.0,
+        "date": "2026-09-16"
       }
     ]
   },
@@ -3811,7 +3825,7 @@
       "Драма",
       "Психологія"
     ],
-    "latestUpdate": "2026-09-09T19:23:25.348380Z",
+    "latestUpdate": "2026-09-16T20:59:40.376920Z",
     "slug": "ian-ilvu-ta-ia",
     "chapters": [
       {
@@ -4037,6 +4051,13 @@
         "volume": 2,
         "chapter": 31.0,
         "date": "2026-09-09"
+      },
+      {
+        "id": 758,
+        "title": "",
+        "volume": 2,
+        "chapter": 32.0,
+        "date": "2026-09-16"
       }
     ]
   },
