@@ -9381,7 +9381,7 @@
       "Шьонен-ай",
       "Школа"
     ],
-    "latestUpdate": "2026-09-16T21:00:19.808042Z",
+    "latestUpdate": "2026-09-16T21:12:40.562540Z",
     "chapters": [
       {
         "id": 205,
@@ -10565,10 +10565,10 @@
         ]
       },
       {
-        "id": 759,
+        "id": 761,
         "title": "",
         "volume": 3,
-        "chapter": 76.0,
+        "chapter": 75.1,
         "date": "2026-09-16",
         "pages": [
           "https://files.catbox.moe/g508pt.webp",
