@@ -5156,7 +5156,7 @@
       "Яой",
       "Шкільне життя"
     ],
-    "latestUpdate": "2026-09-10T20:11:47.713726Z",
+    "latestUpdate": "2026-09-17T20:17:21.412984Z",
     "slug": "taktyka-podavacha",
     "chapters": [
       {
@@ -5333,6 +5333,13 @@
         "volume": 1,
         "chapter": 25.0,
         "date": "2026-09-10"
+      },
+      {
+        "id": 762,
+        "title": "",
+        "volume": 1,
+        "chapter": 26.0,
+        "date": "2026-09-17"
       }
     ]
   },
