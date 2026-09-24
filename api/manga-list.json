@@ -6026,5 +6026,35 @@
         "date": "2026-09-22"
       }
     ]
+  },
+  {
+    "id": 32,
+    "title": "Годі сміятися, Шіджімо",
+    "slug": "hodi-smiiatysia-shidzhimo",
+    "description": "Шіджіма завжди щаслива й постійно сміється. Та що приховує її темний секрет?.. Хоррор-ваншот про зустріч хлопця та дівчини!",
+    "type": "Манґа",
+    "status": "Завершено",
+    "coverImage": "https://files.catbox.moe/pj9t0z.webp",
+    "backgroundImage": "",
+    "pageUrl": "#title?id=hodi-smiiatysia-shidzhimo",
+    "genres": [
+      "ГГ жінка",
+      "ГГ чоловік",
+      "Дружба",
+      "Кохання",
+      "Перше кохання.",
+      "Ваншот",
+      "Надприродне"
+    ],
+    "latestUpdate": "2026-09-24T16:16:52.041832Z",
+    "chapters": [
+      {
+        "id": 774,
+        "title": "",
+        "volume": 1,
+        "chapter": 1.0,
+        "date": "2026-09-24"
+      }
+    ]
   }
 ]
