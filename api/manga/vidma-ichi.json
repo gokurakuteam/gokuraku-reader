@@ -15,7 +15,7 @@
     "Фентезі",
     "Магія"
   ],
-  "latestUpdate": "2026-09-19T21:09:22.716912Z",
+  "latestUpdate": "2026-09-26T20:51:09.886830Z",
   "chapters": [
     {
       "id": 153,
@@ -1685,6 +1685,57 @@
         "https://files.catbox.moe/d1tuea.webp",
         "https://files.catbox.moe/f7q0kj.webp",
         "https://files.catbox.moe/1erizr.webp"
+      ]
+    },
+    {
+      "id": 779,
+      "title": "Загроза",
+      "volume": 7,
+      "chapter": 63.0,
+      "date": "2026-09-26",
+      "pages": [
+        "https://files.catbox.moe/eq8xhr.webp",
+        "https://files.catbox.moe/kf0s57.webp",
+        "https://files.catbox.moe/pn5hty.webp",
+        "https://files.catbox.moe/bf7h8v.webp",
+        "https://files.catbox.moe/owlct4.webp",
+        "https://files.catbox.moe/wzrvdx.webp",
+        "https://files.catbox.moe/2qbjs2.webp",
+        "https://files.catbox.moe/tgyjgj.webp",
+        "https://files.catbox.moe/02l7oh.webp",
+        "https://files.catbox.moe/vtc3o9.webp",
+        "https://files.catbox.moe/tuoiq2.webp",
+        "https://files.catbox.moe/vxackh.webp",
+        "https://files.catbox.moe/6xodvb.webp",
+        "https://files.catbox.moe/h703p4.webp",
+        "https://files.catbox.moe/pn5mvx.webp",
+        "https://files.catbox.moe/1qqg6x.webp",
+        "https://files.catbox.moe/zr1b7h.webp"
+      ]
+    },
+    {
+      "id": 780,
+      "title": "Розірвані серця",
+      "volume": 7,
+      "chapter": 62.0,
+      "date": "2026-09-26",
+      "pages": [
+        "https://files.catbox.moe/mwtzpa.webp",
+        "https://files.catbox.moe/9qcmgp.webp",
+        "https://files.catbox.moe/txytsl.webp",
+        "https://files.catbox.moe/e9jt5b.webp",
+        "https://files.catbox.moe/1b0ta9.webp",
+        "https://files.catbox.moe/bqmu8b.webp",
+        "https://files.catbox.moe/sexhty.webp",
+        "https://files.catbox.moe/qctv8n.webp",
+        "https://files.catbox.moe/6gx8m0.webp",
+        "https://files.catbox.moe/2iligp.webp",
+        "https://files.catbox.moe/hm8ws6.webp",
+        "https://files.catbox.moe/gztlse.webp",
+        "https://files.catbox.moe/7mgcwj.webp",
+        "https://files.catbox.moe/dzwa6t.webp",
+        "https://files.catbox.moe/v5u25d.webp",
+        "https://files.catbox.moe/g533dz.webp"
       ]
     }
   ],
