@@ -14,7 +14,7 @@
     "Яой",
     "Буденність"
   ],
-  "latestUpdate": "2026-09-12T20:09:34.300317Z",
+  "latestUpdate": "2026-09-26T20:32:19.719048Z",
   "chapters": [
     {
       "id": 346,
@@ -900,6 +900,45 @@
         "",
         "",
         ""
+      ]
+    },
+    {
+      "id": 778,
+      "title": "",
+      "volume": 2,
+      "chapter": 57.0,
+      "date": "2026-09-26",
+      "pages": [
+        "https://files.catbox.moe/xwtr5y.webp",
+        "https://files.catbox.moe/6tgiyv.webp",
+        "https://files.catbox.moe/ki7yd9.webp",
+        "https://files.catbox.moe/h7zydj.webp",
+        "https://files.catbox.moe/94x6q2.webp",
+        "https://files.catbox.moe/27na0w.webp",
+        "https://files.catbox.moe/73qaow.webp",
+        "https://files.catbox.moe/vczphj.webp",
+        "https://files.catbox.moe/mhysth.webp",
+        "https://files.catbox.moe/dde807.webp",
+        "https://files.catbox.moe/2ufk2b.webp",
+        "https://files.catbox.moe/t3ih3j.webp",
+        "https://files.catbox.moe/5ydqff.webp",
+        "https://files.catbox.moe/yz12o6.webp",
+        "https://files.catbox.moe/p2n31t.webp",
+        "https://files.catbox.moe/mm7ju9.webp",
+        "https://files.catbox.moe/ob0lau.webp",
+        "https://files.catbox.moe/go9wyu.webp",
+        "https://files.catbox.moe/cxxgcs.webp",
+        "https://files.catbox.moe/g4y4g8.webp",
+        "https://files.catbox.moe/vqimzw.webp",
+        "https://files.catbox.moe/ufn08v.webp",
+        "https://files.catbox.moe/z8ad3e.webp",
+        "https://files.catbox.moe/j3u0h4.webp",
+        "https://files.catbox.moe/u3c0u2.webp",
+        "https://files.catbox.moe/hbq18d.webp",
+        "https://files.catbox.moe/xawlhm.webp",
+        "https://files.catbox.moe/urhv3t.webp",
+        "https://files.catbox.moe/ldx2vn.webp",
+        "https://files.catbox.moe/id2no7.webp"
       ]
     }
   ],
