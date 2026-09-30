@@ -9455,7 +9455,7 @@
       "Шьонен-ай",
       "Школа"
     ],
-    "latestUpdate": "2026-09-23T19:21:33.712571Z",
+    "latestUpdate": "2026-09-30T19:57:48.415326Z",
     "chapters": [
       {
         "id": 205,
@@ -10720,6 +10720,46 @@
           "https://files.catbox.moe/s649fa.webp",
           "https://files.catbox.moe/hvbm73.webp",
           "https://files.catbox.moe/2t1e8r.webp"
+        ]
+      },
+      {
+        "id": 782,
+        "title": "",
+        "volume": 3,
+        "chapter": 75.3,
+        "date": "2026-09-30",
+        "pages": [
+          "https://files.catbox.moe/uz91jd.webp",
+          "https://files.catbox.moe/e604dc.webp",
+          "https://files.catbox.moe/snu8bd.webp",
+          "https://files.catbox.moe/b6yegw.webp",
+          "https://files.catbox.moe/skwqx4.webp",
+          "https://files.catbox.moe/wihx98.webp",
+          "https://files.catbox.moe/bkb77t.webp",
+          "https://files.catbox.moe/x494w7.webp",
+          "https://files.catbox.moe/pypgmk.webp",
+          "https://files.catbox.moe/nraepo.webp",
+          "https://files.catbox.moe/heldil.webp",
+          "https://files.catbox.moe/mvk63y.webp",
+          "https://files.catbox.moe/fzxlx2.webp",
+          "https://files.catbox.moe/7u6o6d.webp",
+          "https://files.catbox.moe/lkv1tc.webp",
+          "https://files.catbox.moe/asp8zy.webp",
+          "https://files.catbox.moe/iezczc.webp",
+          "https://files.catbox.moe/aabwfl.webp",
+          "https://files.catbox.moe/gurd0p.webp",
+          "https://files.catbox.moe/6vw8oj.webp",
+          "https://files.catbox.moe/33grow.webp",
+          "https://files.catbox.moe/ji99gt.webp",
+          "https://files.catbox.moe/81ms7u.webp",
+          "https://files.catbox.moe/m4pw03.webp",
+          "https://files.catbox.moe/znfcaw.webp",
+          "https://files.catbox.moe/gicuqk.webp",
+          "https://files.catbox.moe/vkk32a.webp",
+          "https://files.catbox.moe/yk9upa.webp",
+          "https://files.catbox.moe/5tyldg.webp",
+          "https://files.catbox.moe/1m3c2w.webp",
+          "https://files.catbox.moe/qtlwsj.webp"
         ]
       }
     ],
