@@ -897,7 +897,7 @@
       "Яой",
       "Шьонен-ай"
     ],
-    "latestUpdate": "2026-09-25T20:15:58.307001Z",
+    "latestUpdate": "2026-10-09T19:19:47.505104Z",
     "slug": "shchaslyvyi-marmur",
     "volumeCovers": {
       "1": "https://files.catbox.moe/wqcsda.webp",
@@ -1238,6 +1238,13 @@
         "volume": 4,
         "chapter": 47.0,
         "date": "2026-09-25"
+      },
+      {
+        "id": 792,
+        "title": "",
+        "volume": 4,
+        "chapter": 48.0,
+        "date": "2026-10-09"
       }
     ]
   },
