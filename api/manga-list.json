@@ -4530,8 +4530,12 @@
       "Магія",
       "Перше кохання."
     ],
-    "latestUpdate": "2026-09-13T20:33:44.549632Z",
+    "latestUpdate": "2026-10-11T20:04:20.991717Z",
     "slug": "nevdalyi-pryklad-bezdohannoho-prokliattia",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/6grg4y.webp",
+      "2": "https://files.catbox.moe/kvwo6h.webp"
+    },
     "chapters": [
       {
         "id": 280,
@@ -4819,6 +4823,20 @@
         "volume": 1,
         "chapter": 41.0,
         "date": "2026-09-13"
+      },
+      {
+        "id": 795,
+        "title": "",
+        "volume": 2,
+        "chapter": 42.0,
+        "date": "2026-10-11"
+      },
+      {
+        "id": 796,
+        "title": "",
+        "volume": 2,
+        "chapter": 43.0,
+        "date": "2026-10-11"
       }
     ]
   },
@@ -4905,7 +4923,7 @@
       "Яой",
       "Буденність"
     ],
-    "latestUpdate": "2026-09-26T20:32:19.719048Z",
+    "latestUpdate": "2026-10-11T20:05:04.513071Z",
     "slug": "shakh-i-mat",
     "chapters": [
       {
@@ -5285,6 +5303,13 @@
         "volume": 2,
         "chapter": 57.0,
         "date": "2026-09-26"
+      },
+      {
+        "id": 797,
+        "title": "",
+        "volume": 2,
+        "chapter": 58.0,
+        "date": "2026-10-11"
       }
     ]
   },
