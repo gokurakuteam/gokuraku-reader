@@ -6058,7 +6058,7 @@
       "ГГ чоловік",
       "Епізод життя"
     ],
-    "latestUpdate": "2026-10-07T19:23:29.143305Z",
+    "latestUpdate": "2026-10-13T20:10:28.519670Z",
     "volumeCovers": {
       "1": "https://files.catbox.moe/6j7nzh.webp",
       "2": "https://files.catbox.moe/5ijt6l.webp",
@@ -6190,6 +6190,13 @@
         "volume": 2,
         "chapter": 17.0,
         "date": "2026-10-07"
+      },
+      {
+        "id": 798,
+        "title": "",
+        "volume": 2,
+        "chapter": 18.0,
+        "date": "2026-10-13"
       }
     ]
   },
