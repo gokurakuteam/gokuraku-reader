@@ -3966,7 +3966,7 @@
       "Драма",
       "Психологія"
     ],
-    "latestUpdate": "2026-10-14T19:28:33.538381Z",
+    "latestUpdate": "2026-10-15T20:33:52.966054Z",
     "slug": "ian-ilvu-ta-ia",
     "chapters": [
       {
@@ -4220,6 +4220,13 @@
         "volume": 2,
         "chapter": 35.0,
         "date": "2026-10-14"
+      },
+      {
+        "id": 802,
+        "title": "",
+        "volume": 2,
+        "chapter": 36.0,
+        "date": "2026-10-15"
       }
     ]
   },
@@ -5350,7 +5357,7 @@
       "Яой",
       "Шкільне життя"
     ],
-    "latestUpdate": "2026-10-08T20:17:56.484701Z",
+    "latestUpdate": "2026-10-15T20:42:43.720139Z",
     "slug": "taktyka-podavacha",
     "chapters": [
       {
@@ -5555,6 +5562,41 @@
         "volume": 1,
         "chapter": 29.0,
         "date": "2026-10-08"
+      },
+      {
+        "id": 803,
+        "title": "",
+        "volume": 1,
+        "chapter": 30.0,
+        "date": "2026-10-15"
+      },
+      {
+        "id": 804,
+        "title": "",
+        "volume": 2,
+        "chapter": 31.0,
+        "date": "2026-10-15"
+      },
+      {
+        "id": 805,
+        "title": "",
+        "volume": 2,
+        "chapter": 32.0,
+        "date": "2026-10-15"
+      },
+      {
+        "id": 806,
+        "title": "",
+        "volume": 2,
+        "chapter": 33.0,
+        "date": "2026-10-15"
+      },
+      {
+        "id": 807,
+        "title": "",
+        "volume": 2,
+        "chapter": 34.0,
+        "date": "2026-10-15"
       }
     ]
   },
