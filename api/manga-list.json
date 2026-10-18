@@ -4572,7 +4572,7 @@
       "Магія",
       "Перше кохання."
     ],
-    "latestUpdate": "2026-10-11T20:04:20.991717Z",
+    "latestUpdate": "2026-10-18T19:42:08.909016Z",
     "slug": "nevdalyi-pryklad-bezdohannoho-prokliattia",
     "volumeCovers": {
       "1": "https://files.catbox.moe/6grg4y.webp",
@@ -4879,6 +4879,13 @@
         "volume": 2,
         "chapter": 43.0,
         "date": "2026-10-11"
+      },
+      {
+        "id": 811,
+        "title": "",
+        "volume": 2,
+        "chapter": 44.0,
+        "date": "2026-10-18"
       }
     ]
   },
