@@ -1586,7 +1586,7 @@
       "Шьонен-ай",
       "Школа"
     ],
-    "latestUpdate": "2026-10-14T19:30:49.126764Z",
+    "latestUpdate": "2026-10-22T19:38:59.310442Z",
     "slug": "forma-sympatii",
     "chapters": [
       {
@@ -1868,6 +1868,13 @@
         "volume": 3,
         "chapter": 75.5,
         "date": "2026-10-14"
+      },
+      {
+        "id": 815,
+        "title": "",
+        "volume": 3,
+        "chapter": 75.6,
+        "date": "2026-10-22"
       }
     ]
   },
@@ -3860,7 +3867,7 @@
       "Привиди",
       "Надприродне"
     ],
-    "latestUpdate": "2026-10-14T19:32:19.512199Z",
+    "latestUpdate": "2026-10-22T19:36:32.617681Z",
     "slug": "dusha-zahublena-gou",
     "chapters": [
       {
@@ -3960,6 +3967,13 @@
         "volume": 1,
         "chapter": 11.0,
         "date": "2026-10-14"
+      },
+      {
+        "id": 814,
+        "title": "",
+        "volume": 1,
+        "chapter": 12.0,
+        "date": "2026-10-22"
       }
     ]
   },
@@ -3980,7 +3994,7 @@
       "Драма",
       "Психологія"
     ],
-    "latestUpdate": "2026-10-15T20:33:52.966054Z",
+    "latestUpdate": "2026-10-22T19:41:46.360627Z",
     "slug": "ian-ilvu-ta-ia",
     "chapters": [
       {
@@ -4241,6 +4255,13 @@
         "volume": 2,
         "chapter": 36.0,
         "date": "2026-10-15"
+      },
+      {
+        "id": 816,
+        "title": "",
+        "volume": 2,
+        "chapter": 37.0,
+        "date": "2026-10-22"
       }
     ]
   },
@@ -5385,7 +5406,7 @@
       "Яой",
       "Шкільне життя"
     ],
-    "latestUpdate": "2026-10-15T20:42:43.720139Z",
+    "latestUpdate": "2026-10-22T19:50:54.986409Z",
     "slug": "taktyka-podavacha",
     "chapters": [
       {
@@ -5625,6 +5646,13 @@
         "volume": 2,
         "chapter": 34.0,
         "date": "2026-10-15"
+      },
+      {
+        "id": 817,
+        "title": "",
+        "volume": 2,
+        "chapter": 35.0,
+        "date": "2026-10-22"
       }
     ]
   },
