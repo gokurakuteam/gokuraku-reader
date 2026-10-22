@@ -13,7 +13,7 @@
     "Шьонен-ай",
     "Школа"
   ],
-  "latestUpdate": "2026-10-14T19:30:49.126764Z",
+  "latestUpdate": "2026-10-22T19:38:59.310442Z",
   "chapters": [
     {
       "id": 205,
@@ -1383,6 +1383,46 @@
         "https://files.catbox.moe/2b0o5a.webp",
         "https://files.catbox.moe/smtgxa.webp",
         "https://files.catbox.moe/q874bq.webp"
+      ]
+    },
+    {
+      "id": 815,
+      "title": "",
+      "volume": 3,
+      "chapter": 75.6,
+      "date": "2026-10-22",
+      "pages": [
+        "https://files.catbox.moe/5byziz.webp",
+        "https://files.catbox.moe/xc6j1o.webp",
+        "https://files.catbox.moe/i591tq.webp",
+        "https://files.catbox.moe/1qfukw.webp",
+        "https://files.catbox.moe/ej39om.webp",
+        "https://files.catbox.moe/hmxve7.webp",
+        "https://files.catbox.moe/godoma.webp",
+        "https://files.catbox.moe/t5invh.webp",
+        "https://files.catbox.moe/zfzdl8.webp",
+        "https://files.catbox.moe/1ysovs.webp",
+        "https://files.catbox.moe/74m2bb.webp",
+        "https://files.catbox.moe/0sqe57.webp",
+        "https://files.catbox.moe/37rvv4.webp",
+        "https://files.catbox.moe/wywevy.webp",
+        "https://files.catbox.moe/bvyez9.webp",
+        "https://files.catbox.moe/3p6g59.webp",
+        "https://files.catbox.moe/pfvs1b.webp",
+        "https://files.catbox.moe/wx42ei.webp",
+        "https://files.catbox.moe/rqqua2.webp",
+        "https://files.catbox.moe/0jwdax.webp",
+        "https://files.catbox.moe/to2n3h.webp",
+        "https://files.catbox.moe/9irdnh.webp",
+        "https://files.catbox.moe/k6pjr8.webp",
+        "https://files.catbox.moe/77fu4m.webp",
+        "https://files.catbox.moe/f6kjqo.webp",
+        "https://files.catbox.moe/hrjacx.webp",
+        "https://files.catbox.moe/ncutwa.webp",
+        "https://files.catbox.moe/lscrjt.webp",
+        "https://files.catbox.moe/cw4xkt.webp",
+        "https://files.catbox.moe/yne5ei.webp",
+        "https://files.catbox.moe/2cme9c.webp"
       ]
     }
   ],
