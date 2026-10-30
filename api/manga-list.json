@@ -4008,7 +4008,7 @@
       "Драма",
       "Психологія"
     ],
-    "latestUpdate": "2026-10-22T19:41:46.360627Z",
+    "latestUpdate": "2026-10-30T18:27:36.598707Z",
     "slug": "ian-ilvu-ta-ia",
     "chapters": [
       {
@@ -4276,6 +4276,13 @@
         "volume": 2,
         "chapter": 37.0,
         "date": "2026-10-22"
+      },
+      {
+        "id": 823,
+        "title": "",
+        "volume": 2,
+        "chapter": 38.0,
+        "date": "2026-10-30"
       }
     ]
   },
@@ -5880,7 +5887,7 @@
       "Фентезі",
       "Еротика"
     ],
-    "latestUpdate": "2026-10-23T19:58:37.749420Z",
+    "latestUpdate": "2026-10-30T18:28:23.512764Z",
     "slug": "rabovlasnyk-z-inshoho-svitu",
     "volumeCovers": {
       "1": "https://files.catbox.moe/ii1e0g.webp",
@@ -6202,6 +6209,13 @@
         "volume": 2,
         "chapter": 44.0,
         "date": "2026-10-23"
+      },
+      {
+        "id": 824,
+        "title": "",
+        "volume": 2,
+        "chapter": 45.0,
+        "date": "2026-10-30"
       }
     ]
   },
