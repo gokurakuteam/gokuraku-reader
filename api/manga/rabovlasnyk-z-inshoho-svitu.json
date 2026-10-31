@@ -4,7 +4,7 @@
   "description": "[Єджу випадково потрапляє в інший світ і якимось чином стає рабом. Його перше завдання як раба — це... Нічне обслуговування?!] «Відтепер твоїм обов’язком буде прислуговувати мені вночі, у моїй спочивальні». Студент університету та альфа Єджу раптово опиняється в іншому світі, де його помилково сприймають за раба та продають елегантному молодому дворянину. Однак «робота», яку йому доручають, виявляється нічним прислужуванням?! Що ще гірше, справжня особистість молодого пана викликає чимало підозр. Чи зможе Єджу коли-небудь безпечно повернутися додому?",
   "type": "Манхва",
   "status": "Виходить",
-  "coverImage": "https://files.catbox.moe/cjofoh.webp",
+  "coverImage": "https://files.catbox.moe/ii1e0g.webp",
   "backgroundImage": "https://files.catbox.moe/svvsee.jpg",
   "pageUrl": "#title?id=rabovlasnyk-z-inshoho-svitu",
   "genres": [
@@ -1636,8 +1636,9 @@
   "slug": "rabovlasnyk-z-inshoho-svitu",
   "volumeCovers": {
     "1": "https://files.catbox.moe/ii1e0g.webp",
-    "2": "https://files.catbox.moe/cjofoh.webp",
-    "2.5": "https://files.catbox.moe/lgvjoi.webp"
+    "2": "https://files.catbox.moe/cjofoh.webp"
   },
-  "extraCovers": []
+  "extraCovers": [
+    "https://files.catbox.moe/lgvjoi.webp"
+  ]
 }
