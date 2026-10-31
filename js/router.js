@@ -156,17 +156,20 @@ async function loadPage(page, params, routeId, skipAnimation = false) {
             }
 
             // Запускаємо анімацію розширення картки та розквіту фону
+            let expansionPromise = null;
             if (!skipAnimation) {
-                transitionManager.animateExpansion({
+                expansionPromise = transitionManager.animateExpansion({
                     titleCoverEl: coverImgEl,
-                    titleHeaderEl,
                     bgImageEl: bgImageDiv,
                     mangaId
                 });
             }
 
-            // 2. Асинхронне довантаження повних деталей (опису та розділів)
-            await fetchMangaDetails(mangaId);
+            // Асинхронне довантаження повних деталей (опису та розділів)
+            const detailsPromise = fetchMangaDetails(mangaId);
+
+            // Очікуємо завершення польоту обкладинки, щоб важкий рендеринг розділів не спричиняв фризів
+            await Promise.all([expansionPromise, detailsPromise]);
             if (routeId !== currentRouteId) return;
             manga = getMangaById(mangaId);
 
