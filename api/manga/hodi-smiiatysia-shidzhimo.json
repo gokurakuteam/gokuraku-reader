@@ -13,7 +13,7 @@
     "ГГ чоловік",
     "Дружба",
     "Кохання",
-    "Перше кохання.",
+    "Перше кохання",
     "Ваншот",
     "Надприродне"
   ],
@@ -88,5 +88,9 @@
         "https://files.catbox.moe/awc519.webp"
       ]
     }
-  ]
+  ],
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/pj9t0z.webp"
+  },
+  "extraCovers": []
 }

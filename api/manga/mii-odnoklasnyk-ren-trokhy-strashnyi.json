@@ -283,5 +283,9 @@
       ]
     }
   ],
-  "slug": "mii-odnoklasnyk-ren-trokhy-strashnyi"
+  "slug": "mii-odnoklasnyk-ren-trokhy-strashnyi",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/vfytum.webp"
+  },
+  "extraCovers": []
 }

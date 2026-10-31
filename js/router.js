@@ -1,10 +1,11 @@
 import { loadMangaData, fetchMangaDetails, getAllManga, getMangaById, getLatestUpdates, getChapterById } from '../data-manager.js';
-import { getBookmarks, isBookmarked, addBookmark, removeBookmark, getHistory, addChapterToHistory, addCategory, deleteCategory, getMangaCategory, getSelectedCover, saveSelectedCover } from '../storage-manager.js';
+import { getBookmarks, isBookmarked, addBookmark, removeBookmark, getHistory, addChapterToHistory, addCategory, deleteCategory, getMangaCategory, getSelectedCover, saveSelectedCover, getEffectiveCover, getAutoCover } from '../storage-manager.js';
 import { initCatalog } from '../catalog.js';
 import { setupDynamicCarousel } from './carousel.js';
 import { setupTabs, timeAgo, renderChapterList, updateReadButton, getStatusClass, handleChapterListClicks, showBookmarkModal, updateBookmarkButton, showCategoryManagerModal, initReaderSettings, initReaderHeaderBehavior } from './ui.js';
 import { loadGiscusForPage } from './giscus-loader.js';
 import { initClicker } from './clicker.js';
+import { transitionManager } from './transition-manager.js';
 
 const routes = {
     'home': 'home.html',
@@ -14,46 +15,55 @@ const routes = {
     'reader': 'reader.html'
 };
 
+const pageCache = new Map();
+
+async function fetchPageContent(page) {
+    if (pageCache.has(page)) {
+        return pageCache.get(page);
+    }
+    const response = await fetch(routes[page]);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+    const content = await response.text();
+    pageCache.set(page, content);
+    return content;
+}
+
 let currentRouteId = 0;
 
-async function loadPage(page, params, routeId) {
+async function loadPage(page, params, routeId, skipAnimation = false) {
     const main = document.querySelector('main');
     
-    main.classList.add('fade-out');
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    if (routeId !== currentRouteId) return;
-
-    main.innerHTML = `
-        <div style="display: flex; justify-content: center; align-items: center; height: 50vh;">
-            <svg class="spinner" viewBox="0 0 50 50" style="width: 50px; height: 50px; stroke: var(--accent-color); stroke-width: 4; fill: none;">
-                <circle cx="25" cy="25" r="20" stroke-dasharray="100" stroke-dashoffset="30"></circle>
-            </svg>
-        </div>
-    `;
-    main.classList.remove('fade-out');
-
     try {
-        const response = await fetch(routes[page]);
-        const content = await response.text();
-        
-        if (routeId !== currentRouteId) return; 
+        if (page === 'title') {
+            // Для тайтлу рендеримо розмітку миттєво без спінера, щоб запустити анімацію розширення картки
+            const content = await fetchPageContent('title');
+            if (routeId !== currentRouteId) return;
+            main.innerHTML = content;
+            main.classList.remove('fade-out');
+            window.scrollTo(0, 0);
+        } else if (skipAnimation) {
+            const content = await fetchPageContent(page);
+            if (routeId !== currentRouteId) return;
+            await loadMangaData();
+            main.innerHTML = content;
+            main.classList.remove('fade-out');
+        } else {
+            // Швидкий плавний fade-out для інших сторінок
+            main.classList.add('fade-out');
+            await new Promise(resolve => setTimeout(resolve, 120));
+            if (routeId !== currentRouteId) return;
 
-        // Очікуємо завантаження даних ПЕРЕД рендерингом сторінки, 
-        // поки користувач бачить спінер
-        await loadMangaData();
+            const content = await fetchPageContent(page);
+            if (routeId !== currentRouteId) return;
+            await loadMangaData();
 
-        main.classList.add('fade-out');
-        await new Promise(resolve => setTimeout(resolve, 150));
-        if (routeId !== currentRouteId) return;
-        
-        main.innerHTML = content;
-        
-        requestAnimationFrame(() => {
+            main.innerHTML = content;
             requestAnimationFrame(() => {
-                main.classList.remove('fade-out');
+                requestAnimationFrame(() => {
+                    main.classList.remove('fade-out');
+                });
             });
-        });
+        }
     } catch (e) {
         console.error(e);
         main.innerHTML = 'Error loading page';
@@ -70,7 +80,7 @@ async function loadPage(page, params, routeId) {
             return `
                 <li>
                     <a href="${manga.pageUrl}">
-                        <img src="${getSelectedCover(manga.id) || manga.coverImage}" alt="${manga.title}">
+                        <img src="${getEffectiveCover(manga)}" alt="${manga.title}">
                         <div class="update-info">
                             <h3>${manga.title}</h3>
                             <p>Том ${latestChapter.volume}, Розділ ${latestChapter.chapter}</p>
@@ -86,34 +96,20 @@ async function loadPage(page, params, routeId) {
         initCatalog(allManga, genres ? genres.split(',') : []);
     } else if (page === 'title') {
         const mangaId = params.get('id');
-        await fetchMangaDetails(mangaId);
-        const manga = getMangaById(mangaId);
+        let manga = getMangaById(mangaId);
+
+        if (!manga) {
+            await loadMangaData();
+            manga = getMangaById(mangaId);
+        }
 
         if (manga) {
-            // -- Covers Logic --
-            let currentCoverUrl = getSelectedCover(manga.id);
-            if (!currentCoverUrl) {
-                currentCoverUrl = manga.coverImage;
-                // Determine active cover from history
-                const history = getHistory();
-                const mangaHistory = history.filter(item => item.mangaId === manga.id);
-                if (mangaHistory.length > 0 && manga.volumeCovers && manga.chapters) {
-                    // Find highest read volume
-                    let maxReadVol = -1;
-                    for (const h of mangaHistory) {
-                        const chapter = getChapterById(h.chapterId);
-                        if (chapter && chapter.volume > maxReadVol) {
-                            maxReadVol = chapter.volume;
-                        }
-                    }
-                    if (maxReadVol > 0 && manga.volumeCovers[maxReadVol]) {
-                        currentCoverUrl = manga.volumeCovers[maxReadVol];
-                    }
-                }
-            }
+            // 1. Попереднє заповнення відомими даними для миттєвої анімації
+            let currentCoverUrl = getEffectiveCover(manga);
 
             const coverImgEl = main.querySelector('.title-cover img');
             const bgImageDiv = main.querySelector('#background-image');
+            const titleHeaderEl = main.querySelector('.title-header');
             
             const setCover = (url, isInitial = false) => {
                 if (isInitial) {
@@ -141,15 +137,62 @@ async function loadPage(page, params, routeId) {
             
             setCover(currentCoverUrl, true);
 
-            // Populate Covers Tab
+            // Встановлюємо вже відому назву, статус і жанри
+            const titleH1 = main.querySelector('.title-info h1');
+            if (titleH1) titleH1.textContent = manga.title || '';
+
+            const metaInfo = main.querySelector('.title-meta-info');
+            const statusClass = getStatusClass(manga.status);
+            if (metaInfo) {
+                metaInfo.innerHTML = `
+                    <span class="meta-tag">${manga.type || ''}</span>
+                    <span class="meta-tag status-tag ${statusClass}">${manga.status || ''}</span>
+                `;
+            }
+
+            const genresDiv = main.querySelector('.genres');
+            if (genresDiv && manga.genres) {
+                genresDiv.innerHTML = manga.genres.map(g => `<a href="#catalog?genres=${encodeURIComponent(g)}">${g}</a>`).join('');
+            }
+
+            // Запускаємо анімацію розширення картки та розквіту фону
+            if (!skipAnimation) {
+                transitionManager.animateExpansion({
+                    titleCoverEl: coverImgEl,
+                    titleHeaderEl,
+                    bgImageEl: bgImageDiv,
+                    mangaId
+                });
+            }
+
+            // 2. Асинхронне довантаження повних деталей (опису та розділів)
+            await fetchMangaDetails(mangaId);
+            if (routeId !== currentRouteId) return;
+            manga = getMangaById(mangaId);
+
+            // Відображаємо опис, приховуючи скелетон
+            const descP = main.querySelector('.title-description') || main.querySelector('.title-info p');
+            const skeletonDesc = main.querySelector('.title-skeleton-description');
+            if (descP) {
+                descP.textContent = manga.description || '';
+                descP.style.display = '';
+            }
+            if (skeletonDesc) {
+                skeletonDesc.style.display = 'none';
+            }
+
+            // Заповнення вкладки обкладинок (Автоматично, по томах, додаткові)
             const coversGrid = main.querySelector('.covers-grid');
             if (coversGrid) {
                 coversGrid.innerHTML = '';
-                
-                const addCoverItem = (title, url) => {
+                const selectedMode = getSelectedCover(manga.id);
+                const autoCoverUrl = getAutoCover(manga);
+
+                const addCoverItem = (title, url, isAuto = false) => {
                     const item = document.createElement('div');
                     item.className = 'cover-item';
-                    if (url === currentCoverUrl) item.classList.add('active');
+                    const isActive = isAuto ? (selectedMode === 'auto') : (selectedMode === url);
+                    if (isActive) item.classList.add('active');
                     item.innerHTML = `
                         <img src="${url}" alt="${title}">
                         <span>${title}</span>
@@ -157,56 +200,58 @@ async function loadPage(page, params, routeId) {
                     item.addEventListener('click', () => {
                         coversGrid.querySelectorAll('.cover-item').forEach(i => i.classList.remove('active'));
                         item.classList.add('active');
-                        setCover(url);
-                        saveSelectedCover(manga.id, url);
+                        if (isAuto) {
+                            saveSelectedCover(manga.id, 'auto');
+                            setCover(getAutoCover(manga));
+                        } else {
+                            saveSelectedCover(manga.id, url);
+                            setCover(url);
+                        }
                     });
                     coversGrid.appendChild(item);
                 };
-                
-                addCoverItem('Головна', manga.coverImage);
+
+                // 1. Автоматична обкладинка
+                if (autoCoverUrl) {
+                    addCoverItem('Автоматично', autoCoverUrl, true);
+                }
+
+                // 2. Обкладинки по томах
                 if (manga.volumeCovers) {
-                    // Sort volumes numerically
-                    const vols = Object.keys(manga.volumeCovers).sort((a,b) => parseFloat(a) - parseFloat(b));
+                    const vols = Object.keys(manga.volumeCovers).sort((a, b) => parseFloat(a) - parseFloat(b));
                     vols.forEach(v => {
-                        addCoverItem(`Том ${v}`, manga.volumeCovers[v]);
+                        if (manga.volumeCovers[v]) {
+                            addCoverItem(`Том ${v}`, manga.volumeCovers[v], false);
+                        }
+                    });
+                }
+
+                // 3. Додаткові обкладинки
+                if (manga.extraCovers && Array.isArray(manga.extraCovers)) {
+                    manga.extraCovers.forEach((url, idx) => {
+                        if (url) {
+                            addCoverItem(`Додаткова ${idx + 1}`, url, false);
+                        }
                     });
                 }
             }
-            // -- End Covers Logic --
 
-            main.querySelector('.title-info h1').textContent = manga.title;
-            main.querySelector('.title-info p').textContent = manga.description;
-
-            const metaInfo = main.querySelector('.title-meta-info');
-            const statusClass = getStatusClass(manga.status);
-            if (metaInfo) {
-                metaInfo.innerHTML = `
-                    <span class="meta-tag">${manga.type}</span>
-                    <span class="meta-tag status-tag ${statusClass}">${manga.status}</span>
-                `;
-            }
-
-            const genresDiv = main.querySelector('.genres');
-            if (genresDiv) {
-                genresDiv.innerHTML = manga.genres.map(g => `<a href="#catalog?genres=${encodeURIComponent(g)}">${g}</a>`).join('');
-            }
-
+            // Кнопка читання та список розділів
             const readButton = main.querySelector('.read-button');
             const chapterActions = main.querySelector('.chapter-actions');
             
             if (manga.chapters && manga.chapters.length > 0) {
-                if(readButton) readButton.style.display = 'flex';
+                if (readButton) readButton.style.display = 'flex';
                 if (chapterActions) chapterActions.style.display = 'flex';
 
                 updateReadButton(manga);
                 renderChapterList(manga, 'desc');
                 handleChapterListClicks(manga);
-
             } else {
-                if(readButton) readButton.style.display = 'none';
+                if (readButton) readButton.style.display = 'none';
                 if (chapterActions) chapterActions.style.display = 'none';
                 const chapterListContainer = main.querySelector('.chapter-list');
-                if(chapterListContainer) {
+                if (chapterListContainer) {
                     chapterListContainer.innerHTML = `
                         <div class="list-header"><h2>Розділи</h2></div>
                         <div class="empty-category-message" style="padding: 2rem; text-align: center;">
@@ -217,19 +262,27 @@ async function loadPage(page, params, routeId) {
             }
 
             const bookmarkBtn = main.querySelector('#bookmark-btn');
-            if(bookmarkBtn) {
+            if (bookmarkBtn) {
                 updateBookmarkButton(manga.id);
                 bookmarkBtn.addEventListener('click', () => {
                     showBookmarkModal(manga.id, () => updateBookmarkButton(manga.id));
                 });
             }
-            setupTabs();
+            setupTabs((tab) => {
+                if (tab === 'comments') {
+                    loadGiscusForPage('title', mangaId);
+                }
+            });
+            if (main.querySelector('.tab-link[data-tab="comments"]')?.classList.contains('active')) {
+                loadGiscusForPage('title', mangaId);
+            }
+
+            if (window.lucide) {
+                lucide.createIcons();
+            }
         } else {
             await showNotFoundPage();
         }
-        setTimeout(() => {
-            loadGiscusForPage('title', mangaId);
-        }, 500);
     } else if (page === 'cabinet') {
         setupTabs();
         setupCabinetBookmarks();
@@ -250,7 +303,7 @@ async function loadPage(page, params, routeId) {
                  return `
                     <li>
                         <a href="#reader?mangaId=${manga.slug || manga.id}&chapterId=${chapter.chapter}">
-                            <img src="${getSelectedCover(manga.id) || manga.coverImage}" alt="${manga.title}">
+                            <img src="${getEffectiveCover(manga)}" alt="${manga.title}">
                             <div class="update-info">
                                 <h3>${manga.title}</h3>
                                 <p>Том ${chapter.volume}, Розділ ${chapter.chapter}</p>
@@ -375,12 +428,27 @@ async function loadPage(page, params, routeId) {
             if (appHeader) {
                 appHeader.classList.add('hidden');
             }
+
+            // Ліниве завантаження коментарів за допомогою IntersectionObserver
+            const commentsContainer = main.querySelector('#giscus-container');
+            if (commentsContainer) {
+                if ('IntersectionObserver' in window) {
+                    const observer = new IntersectionObserver((entries, obs) => {
+                        if (entries[0].isIntersecting) {
+                            obs.disconnect();
+                            loadGiscusForPage('reader', mangaId, chapter?.id);
+                        }
+                    }, { rootMargin: '300px' });
+                    observer.observe(commentsContainer);
+                } else {
+                    setTimeout(() => {
+                        loadGiscusForPage('reader', mangaId, chapter?.id);
+                    }, 2000);
+                }
+            }
         } else {
             await showNotFoundPage();
         }
-        setTimeout(() => {
-            loadGiscusForPage('reader', mangaId, chapter?.id);
-        }, 500);
     }
 }
 
@@ -429,7 +497,7 @@ function setupCabinetBookmarks() {
                 if (!manga) return;
                 const card = document.createElement('manga-card');
                 card.setAttribute('name', manga.title);
-                card.setAttribute('image', getSelectedCover(manga.id) || manga.coverImage);
+                card.setAttribute('image', getEffectiveCover(manga));
                 card.setAttribute('url', manga.pageUrl);
                 card.setAttribute('type', manga.type);
                  if (manga.chapters && manga.chapters.length > 0) {
@@ -479,6 +547,8 @@ function setupCabinetBookmarks() {
     }
 }
 
+let previousPageName = null;
+
 export async function handleNavigation() {
     const routeId = ++currentRouteId;
     const hash = window.location.hash.substring(1);
@@ -494,9 +564,57 @@ export async function handleNavigation() {
     const main = document.querySelector('main');
     
     if (routes[pageName]) {
-        await loadPage(pageName, params, routeId);
-        if (routeId !== currentRouteId) return; // Abort if navigation changed
-        window.scrollTo(0, 0);
+        const origin = transitionManager.getOrigin();
+        const isBackFromTitle = previousPageName === 'title' && pageName !== 'title' && origin && origin.route === pageName;
+
+        if (isBackFromTitle) {
+            const titleCoverEl = main?.querySelector('.title-cover img');
+            const bgImageEl = main?.querySelector('#background-image');
+            const titlePageEl = main?.querySelector('.title-page');
+
+            await transitionManager.animateCollapse({
+                titleCoverEl,
+                bgImageEl,
+                titlePageEl,
+                targetPage: pageName,
+                onMountTargetPage: async () => {
+                    await loadPage(pageName, params, routeId, true);
+                }
+            });
+        } else {
+            if (previousPageName && previousPageName !== 'title') {
+                transitionManager.saveScrollPosition(previousPageName);
+            }
+
+            // Якщо виходимо з тайтлу на іншу сторінку — плавно гасимо тайтл для плавного кросфейду
+            if (previousPageName === 'title' && pageName !== 'title') {
+                const titlePageEl = main?.querySelector('.title-page');
+                const bgImageEl = main?.querySelector('#background-image');
+                if (titlePageEl) titlePageEl.classList.add('title-page-exit');
+                if (bgImageEl) {
+                    bgImageEl.style.transition = 'opacity 0.16s ease';
+                    bgImageEl.style.opacity = '0';
+                }
+                await new Promise(r => setTimeout(r, 140));
+                if (routeId !== currentRouteId) return;
+            }
+
+            await loadPage(pageName, params, routeId, false);
+            if (routeId !== currentRouteId) return; // Abort if navigation changed
+
+            if (pageName !== 'title') {
+                const savedScroll = transitionManager.getScrollPosition(pageName);
+                if (savedScroll > 0) {
+                    window.scrollTo(0, savedScroll);
+                } else {
+                    window.scrollTo(0, 0);
+                }
+            }
+        }
+
+        previousPageName = pageName;
+
+        if (routeId !== currentRouteId) return;
 
         const appHeaderShadowRoot = appHeader?.shadowRoot;
         if (appHeaderShadowRoot) {
@@ -511,6 +629,7 @@ export async function handleNavigation() {
             lucide.createIcons();
         }
     } else {
+        previousPageName = pageName;
         await showNotFoundPage();
     }
 }

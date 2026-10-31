@@ -1527,5 +1527,9 @@
       ]
     }
   ],
-  "slug": "11-ta-shkilna-poizdka"
+  "slug": "11-ta-shkilna-poizdka",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/oh8ix3.jpg"
+  },
+  "extraCovers": []
 }

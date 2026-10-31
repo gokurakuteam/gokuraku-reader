@@ -61,7 +61,7 @@ function resetCarouselInterval() {
 
 export async function setupDynamicCarousel() {
     try {
-        const response = await fetch('site-data.json');
+        const response = await fetch('site-data.json', { cache: 'no-cache' });
         if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
         const carouselItems = await response.json();
 

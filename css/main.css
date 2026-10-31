@@ -121,20 +121,26 @@ main.fade-out {
 
 .footer-brand {
     flex: 1 1 300px;
+    text-align: left;
 }
 
 .footer-logo {
-    font-size: 2.5rem;
-    margin: 0 0 0.5rem 0;
+    font-size: 2.2rem;
+    font-weight: 800;
+    margin: 0 0 0.35rem 0;
     color: var(--accent-color);
     text-transform: none;
-    letter-spacing: normal;
+    letter-spacing: -0.5px;
+    text-align: left;
+    line-height: 1.1;
 }
 
 .footer-slogan {
     margin: 0;
     color: var(--secondary-text);
-    font-size: 1.1rem;
+    font-size: 1rem;
+    line-height: 1.4;
+    text-align: left;
 }
 
 .footer-links {

@@ -1,5 +1,4 @@
 import { getClickerData, saveClickerData, saveThemeId, getSavedThemeId, saveThemeMode, getThemeMode } from '../storage-manager.js';
-import { loadGiscusForPage } from './giscus-loader.js';
 
 // === КОНФІГУРАЦІЯ МАГАЗИНУ ===
 

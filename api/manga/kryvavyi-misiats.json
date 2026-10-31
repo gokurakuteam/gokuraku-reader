@@ -2483,5 +2483,10 @@
       ]
     }
   ],
-  "slug": "kryvavyi-misiats"
+  "slug": "kryvavyi-misiats",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/g7fn6y.webp",
+    "2": "https://files.catbox.moe/g7fn6y.webp"
+  },
+  "extraCovers": []
 }

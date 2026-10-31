@@ -1074,5 +1074,10 @@
       ]
     }
   ],
-  "slug": "shakh-i-mat"
+  "slug": "shakh-i-mat",
+  "volumeCovers": {
+    "1": "https://cdn.dgmanga.app/titles/6934df67f313014416371ba3/1765106931658-1e69466f89d39aaa-cover.webp",
+    "2": "https://cdn.dgmanga.app/titles/6934df67f313014416371ba3/1765106931658-1e69466f89d39aaa-cover.webp"
+  },
+  "extraCovers": []
 }

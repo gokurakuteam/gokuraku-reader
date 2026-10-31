@@ -58,5 +58,9 @@
       ]
     }
   ],
-  "slug": "kon-kon-ton-ton"
+  "slug": "kon-kon-ton-ton",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/c2d0y2.webp"
+  },
+  "extraCovers": []
 }

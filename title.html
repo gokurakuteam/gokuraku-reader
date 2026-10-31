@@ -4,12 +4,19 @@
         <div class="title-cover">
             <img src="" alt="Обкладинка манги" fetchpriority="high">
         </div>
-        <div class="title-info">
+        <div class="title-info stagger-item stagger-delay-1">
             <h1></h1>
             <div class="title-meta-info"></div>
             <div class="genres"></div>
-            <p></p>
-            <div class="title-actions">
+            <div class="title-description-container">
+                <p class="title-description" style="display: none;"></p>
+                <div class="title-skeleton-description">
+                    <div class="skeleton-shimmer skeleton-line full"></div>
+                    <div class="skeleton-shimmer skeleton-line mid"></div>
+                    <div class="skeleton-shimmer skeleton-line short"></div>
+                </div>
+            </div>
+            <div class="title-actions stagger-item stagger-delay-2">
                 <a href="#" class="button read-button">Читати</a>
                 <button id="bookmark-btn" class="button">
                     <i data-lucide="bookmark" class="icon"></i>
@@ -19,7 +26,7 @@
         </div>
     </header>
 
-    <main class="title-content">
+    <main class="title-content stagger-item stagger-delay-3">
         <!-- СТВОРЮЄМО КОНТЕЙНЕР ДЛЯ ВКЛАДОК -->
         <div class="tabs">
             <button class="tab-link active" data-tab="chapters">Розділи</button>
@@ -44,8 +51,11 @@
                         </button>
                     </div>
                 </div>
-                <ul>
-                    <!-- Розділи будуть динамічно вставлені сюди -->
+                <ul class="chapter-items">
+                    <li class="chapter-skeleton-item skeleton-shimmer"></li>
+                    <li class="chapter-skeleton-item skeleton-shimmer"></li>
+                    <li class="chapter-skeleton-item skeleton-shimmer"></li>
+                    <li class="chapter-skeleton-item skeleton-shimmer"></li>
                 </ul>
             </section>
         </div>

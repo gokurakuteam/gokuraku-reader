@@ -267,5 +267,9 @@
       ]
     }
   ],
-  "slug": "molochnyi-chai"
+  "slug": "molochnyi-chai",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/f3n0mg.webp"
+  },
+  "extraCovers": []
 }

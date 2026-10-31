@@ -29,6 +29,7 @@
       "6": "https://files.catbox.moe/3r09ql.webp",
       "7": "https://files.catbox.moe/j0axla.webp"
     },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 1,
@@ -909,6 +910,7 @@
       "7": "https://files.catbox.moe/5a8x7m.webp",
       "8": "https://files.catbox.moe/rwhvf0.webp"
     },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 113,
@@ -1281,6 +1283,10 @@
     ],
     "latestUpdate": "2026-08-23T13:13:06.101219Z",
     "slug": "khlopets-u-meni",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/zpwhw3.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 210,
@@ -1595,6 +1601,11 @@
     ],
     "latestUpdate": "2026-10-22T19:38:59.310442Z",
     "slug": "forma-sympatii",
+    "volumeCovers": {
+      "2": "https://files.catbox.moe/u3qcxk.jpg",
+      "3": "https://files.catbox.moe/u3qcxk.jpg"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 205,
@@ -1905,6 +1916,10 @@
     ],
     "latestUpdate": "2025-11-12T19:08:48.344909Z",
     "slug": "solodke-sobache-zhyttia",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/335rgs.jpg"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 124,
@@ -1967,12 +1982,16 @@
     "backgroundImage": "https://files.catbox.moe/wcsx2d.webp",
     "pageUrl": "#title?id=mii-kit-trokhy-inshyi",
     "genres": [
-      "Побут",
+      "Буденність",
       "Тварини",
       "Комедія"
     ],
     "latestUpdate": "2025-11-12T18:58:46.800912Z",
     "slug": "mii-kit-trokhy-inshyi",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/ftcjz4.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 117,
@@ -2029,12 +2048,16 @@
     "pageUrl": "#title?id=hra-v-kokhannia",
     "genres": [
       "Школа",
-      "Дорослі відносини",
+      "Дорослі стосунки",
       "Комедія",
-      "Шьонен-Ай"
+      "Шьонен-ай"
     ],
     "latestUpdate": "2025-12-18T19:33:44.209053Z",
     "slug": "hra-v-kokhannia",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/umjngg.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 144,
@@ -2144,6 +2167,7 @@
       "7": "https://files.catbox.moe/c2447b.webp",
       "8": "https://files.catbox.moe/pve942.webp"
     },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 153,
@@ -2621,11 +2645,15 @@
     "genres": [
       "Яой",
       "Романтика",
-      "Епізод життя",
+      "Буденність",
       "Ваншот"
     ],
     "latestUpdate": "2025-11-13T19:19:07.054241Z",
     "slug": "istoriia-pro-te-iak-ia-osvidchyvsia-normalnomu-khloptsiu-i-otrymav-nespodivanu-vidpovid",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/gokisx.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 143,
@@ -2653,6 +2681,10 @@
     ],
     "latestUpdate": "2026-08-25T19:50:01.749547Z",
     "slug": "kon-kon-ton-ton",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/c2d0y2.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 697,
@@ -2675,13 +2707,17 @@
     "genres": [
       "Яой",
       "Еротика",
-      "Додзінші",
+      "Доджінші",
       "Романтика",
       "Драма",
       "Ваншот"
     ],
     "latestUpdate": "2026-08-25T19:53:58.841914Z",
     "slug": "mahichna-bytva-prysviachuietsia-tobi",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/0dokd8.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 698,
@@ -2710,6 +2746,10 @@
     ],
     "latestUpdate": "2026-08-25T19:46:39.680263Z",
     "slug": "toi-khto-podobaietsia",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/l3zu8b.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 695,
@@ -2745,6 +2785,10 @@
     ],
     "latestUpdate": "2025-11-13T20:18:43.975584Z",
     "slug": "mii-odnoklasnyk-ren-trokhy-strashnyi",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/vfytum.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 174,
@@ -2908,6 +2952,10 @@
     ],
     "latestUpdate": "2026-08-25T19:45:30.497090Z",
     "slug": "khaski-ta-ioho-vchytel-bilyi-kit",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/lzyeyc.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 686,
@@ -2994,6 +3042,10 @@
     ],
     "latestUpdate": "2026-08-18T19:34:45.097936Z",
     "slug": "lykhodii-khoche-zhyty",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/36d5ct.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 629,
@@ -3042,6 +3094,10 @@
     ],
     "latestUpdate": "2026-08-25T19:57:18.080536Z",
     "slug": "pislia-moho-vidkhodu-korol-ne-mih-znaity-v-sobi-syly-zhyty",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/ovt480.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 699,
@@ -3123,6 +3179,10 @@
     ],
     "latestUpdate": "2026-10-22T19:59:23.213120Z",
     "slug": "11-ta-shkilna-poizdka",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/oh8ix3.jpg"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 241,
@@ -3349,12 +3409,16 @@
       "Комедія",
       "Драма",
       "Романтика",
-      "Шкільне життя",
+      "Школа",
       "Шьонен-ай",
-      "Повсякденність"
+      "Буденність"
     ],
     "latestUpdate": "2026-08-19T20:54:51.967765Z",
     "slug": "shakh-i-mat-pidkory-moie-sertse",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/cy3r5y.jpg"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 151,
@@ -3732,6 +3796,10 @@
     ],
     "latestUpdate": "2025-12-28T17:30:30.484449Z",
     "slug": "molochnyi-chai",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/f3n0mg.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 202,
@@ -3803,6 +3871,10 @@
     ],
     "latestUpdate": "2025-11-13T20:03:26.024012Z",
     "slug": "oko-za-oko",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/u12y29.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 166,
@@ -3883,6 +3955,10 @@
     ],
     "latestUpdate": "2026-10-22T19:36:32.617681Z",
     "slug": "dusha-zahublena-gou",
+    "volumeCovers": {
+      "1": "https://i.ibb.co/MkNxQ6n6/1.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 207,
@@ -4010,6 +4086,11 @@
     ],
     "latestUpdate": "2026-10-30T18:27:36.598707Z",
     "slug": "ian-ilvu-ta-ia",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/0ex1tu.webp",
+      "2": "https://files.catbox.moe/0ex1tu.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 213,
@@ -4305,6 +4386,11 @@
     ],
     "latestUpdate": "2026-06-25T21:20:22.711675Z",
     "slug": "kryvavyi-misiats",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/g7fn6y.webp",
+      "2": "https://files.catbox.moe/g7fn6y.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 224,
@@ -4536,6 +4622,10 @@
     ],
     "latestUpdate": "2026-02-04T20:14:06.766639Z",
     "slug": "merekhtlyva-taiemnytsia-shepoche-tsiiei-nochi",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/1rbcgy.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 252,
@@ -4600,7 +4690,7 @@
     "genres": [
       "Драма",
       "Фентезі",
-      "Джосей",
+      "Джьосей",
       "Романтика",
       "Зміна статі",
       "Гендерна інтрига",
@@ -4612,7 +4702,7 @@
       "Дружба",
       "Кохання",
       "Магія",
-      "Перше кохання."
+      "Перше кохання"
     ],
     "latestUpdate": "2026-10-25T19:48:10.223797Z",
     "slug": "nevdalyi-pryklad-bezdohannoho-prokliattia",
@@ -4620,6 +4710,7 @@
       "1": "https://files.catbox.moe/6grg4y.webp",
       "2": "https://files.catbox.moe/kvwo6h.webp"
     },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 280,
@@ -4948,7 +5039,7 @@
     "backgroundImage": "https://files.catbox.moe/bda7sy.jpg",
     "pageUrl": "#title?id=dymova-zavisa",
     "genres": [
-      "Шьонен-Ай",
+      "Шьонен-ай",
       "Драма",
       "Школа",
       "Романтика",
@@ -4956,10 +5047,14 @@
       "Дружба",
       "Кохання",
       "Знущання",
-      "Перше кохання."
+      "Перше кохання"
     ],
     "latestUpdate": "2026-02-19T18:35:03.648178Z",
     "slug": "dymova-zavisa",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/qwd8m5.jpg"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 318,
@@ -5023,6 +5118,11 @@
     ],
     "latestUpdate": "2026-10-24T19:19:27.721205Z",
     "slug": "shakh-i-mat",
+    "volumeCovers": {
+      "1": "https://cdn.dgmanga.app/titles/6934df67f313014416371ba3/1765106931658-1e69466f89d39aaa-cover.webp",
+      "2": "https://cdn.dgmanga.app/titles/6934df67f313014416371ba3/1765106931658-1e69466f89d39aaa-cover.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 346,
@@ -5439,10 +5539,15 @@
       "Драма",
       "Спорт",
       "Яой",
-      "Шкільне життя"
+      "Школа"
     ],
     "latestUpdate": "2026-10-22T19:50:54.986409Z",
     "slug": "taktyka-podavacha",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/8izt1s.webp",
+      "2": "https://files.catbox.moe/8izt1s.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 360,
@@ -5715,6 +5820,10 @@
     ],
     "latestUpdate": "2026-09-14T20:07:12.500918Z",
     "slug": "nezvychnyi",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/sifmex.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 369,
@@ -5894,6 +6003,7 @@
       "2": "https://files.catbox.moe/cjofoh.webp",
       "2.5": "https://files.catbox.moe/lgvjoi.webp"
     },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 397,
@@ -6231,12 +6341,10 @@
     "pageUrl": "#title?id=hrabizhnyk-stavkovykh-ravlykiv",
     "genres": [
       "Буденність",
-      "Побут",
       "Комедія",
       "Романтика",
       "Яой",
-      "ГГ чоловік",
-      "Епізод життя"
+      "ГГ чоловік"
     ],
     "latestUpdate": "2026-10-20T19:26:21.362072Z",
     "volumeCovers": {
@@ -6251,6 +6359,7 @@
       "9": "https://files.catbox.moe/fe8vc6.webp",
       "10": "https://files.catbox.moe/jiztji.webp"
     },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 685,
@@ -6402,11 +6511,15 @@
       "ГГ чоловік",
       "Дружба",
       "Кохання",
-      "Перше кохання.",
+      "Перше кохання",
       "Ваншот",
       "Надприродне"
     ],
     "latestUpdate": "2026-09-24T16:16:52.041832Z",
+    "volumeCovers": {
+      "1": "https://files.catbox.moe/pj9t0z.webp"
+    },
+    "extraCovers": [],
     "chapters": [
       {
         "id": 774,

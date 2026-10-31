@@ -958,5 +958,9 @@
       ]
     }
   ],
-  "slug": "nezvychnyi"
+  "slug": "nezvychnyi",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/sifmex.webp"
+  },
+  "extraCovers": []
 }

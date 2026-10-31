@@ -169,7 +169,7 @@ export function getStatusClass(status) {
     }
 }
 
-export function setupTabs() {
+export function setupTabs(onTabChange) {
     const tabLinks = document.querySelectorAll('.tab-link');
     const tabContents = document.querySelectorAll('.tab-content');
 
@@ -180,6 +180,9 @@ export function setupTabs() {
             link.classList.add('active');
             tabContents.forEach(c => c.classList.remove('active'));
             document.getElementById(tab)?.classList.add('active');
+            if (typeof onTabChange === 'function') {
+                onTabChange(tab);
+            }
         });
     });
 }

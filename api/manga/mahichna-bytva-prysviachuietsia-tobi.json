@@ -10,7 +10,7 @@
   "genres": [
     "Яой",
     "Еротика",
-    "Додзінші",
+    "Доджінші",
     "Романтика",
     "Драма",
     "Ваншот"
@@ -70,5 +70,9 @@
       ]
     }
   ],
-  "slug": "mahichna-bytva-prysviachuietsia-tobi"
+  "slug": "mahichna-bytva-prysviachuietsia-tobi",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/0dokd8.webp"
+  },
+  "extraCovers": []
 }

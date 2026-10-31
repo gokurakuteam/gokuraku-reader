@@ -281,12 +281,12 @@ export function saveReaderSettings(settings) {
 // --- Selected Cover ---
 export function getSelectedCover(mangaId) {
     const data = localStorage.getItem(SELECTED_COVER_KEY);
-    if (!data) return null;
+    if (!data) return 'auto';
     try {
         const parsed = JSON.parse(data);
-        return parsed[mangaId] || null;
+        return parsed[mangaId] || 'auto';
     } catch (e) {
-        return null;
+        return 'auto';
     }
 }
 
@@ -300,4 +300,75 @@ export function saveSelectedCover(mangaId, coverUrl) {
     }
     parsed[mangaId] = coverUrl;
     localStorage.setItem(SELECTED_COVER_KEY, JSON.stringify(parsed));
+}
+
+export function getAutoCover(manga) {
+    if (!manga) return '';
+    const fullManga = getMangaById(manga.id) || manga;
+    const chapters = fullManga.chapters || manga.chapters || [];
+    const volumeCovers = fullManga.volumeCovers || manga.volumeCovers || {};
+    const extraCovers = fullManga.extraCovers || manga.extraCovers || [];
+
+    let targetVol = null;
+    const history = getHistory();
+    const mangaHistory = history.filter(item => String(item.mangaId) === String(manga.id) || (manga.slug && item.mangaId === manga.slug));
+
+    if (mangaHistory.length > 0 && chapters.length > 0) {
+        let maxReadVol = -1;
+        for (const h of mangaHistory) {
+            const ch = chapters.find(c => String(c.id) === String(h.chapterId) || String(c.chapter) === String(h.chapterId));
+            if (ch && ch.volume !== undefined && ch.volume !== null) {
+                const v = parseFloat(ch.volume);
+                if (!isNaN(v) && v > maxReadVol) {
+                    maxReadVol = v;
+                }
+            }
+        }
+        if (maxReadVol > 0) {
+            targetVol = maxReadVol;
+        }
+    }
+
+    if (targetVol === null && chapters.length > 0) {
+        let minVol = Infinity;
+        for (const ch of chapters) {
+            if (ch.volume !== undefined && ch.volume !== null) {
+                const v = parseFloat(ch.volume);
+                if (!isNaN(v) && v > 0 && v < minVol) {
+                    minVol = v;
+                }
+            }
+        }
+        if (minVol !== Infinity) {
+            targetVol = minVol;
+        }
+    }
+
+    if (volumeCovers) {
+        if (targetVol !== null && volumeCovers[String(targetVol)]) {
+            return volumeCovers[String(targetVol)];
+        }
+        if (volumeCovers['1']) {
+            return volumeCovers['1'];
+        }
+        const volKeys = Object.keys(volumeCovers).sort((a, b) => parseFloat(a) - parseFloat(b));
+        if (volKeys.length > 0 && volumeCovers[volKeys[0]]) {
+            return volumeCovers[volKeys[0]];
+        }
+    }
+
+    if (extraCovers && extraCovers.length > 0) {
+        return extraCovers[0];
+    }
+
+    return manga.coverImage || '';
+}
+
+export function getEffectiveCover(manga) {
+    if (!manga) return '';
+    const selected = getSelectedCover(manga.id);
+    if (selected && selected !== 'auto') {
+        return selected;
+    }
+    return getAutoCover(manga);
 }

@@ -8,7 +8,7 @@
   "backgroundImage": "https://files.catbox.moe/wcsx2d.webp",
   "pageUrl": "#title?id=mii-kit-trokhy-inshyi",
   "genres": [
-    "Побут",
+    "Буденність",
     "Тварини",
     "Комедія"
   ],
@@ -81,5 +81,9 @@
       ]
     }
   ],
-  "slug": "mii-kit-trokhy-inshyi"
+  "slug": "mii-kit-trokhy-inshyi",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/ftcjz4.webp"
+  },
+  "extraCovers": []
 }

@@ -9,9 +9,9 @@
   "pageUrl": "#title?id=hra-v-kokhannia",
   "genres": [
     "Школа",
-    "Дорослі відносини",
+    "Дорослі стосунки",
     "Комедія",
-    "Шьонен-Ай"
+    "Шьонен-ай"
   ],
   "latestUpdate": "2025-12-18T19:33:44.209053Z",
   "chapters": [
@@ -306,5 +306,9 @@
       ]
     }
   ],
-  "slug": "hra-v-kokhannia"
+  "slug": "hra-v-kokhannia",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/umjngg.webp"
+  },
+  "extraCovers": []
 }

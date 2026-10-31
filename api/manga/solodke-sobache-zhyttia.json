@@ -253,5 +253,9 @@
       ]
     }
   ],
-  "slug": "solodke-sobache-zhyttia"
+  "slug": "solodke-sobache-zhyttia",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/335rgs.jpg"
+  },
+  "extraCovers": []
 }

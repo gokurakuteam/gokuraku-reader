@@ -44,5 +44,9 @@
       ]
     }
   ],
-  "slug": "toi-khto-podobaietsia"
+  "slug": "toi-khto-podobaietsia",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/l3zu8b.webp"
+  },
+  "extraCovers": []
 }
