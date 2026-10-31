@@ -535,3 +535,83 @@ html[data-theme="light"] .shop-btn.active {
     background-color: var(--accent-color); 
     color: var(--background-dark); 
 }
+
+/* === CABINET TOOLS BANNER === */
+.cabinet-tools-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 1.25rem 1.5rem;
+    margin: 1.5rem auto;
+    max-width: 650px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s cubic-bezier(0.2, 0, 0, 1);
+}
+
+.cabinet-tools-card:hover {
+    border-color: var(--accent-color);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2), 0 0 15px var(--glow-color);
+    transform: translateY(-2px);
+}
+
+.cabinet-tools-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cabinet-tools-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    background-color: var(--glow-color);
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.cabinet-tools-icon svg, .cabinet-tools-icon i {
+    width: 24px;
+    height: 24px;
+}
+
+.cabinet-tools-info h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+.cabinet-tools-info p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--secondary-text);
+    line-height: 1.4;
+}
+
+.cabinet-tools-btn {
+    flex-shrink: 0;
+    padding: 0.6rem 1.25rem;
+    font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+    .cabinet-tools-card {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+    .cabinet-tools-left {
+        flex-direction: column;
+        text-align: center;
+    }
+    .cabinet-tools-btn {
+        width: 100%;
+    }
+}

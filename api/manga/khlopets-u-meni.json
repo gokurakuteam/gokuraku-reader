@@ -3258,5 +3258,9 @@
       ]
     }
   ],
-  "slug": "khlopets-u-meni"
+  "slug": "khlopets-u-meni",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/zpwhw3.webp"
+  },
+  "extraCovers": []
 }

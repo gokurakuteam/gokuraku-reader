@@ -411,5 +411,9 @@
       ]
     }
   ],
-  "slug": "dusha-zahublena-gou"
+  "slug": "dusha-zahublena-gou",
+  "volumeCovers": {
+    "1": "https://i.ibb.co/MkNxQ6n6/1.webp"
+  },
+  "extraCovers": []
 }

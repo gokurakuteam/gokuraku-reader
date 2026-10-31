@@ -1,6 +1,6 @@
 // Версія кешу. Змінюйте це значення (наприклад, 'gokuraku-cache-v2'),
 // коли ви оновлюєте основні файли (css, js, html), щоб примусово оновити кеш.
-const CACHE_NAME = 'gokuraku-cache-v3';
+const CACHE_NAME = 'gokuraku-cache-v5';
 
 // Список статичних файлів для початкового кешування
 const STATIC_ASSETS = [
@@ -25,6 +25,7 @@ const STATIC_ASSETS = [
 
 // Встановлення Service Worker
 self.addEventListener('install', event => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => {
@@ -32,7 +33,7 @@ self.addEventListener('install', event => {
         // Кешуємо статичні файли
         cache.addAll(STATIC_ASSETS);
         // Додатково кешуємо файли з даними, щоб вони були доступні офлайн при першому завантаженні
-        return cache.addAll(['/site-data.json', '/api/manga-list.json']);
+        return cache.addAll(['/site-data.json', '/api/manga-list.json']).catch(err => console.log('Не вдалося закешувати дані при install:', err));
       })
   );
 });
@@ -40,16 +41,19 @@ self.addEventListener('install', event => {
 // Активація Service Worker та очищення старого кешу
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys().then(cacheNames => {
-      return Promise.all(
-        cacheNames.map(cacheName => {
-          if (cacheName !== CACHE_NAME) {
-            console.log('Видалення старого кешу:', cacheName);
-            return caches.delete(cacheName);
-          }
-        })
-      );
-    })
+    Promise.all([
+      self.clients.claim(),
+      caches.keys().then(cacheNames => {
+        return Promise.all(
+          cacheNames.map(cacheName => {
+            if (cacheName !== CACHE_NAME) {
+              console.log('Видалення старого кешу:', cacheName);
+              return caches.delete(cacheName);
+            }
+          })
+        );
+      })
+    ])
   );
 });
 
@@ -57,25 +61,29 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
 
-  // --- СТРАТЕГІЯ ДЛЯ ФАЙЛІВ З ДАНИМИ (Stale-While-Revalidate) ---
+  // Не перехоплюємо сторонні домени (Giscus, GitHub, Catbox тощо), крім тих, що явно є в STATIC_ASSETS (наприклад шрифти)
+  if (url.origin !== self.location.origin && !STATIC_ASSETS.includes(event.request.url)) {
+    return; // Дозволяємо браузеру робити нативні запити напряму без навантаження на Service Worker
+  }
+
+  // --- СТРАТЕГІЯ ДЛЯ ФАЙЛІВ З ДАНИМИ (Network First) ---
   // Якщо запит іде до api/ (нові дані) або site-data.json
-  if (url.pathname.startsWith('/api/') || url.pathname === '/site-data.json') {
+  if (url.pathname.includes('/api/') || url.pathname.endsWith('/site-data.json')) {
     event.respondWith(
-      caches.match(event.request).then(cachedResponse => {
-        // Незалежно від того, чи є кеш, робимо запит для його оновлення у фоні
-        const fetchPromise = fetch(event.request).then(networkResponse => {
-          caches.open(CACHE_NAME).then(cache => {
-            console.log(`Оновлюю кеш у фоні для: ${url.pathname}`);
-            cache.put(event.request, networkResponse.clone());
-          });
+      fetch(event.request)
+        .then(networkResponse => {
+          if (networkResponse && networkResponse.status === 200) {
+            const responseClone = networkResponse.clone();
+            caches.open(CACHE_NAME).then(cache => {
+              cache.put(event.request, responseClone);
+            });
+          }
           return networkResponse;
-        }).catch(() => {
-          console.log(`Немає інтернету для фонового оновлення: ${url.pathname}`);
-        });
-        
-        // Повертаємо кеш одразу, якщо він є. Якщо ні - чекаємо на відповідь мережі
-        return cachedResponse || fetchPromise;
-      })
+        })
+        .catch(() => {
+          // Якщо немає інтернету, повертаємо закешовану версію
+          return caches.match(event.request);
+        })
     );
     return; // Важливо завершити виконання тут
   }

@@ -10,7 +10,7 @@
   "genres": [
     "Яой",
     "Романтика",
-    "Епізод життя",
+    "Буденність",
     "Ваншот"
   ],
   "latestUpdate": "2025-11-13T19:19:07.054241Z",
@@ -48,5 +48,9 @@
       ]
     }
   ],
-  "slug": "istoriia-pro-te-iak-ia-osvidchyvsia-normalnomu-khloptsiu-i-otrymav-nespodivanu-vidpovid"
+  "slug": "istoriia-pro-te-iak-ia-osvidchyvsia-normalnomu-khloptsiu-i-otrymav-nespodivanu-vidpovid",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/gokisx.webp"
+  },
+  "extraCovers": []
 }

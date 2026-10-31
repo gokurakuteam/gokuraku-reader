@@ -1426,5 +1426,10 @@
       ]
     }
   ],
-  "slug": "forma-sympatii"
+  "slug": "forma-sympatii",
+  "volumeCovers": {
+    "2": "https://files.catbox.moe/u3qcxk.jpg",
+    "3": "https://files.catbox.moe/u3qcxk.jpg"
+  },
+  "extraCovers": []
 }

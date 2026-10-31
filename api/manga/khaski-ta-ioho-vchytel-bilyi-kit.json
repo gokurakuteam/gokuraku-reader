@@ -166,5 +166,9 @@
       ]
     }
   ],
-  "slug": "khaski-ta-ioho-vchytel-bilyi-kit"
+  "slug": "khaski-ta-ioho-vchytel-bilyi-kit",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/lzyeyc.webp"
+  },
+  "extraCovers": []
 }

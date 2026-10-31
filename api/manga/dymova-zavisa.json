@@ -8,7 +8,7 @@
   "backgroundImage": "https://files.catbox.moe/bda7sy.jpg",
   "pageUrl": "#title?id=dymova-zavisa",
   "genres": [
-    "Шьонен-Ай",
+    "Шьонен-ай",
     "Драма",
     "Школа",
     "Романтика",
@@ -16,7 +16,7 @@
     "Дружба",
     "Кохання",
     "Знущання",
-    "Перше кохання."
+    "Перше кохання"
   ],
   "latestUpdate": "2026-02-19T18:35:03.648178Z",
   "chapters": [
@@ -265,5 +265,9 @@
       ]
     }
   ],
-  "slug": "dymova-zavisa"
+  "slug": "dymova-zavisa",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/qwd8m5.jpg"
+  },
+  "extraCovers": []
 }

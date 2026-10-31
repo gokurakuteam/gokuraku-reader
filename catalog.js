@@ -1,5 +1,5 @@
 import { MangaCard } from './js/components.js';
-import { getSelectedCover } from './storage-manager.js';
+import { getEffectiveCover } from './storage-manager.js';
 
 export function initCatalog(mangaData, initialGenres = []) {
     // DOM Elements
@@ -146,7 +146,7 @@ export function initCatalog(mangaData, initialGenres = []) {
         filteredManga.forEach((manga, index) => {
             const card = document.createElement('manga-card');
             card.setAttribute('name', manga.title);
-            card.setAttribute('image', getSelectedCover(manga.id) || manga.coverImage);
+            card.setAttribute('image', getEffectiveCover(manga));
             card.setAttribute('url', manga.pageUrl);
             card.setAttribute('type', manga.type);
             if (manga.chapters && manga.chapters.length > 0) {
@@ -155,9 +155,11 @@ export function initCatalog(mangaData, initialGenres = []) {
             }
             card.setAttribute('status', manga.status);
             
-            // Add pop animation (no fade-in cover)
-            card.classList.add('manga-card-animate');
-            card.style.animationDelay = `${index * 0.03}s`;
+            // Add pop animation for initial visible cards
+            if (index < 8) {
+                card.classList.add('manga-card-animate');
+                card.style.animationDelay = `${index * 0.02}s`;
+            }
             
             mangaGrid.appendChild(card);
         });

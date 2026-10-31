@@ -10,12 +10,10 @@
   "pageUrl": "#title?id=hrabizhnyk-stavkovykh-ravlykiv",
   "genres": [
     "Буденність",
-    "Побут",
     "Комедія",
     "Романтика",
     "Яой",
-    "ГГ чоловік",
-    "Епізод життя"
+    "ГГ чоловік"
   ],
   "latestUpdate": "2026-10-20T19:26:21.362072Z",
   "chapters": [
@@ -769,5 +767,6 @@
     "8": "https://files.catbox.moe/84mp8i.webp",
     "9": "https://files.catbox.moe/fe8vc6.webp",
     "10": "https://files.catbox.moe/jiztji.webp"
-  }
+  },
+  "extraCovers": []
 }

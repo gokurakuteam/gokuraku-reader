@@ -11,9 +11,9 @@
     "Комедія",
     "Драма",
     "Романтика",
-    "Шкільне життя",
+    "Школа",
     "Шьонен-ай",
-    "Повсякденність"
+    "Буденність"
   ],
   "latestUpdate": "2026-08-19T20:54:51.967765Z",
   "chapters": [
@@ -1807,5 +1807,9 @@
       ]
     }
   ],
-  "slug": "shakh-i-mat-pidkory-moie-sertse"
+  "slug": "shakh-i-mat-pidkory-moie-sertse",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/cy3r5y.jpg"
+  },
+  "extraCovers": []
 }

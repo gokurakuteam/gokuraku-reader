@@ -564,5 +564,9 @@
       ]
     }
   ],
-  "slug": "oko-za-oko"
+  "slug": "oko-za-oko",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/u12y29.webp"
+  },
+  "extraCovers": []
 }

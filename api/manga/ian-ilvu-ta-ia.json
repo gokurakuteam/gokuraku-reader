@@ -2208,5 +2208,10 @@
       ]
     }
   ],
-  "slug": "ian-ilvu-ta-ia"
+  "slug": "ian-ilvu-ta-ia",
+  "volumeCovers": {
+    "1": "https://files.catbox.moe/0ex1tu.webp",
+    "2": "https://files.catbox.moe/0ex1tu.webp"
+  },
+  "extraCovers": []
 }

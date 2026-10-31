@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інструменти — Gokuraku</title>
+    <link rel="icon" type="image/x-icon" href="/icons/icon-256.ico">
+
+    <!-- Preconnect & Google Fonts (Montserrat) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Gokuraku Master Stylesheets & Tools Styles -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/tools.css">
+
+    <!-- External Utilities -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Modular Scripts -->
+    <script type="module" src="js/tools-common.js"></script>
+    <script type="module" src="js/slicer.js"></script>
+    <script type="module" src="js/compressor.js"></script>
+</head>
+<body>
+
+    <!-- === FLOATING PILL TOP BAR === -->
+    <div class="tools-header-wrapper">
+        <header class="tools-header">
+            <!-- Back Button -->
+            <a href="index.html" class="tools-back-btn" title="Повернутися на сайт">
+                <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i>
+                <span>Повернутися</span>
+            </a>
+
+            <!-- Tool Tabs -->
+            <div class="tools-tabs" role="tablist">
+                <button type="button" class="tool-tab active" data-tab="slicer" role="tab" aria-selected="true">
+                    <i data-lucide="scissors"></i>
+                    <span>Склеювач</span>
+                </button>
+                <button type="button" class="tool-tab" data-tab="compressor" role="tab" aria-selected="false">
+                    <i data-lucide="minimize-2"></i>
+                    <span>Стискач</span>
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <!-- === MAIN TOOLS CONTAINER === -->
+    <main class="tools-container">
+        <!-- Active Tool Title Banner -->
+        <div class="tool-title-banner">
+            <span class="tool-title-badge" id="tool-active-title">Склеювач</span>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- TOOL 1: СКЛЕЮВАЧ ТА НАРІЗУВАЧ (view-slicer)                     -->
+        <!-- ============================================================== -->
+        <div id="view-slicer" class="tools-view active">
+            <div class="slicer-grid">
+                <!-- Slicer Settings Sidebar -->
+                <aside class="slicer-card">
+                    <div class="slicer-card-header">
+                        <h2 class="slicer-card-title">
+                            <i data-lucide="scissors"></i>
+                            Параметри нарізки
+                        </h2>
+                    </div>
+
+                    <div>
+                        <!-- Target Height -->
+                        <div class="form-group">
+                            <label class="form-label" for="slicer-opt-height">
+                                <span>Висота сторінки (px)</span>
+                                <span class="form-hint">Цільова</span>
+                            </label>
+                            <input type="number" id="slicer-opt-height" value="6000" min="500" step="100" class="slicer-input">
+                        </div>
+
+                        <!-- Naming Mode -->
+                        <div class="form-group">
+                            <label class="form-label" for="slicer-opt-name-mode">Метод назв файлів</label>
+                            <select id="slicer-opt-name-mode" class="slicer-select">
+                                <option value="1">Лічильник (01, 02...)</option>
+                                <option value="2">Мапінг джерел (01-03...)</option>
+                            </select>
+                        </div>
+
+                        <!-- Smart Cut Mode Toggle -->
+                        <div class="form-group">
+                            <label class="form-label" for="slicer-opt-smart-mode">Режим Smart Cut</label>
+                            <select id="slicer-opt-smart-mode" class="slicer-select">
+                                <option value="true">Увімкнено (автопошук)</option>
+                                <option value="false">Вимкнено (фіксовано)</option>
+                            </select>
+                        </div>
+
+                        <!-- Smart Method Algorithm (Default: Solid Line) -->
+                        <div class="form-group" id="slicer-smart-method-container">
+                            <label class="form-label" for="slicer-opt-smart-method">Алгоритм пошуку</label>
+                            <select id="slicer-opt-smart-method" class="slicer-select">
+                                <option value="1" selected>Solid Line (Чисті лінії)</option>
+                                <option value="3">Hybrid (Пустоти + Текст)</option>
+                            </select>
+                        </div>
+
+                        <!-- Tolerances -->
+                        <div class="form-group">
+                            <div class="form-row-2">
+                                <div>
+                                    <label class="form-label" for="slicer-opt-tol-min" title="На скільки пікселів можна скоротити">Мін. (-px)</label>
+                                    <input type="number" id="slicer-opt-tol-min" value="3000" min="0" step="100" class="slicer-input">
+                                </div>
+                                <div>
+                                    <label class="form-label" for="slicer-opt-tol-max" title="На скільки пікселів можна збільшити">Макс. (+px)</label>
+                                    <input type="number" id="slicer-opt-tol-max" value="100" min="0" step="50" class="slicer-input">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Format & Quality -->
+                        <div class="form-group">
+                            <div class="form-row-2">
+                                <div>
+                                    <label class="form-label" for="slicer-opt-format">Формат</label>
+                                    <select id="slicer-opt-format" class="slicer-select">
+                                        <option value="webp" selected>WebP</option>
+                                        <option value="jpeg">JPG</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="form-label" for="slicer-opt-quality">Якість (%)</label>
+                                    <input type="number" id="slicer-opt-quality" value="100" min="1" max="100" class="slicer-input">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Start Button -->
+                        <button id="slicer-btn-start" type="button" class="button button-primary btn-full" disabled>
+                            <i data-lucide="play" style="fill: currentColor; width: 18px; height: 18px;"></i>
+                            <span>Почати нарізку</span>
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- Slicer Workspace Card -->
+                <section class="slicer-card slicer-workspace">
+                    <!-- Dropzone View -->
+                    <div id="slicer-view-input" class="w-full flex-1 flex flex-col justify-center">
+                        <div id="slicer-dropzone" class="dropzone-box">
+                            <input type="file" id="slicer-file-input" multiple accept="image/jpeg, image/png, image/webp, image/bmp, application/zip, .zip" style="display: none;">
+                            <div class="dropzone-halo">
+                                <i data-lucide="upload-cloud"></i>
+                            </div>
+                            <h3 class="dropzone-title">Перетягніть файли або ZIP-архів сюди</h3>
+                            <p class="dropzone-desc">або натисніть для вибору файлів на пристрої</p>
+                            <div class="dropzone-chips">
+                                <span class="format-chip">JPG</span>
+                                <span class="format-chip">PNG</span>
+                                <span class="format-chip">WEBP</span>
+                                <span class="format-chip">BMP</span>
+                                <span class="format-chip chip-zip">ZIP (авторозпакування)</span>
+                            </div>
+                        </div>
+
+                        <!-- File List Preview -->
+                        <div id="slicer-file-list-container" class="file-list-card hide">
+                            <div class="file-list-header">
+                                <span class="file-count-badge" id="slicer-file-count">
+                                    <i data-lucide="layers"></i>
+                                    0 файлів обрано
+                                </span>
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <span id="slicer-file-total-size" class="file-size-badge" style="font-weight: 700; color: var(--accent-color);"></span>
+                                    <button type="button" id="slicer-btn-clear" class="clear-btn">
+                                        <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                                        Очистити
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="slicer-file-list" class="file-list-scroll"></div>
+                        </div>
+                    </div>
+
+                    <!-- Processing Overlay -->
+                    <div id="slicer-processing-overlay" class="processing-overlay hide" style="opacity: 0;">
+                        <div class="goku-loader"></div>
+                        <h2 class="progress-title" id="slicer-progress-title">Обробка...</h2>
+                        <p class="progress-text" id="slicer-progress-text">Підготовка файлів</p>
+                        <div class="progress-track">
+                            <div id="slicer-progress-bar" class="progress-fill"></div>
+                        </div>
+                    </div>
+
+                    <!-- Results View -->
+                    <div id="slicer-view-results" class="flex-1 flex flex-col hide">
+                        <div class="results-header">
+                            <div class="results-info">
+                                <h2>РЕЗУЛЬТАТИ</h2>
+                                <p class="results-stats" id="slicer-result-stats">Згенеровано 0 файлів</p>
+                            </div>
+                            <div class="results-actions">
+                                <button type="button" id="slicer-btn-reset" class="button">
+                                    <i data-lucide="rotate-ccw" style="width: 16px; height: 16px; margin-right: 6px;"></i>
+                                    Новий проєкт
+                                </button>
+                                <button type="button" id="slicer-btn-download-all" class="button button-primary">
+                                    <i data-lucide="download" style="width: 16px; height: 16px; margin-right: 6px;"></i>
+                                    Завантажити архів
+                                </button>
+                            </div>
+                        </div>
+                        <div id="slicer-result-grid" class="results-grid"></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- TOOL 2: СТИСКАЧ СКАНІВ (view-compressor)                        -->
+        <!-- ============================================================== -->
+        <div id="view-compressor" class="tools-view">
+            <div class="slicer-grid">
+                <!-- Compressor Settings Sidebar (Clean & Laptop-Scalable) -->
+                <aside class="slicer-card">
+                    <div class="slicer-card-header">
+                        <h2 class="slicer-card-title">
+                            <i data-lucide="minimize-2"></i>
+                            Параметри стиснення
+                        </h2>
+                    </div>
+
+                    <div>
+                        <!-- Target Format -->
+                        <div class="form-group">
+                            <label class="form-label" for="comp-opt-format">Формат файлів</label>
+                            <select id="comp-opt-format" class="slicer-select">
+                                <option value="webp" selected>WebP (Рекомендовано)</option>
+                                <option value="avif">AVIF (Максимальне стиснення)</option>
+                                <option value="jpeg">JPG / JPEG (Сумісність)</option>
+                            </select>
+                        </div>
+
+                        <!-- Quality Slider -->
+                        <div class="form-group">
+                            <label class="form-label" for="comp-opt-quality">
+                                <span>Якість зображення</span>
+                                <span class="form-hint" id="comp-quality-val" style="color: var(--accent-color); font-weight: 700;">80%</span>
+                            </label>
+                            <input type="range" id="comp-opt-quality" min="10" max="100" value="80" step="5" style="width: 100%; accent-color: var(--accent-color); cursor: pointer;">
+                        </div>
+
+                        <!-- Smart Resize / Max Width -->
+                        <div class="form-group">
+                            <label class="form-label" for="comp-opt-max-width">
+                                <span>Ширина сторінки</span>
+                                <span class="form-hint">Пропорційно</span>
+                            </label>
+                            <select id="comp-opt-max-width" class="slicer-select">
+                                <option value="0" selected>Оригінальна (без змін)</option>
+                                <option value="1600">1600px (Висока якість)</option>
+                                <option value="1400">1400px (Оптимально)</option>
+                                <option value="1200">1200px (Для смартфонів)</option>
+                                <option value="1000">1000px (Економія пам'яті)</option>
+                                <option value="800">800px (Компактно)</option>
+                            </select>
+                        </div>
+
+                        <!-- Start Button -->
+                        <button id="comp-btn-start" type="button" class="button button-primary btn-full" disabled>
+                            <i data-lucide="minimize-2" style="width: 18px; height: 18px;"></i>
+                            <span>Почати стиснення</span>
+                        </button>
+                    </div>
+                </aside>
+
+                <!-- Compressor Workspace Card -->
+                <section class="slicer-card slicer-workspace">
+                    <!-- Dropzone View -->
+                    <div id="comp-view-input" class="w-full flex-1 flex flex-col justify-center">
+                        <div id="comp-dropzone" class="dropzone-box">
+                            <input type="file" id="comp-file-input" multiple accept="image/jpeg, image/png, image/webp, image/bmp, image/avif, application/zip, .zip" style="display: none;">
+                            <div class="dropzone-halo">
+                                <i data-lucide="file-archive"></i>
+                            </div>
+                            <h3 class="dropzone-title">Перетягніть скани або ZIP-архів сюди</h3>
+                            <p class="dropzone-desc">Швидка оптимізація та зменшення розміру файлів без видимих втрат якості</p>
+                            <div class="dropzone-chips">
+                                <span class="format-chip">JPG</span>
+                                <span class="format-chip">PNG</span>
+                                <span class="format-chip">WEBP</span>
+                                <span class="format-chip">AVIF</span>
+                                <span class="format-chip chip-zip">ZIP (авторозпакування)</span>
+                            </div>
+                        </div>
+
+                        <!-- File List Preview -->
+                        <div id="comp-file-list-container" class="file-list-card hide">
+                            <div class="file-list-header">
+                                <span class="file-count-badge" id="comp-file-count">
+                                    <i data-lucide="layers"></i>
+                                    0 файлів обрано
+                                </span>
+                                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                                    <span id="comp-file-total-size" class="file-size-badge" style="font-weight: 700; color: var(--accent-color);"></span>
+                                    <button type="button" id="comp-btn-clear" class="clear-btn">
+                                        <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i>
+                                        Очистити
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="comp-file-list" class="file-list-scroll"></div>
+                        </div>
+                    </div>
+
+                    <!-- Processing Overlay -->
+                    <div id="comp-processing-overlay" class="processing-overlay hide" style="opacity: 0;">
+                        <div class="goku-loader"></div>
+                        <h2 class="progress-title" id="comp-progress-title">Стиснення...</h2>
+                        <p class="progress-text" id="comp-progress-text">Підготовка файлів</p>
+                        <div class="progress-track">
+                            <div id="comp-progress-bar" class="progress-fill"></div>
+                        </div>
+                    </div>
+
+                    <!-- Results View -->
+                    <div id="comp-view-results" class="flex-1 flex flex-col hide">
+                        <div class="results-header">
+                            <div class="results-info">
+                                <h2>РЕЗУЛЬТАТИ СТИСНЕННЯ</h2>
+                                <p class="results-stats" id="comp-result-stats">Стиснуто 0 файлів</p>
+                            </div>
+                            <div class="results-actions">
+                                <button type="button" id="comp-btn-reset" class="button">
+                                    <i data-lucide="rotate-ccw" style="width: 16px; height: 16px; margin-right: 6px;"></i>
+                                    Новий проєкт
+                                </button>
+                                <button type="button" id="comp-btn-download-all" class="button button-primary">
+                                    <i data-lucide="download" style="width: 16px; height: 16px; margin-right: 6px;"></i>
+                                    Завантажити архів
+                                </button>
+                            </div>
+                        </div>
+                        <div id="comp-result-grid" class="results-grid"></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+
+        <!-- ============================================================== -->
+        <!-- BOTTOM SECTION: РОЗДІЛЕНІ ПОЯСНЕННЯ ДЛЯ ОБРАНОГО ІНСТРУМЕНТУ   -->
+        <!-- ============================================================== -->
+        <section class="tools-info-section">
+            <div class="tools-info-header">
+                <h2>Як працює інструмент</h2>
+                <p>Уся обробка здійснюється локально за допомогою Canvas — ваші файли нікуди не надсилаються і залишаються на пристрої.</p>
+            </div>
+
+            <div class="info-card-container">
+                <!-- Slicer Info Card (Active for Slicer) -->
+                <div id="info-card-slicer" class="info-card active">
+                    <div class="info-card-header">
+                        <i data-lucide="scissors"></i>
+                        <h3 class="info-card-title">Склеювач та нарізувач манґи</h3>
+                    </div>
+                    <ul class="info-feature-list">
+                        <li class="info-feature-item">
+                            <span class="info-bullet"></span>
+                            <div>
+                                <strong>Безшовне склеювання полотна</strong>
+                                Об'єднує розрізнені вертикальні фрагменти в єдине безперервне полотно та розрізає його на охайні сторінки обраної висоти (за замовчуванням 6000px).
+                            </div>
+                        </li>
+                        <li class="info-feature-item">
+                            <span class="info-bullet"></span>
+                            <div>
+                                <strong>Алгоритм Solid Line (За замовчуванням)</strong>
+                                Сканує рядки пікселів і знаходить 100% чисті горизонтальні фонові лінії між кадрами. Це гарантує ідеальний зріз між фреймами без пошкодження малюнків.
+                            </div>
+                        </li>
+                        <li class="info-feature-item">
+                            <span class="info-bullet"></span>
+                            <div>
+                                <strong>Алгоритм Hybrid (Складний фон)</strong>
+                                Аналізує варіацію кольору та щільність країв (контурів). Незамінний для вебтунів із градієнтним фоном або спецефектами між кадрами — розріз огинає текст і бабли.
+                            </div>
+                        </li>
+                        <li class="info-feature-item">
+                            <span class="info-bullet"></span>
+                            <div>
+                                <strong>Допуски відхилення (Мінімум / Максимум)</strong>
+                                Дозволяють алгоритму гнучко зміщувати точку розрізу (наприклад, до -3000px вгору чи +100px вниз), якщо на точній відмітці знаходиться кадр або бабл.
+                            </div>
+                        </li>
+                        <li class="info-feature-item">
+                            <span class="info-bullet"></span>
+                            <div>
+                                <strong>Формати WebP та JPG</strong>
+                                Рекомендується WebP — він забезпечує зменшення обсягу файлів на 30–50% за збереження ідеальної різкості кириличних шрифтів та тонких ліній малюнка.
+                            </div>
+                        </li>
+                        <li class="info-feature-item">
+                            <span class="info-bullet"></span>
+                            <div>
+                                <strong>Природна нумерація та ZIP</strong>
+                                Автоматично підтримує природне сортування файлів (01, 02... або мапінг джерел 01-03) і створює готовий чистий ZIP-архів в один клік.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Compressor Info Card (Active for Compressor) -->
+                <div id="info-card-compressor" class="info-card">
+                    <div class="info-card-header">
+                        <i data-lucide="minimize-2"></i>
+                        <h3 class="info-card-title">Стискач сканів</h3>
+                    </div>
+                    <ul class="info-feature-list">
+                        <li class="info-feature-item">
+                            <span class="info-bullet"></span>
+                            <div>
+                                <strong>Навіщо стискати скани?</strong>
+                                Оригінальні скани часто займають по 50–150 МБ на розділ. Оптимізація зменшує розмір до 10–25 МБ, прискорюючи завантаження у читалці у 3–5 разів та заощаджуючи пам'ять.
+                            </div>
+                        </li>
+                        <li class="info-feature-item">
+                            <span class="info-bullet"></span>
+                            <div>
+                                <strong>Формат AVIF (Надпотужне стиснення)</strong>
+                                Найсучасніший кодек на базі AV1. Забезпечує на 20–40% менший розмір, ніж WebP, за ідентичної візуальної якості. Браузер автоматично перевіряє його підтримку.
+                            </div>
+                        </li>
+                        <li class="info-feature-item">
+                            <span class="info-bullet"></span>
+                            <div>
+                                <strong>Формат WebP (Золотий стандарт)</strong>
+                                Універсальний вибір — підтримується всіма мобільними пристроями, операційними системами та сучасними сайтами для читання без будь-яких проблем із сумісністю.
+                            </div>
+                        </li>
+                        <li class="info-feature-item">
+                            <span class="info-bullet"></span>
+                            <div>
+                                <strong>Розумне масштабування ширини</strong>
+                                Скани з роздільністю 2500–3000px мають надлишкову вагу. Зменшення ширини до 1400–1600px пропорційно заощаджує до 70–80% пам'яті без видимої різниці на Retina-екранах.
+                            </div>
+                        </li>
+                        <li class="info-feature-item">
+                            <span class="info-bullet"></span>
+                            <div>
+                                <strong>Високоякісний ресемплінг</strong>
+                                Використовує апаратне згладжування Canvas високого рівня (bicubic smoothing), що зберігає контраст тексту та чіткість дрібного штрихування (скрінтонів).
+                            </div>
+                        </li>
+                        <li class="info-feature-item">
+                            <span class="info-bullet"></span>
+                            <div>
+                                <strong>Миттєве пакетне пакування</strong>
+                                Перетягніть цілий ZIP-архів — стискач розпакує кожен файл, оптимізує його та запакує у готовий ZIP із порівнянням розміру та підрахунком зекономлених мегабайтів.
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- === SHARED DOWNLOAD SETTINGS MODAL === -->
+    <div id="download-modal" class="modal-backdrop">
+        <div class="modal-card" id="download-modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">
+                    <i data-lucide="archive"></i>
+                    Налаштування завантаження
+                </h3>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="modal-basename">Базова назва архіву</label>
+                <input type="text" id="modal-basename" class="slicer-input" placeholder="Наприклад: Solo_Leveling">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="modal-chapter">Номер розділу (опціонально)</label>
+                <div class="chapter-stepper">
+                    <button type="button" onclick="changeChapter(-1)" class="stepper-btn" aria-label="Зменшити розділ">-</button>
+                    <input type="number" id="modal-chapter" step="0.5" placeholder="Наприклад: 12" class="slicer-input" style="text-align: center;">
+                    <button type="button" onclick="changeChapter(1)" class="stepper-btn" aria-label="Збільшити розділ">+</button>
+                </div>
+            </div>
+
+            <div class="preview-box">
+                <span class="preview-label">Фінальна назва файлу:</span>
+                <span id="modal-preview" class="preview-filename">archive.zip</span>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" onclick="closeDownloadModal()" class="button">Скасувати</button>
+                <button type="button" id="modal-btn-confirm" class="button button-primary">
+                    <i data-lucide="download" style="width: 16px; height: 16px; margin-right: 6px;"></i>
+                    Завантажити
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- === SITE FOOTER === -->
+    <footer class="expressive-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2 class="footer-logo">Gokuraku</h2>
+                <p class="footer-slogan">Твій портал у світ манґи та новел</p>
+            </div>
+            <div class="footer-links">
+                <a href="index.html" class="button">На головну</a>
+                <a href="index.html#catalog" class="button">Каталог</a>
+                <a href="index.html#cabinet" class="button">Особистий кабінет</a>
+                <a href="tools.html" class="button button-primary">Інструменти</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2024 Gokuraku. Зроблено з <i data-lucide="heart" style="width: 16px; height: 16px; color: var(--accent-color); vertical-align: middle;"></i></p>
+        </div>
+    </footer>
+
+</body>
+</html>

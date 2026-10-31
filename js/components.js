@@ -301,4 +301,12 @@ export class MangaCard extends HTMLElement {
             </a>
         `;
     }
+
+    getCoverImage() {
+        return this.shadowRoot?.querySelector('img');
+    }
+
+    getCardElement() {
+        return this.shadowRoot?.querySelector('.card');
+    }
 }
