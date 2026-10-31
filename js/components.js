@@ -202,8 +202,8 @@ export class AppHeader extends HTMLElement {
                 .header-search-wrap {
                     position: relative;
                     flex: 1 1 300px;
-                    margin: 0 1.25rem;
-                    margin-left: 15rem; 
+                    margin: 0 1.25rem; 
+                    min-width: 300px;
                 }
                 .header-search {
                     position: relative;
@@ -332,25 +332,24 @@ export class AppHeader extends HTMLElement {
                     </span><span class="logo-text">okuraku</span>
                 </a>
 
-                <!-- Десктопний пошук -->
-                <div class="header-search-wrap">
-                    <div class="header-search" id="header-search-bar">
-                        <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
-                        <input type="text" placeholder="Пошук манґи, авторів..." id="header-search-input" autocomplete="off">
-                        <button class="search-clear-btn" id="header-search-clear" aria-label="Очистити">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <line x1="18" y1="6" x2="6" y2="18"></line>
-                                <line x1="6" y1="6" x2="18" y2="18"></line>
-                            </svg>
-                        </button>
-                    </div>
-                    <div class="search-suggestions-popover" id="header-search-popover"></div>
-                </div>
-
                 <nav>
+                    <!-- Десктопний пошук -->
+                    <div class="header-search-wrap">
+                        <div class="header-search" id="header-search-bar">
+                            <svg class="search-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input type="text" placeholder="Пошук манґи, авторів..." id="header-search-input" autocomplete="off">
+                            <button class="search-clear-btn" id="header-search-clear" aria-label="Очистити">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="search-suggestions-popover" id="header-search-popover"></div>
+                    </div>
                      <a href="#" data-page="home" class="active">
                         <i data-lucide="home" class="icon"></i>
                         <span class="text">Головна</span>
