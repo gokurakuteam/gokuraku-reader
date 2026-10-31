@@ -20,9 +20,28 @@
 </div>
 
 <div id="history" class="tab-content">
-    <h2>Історія переглядів</h2>
-    <ul class="update-list history-list"></ul>
-    <p class="empty-list-message" style="display: none;">Ваша історія переглядів порожня.</p>
+    <div class="history-header">
+        <div class="history-title-wrap">
+            <h2 class="history-section-title">ІСТОРІЯ ЧИТАННЯ</h2>
+            <span class="history-count-badge" id="history-count-badge" style="display: none;">0</span>
+        </div>
+        <button id="clear-history-btn" class="history-clear-btn" style="display: none;" title="Очистити всю історію">
+            <i data-lucide="trash-2"></i>
+            <span>Очистити історію</span>
+        </button>
+    </div>
+    <div class="history-list" id="history-items-container"></div>
+    <div class="empty-history-message empty-category-message" id="empty-history-message" style="display: none;">
+        <div class="empty-history-icon">
+            <i data-lucide="history"></i>
+        </div>
+        <h3>Ваша історія читання порожня</h3>
+        <p>Тут відображатимуться тайтли, які ви читали, із збереженням вашого прогресу та швидким переходом до читання.</p>
+        <a href="#catalog" class="button button-primary empty-history-btn">
+            <span>Перейти до каталогу</span>
+            <i data-lucide="arrow-right" style="width: 16px; height: 16px; margin-left: 6px;"></i>
+        </a>
+    </div>
 </div>
 
 <div id="clicker" class="tab-content">

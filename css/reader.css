@@ -112,6 +112,43 @@
     line-height: 1.4;
 }
 
+.reader-team-info {
+    display: flex;
+    align-items: center;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--secondary-text);
+}
+
+.reader-team-content {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.reader-team-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--accent-color);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.2rem 0.6rem;
+    border-radius: 9999px;
+    background-color: var(--glow-color);
+    border: 1px solid var(--accent-color);
+    transition: all 0.2s ease;
+}
+
+.reader-team-link:hover {
+    background-color: var(--accent-color);
+    color: #121212;
+}
+
 .reader-content-wrapper {
     background-color: #000; /* Завжди темний фон під сторінками манґи */
     position: relative;
@@ -461,6 +498,41 @@
 
 .page-wrapper:not(.loading) img {
     opacity: 1;
+}
+
+.page-wrapper.error .page-error-fallback {
+    display: flex;
+}
+
+.page-error-fallback {
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    min-height: 250px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    color: var(--secondary-text);
+    background-color: rgba(20, 20, 20, 0.85);
+    z-index: 2;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.page-error-fallback p {
+    margin: 0;
+    font-size: 0.95rem;
+    color: var(--text-light);
+}
+
+.page-error-fallback .retry-load-btn {
+    padding: 0.4rem 1rem;
+    font-size: 0.85rem;
+    cursor: pointer;
 }
 
 /* --- Tap Zones --- */

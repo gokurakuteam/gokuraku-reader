@@ -1,4 +1,5 @@
 import { getMangaById, getChapterById } from '../data-manager.js';
+import { ensureJsPdf } from './lazy-loader.js';
 
 /**
  * Завантажує зображення та повертає його як Data URL.
@@ -100,6 +101,7 @@ export async function downloadChapterAsPdf(mangaId, chapterId, { quality = 'orig
         
         onProgress(90, 'Створення PDF...');
 
+        await ensureJsPdf();
         const { jsPDF } = window.jspdf;
         
         // Визначаємо розмір першої сторінки

@@ -1,4 +1,5 @@
 import { getMangaById, getChapterById } from '../data-manager.js';
+import { ensureJsZip } from './lazy-loader.js';
 
 export async function downloadChapterAsEpub(mangaId, chapterId, { onProgress = () => {}, signal }) {
     try {
@@ -13,6 +14,7 @@ export async function downloadChapterAsEpub(mangaId, chapterId, { onProgress = (
         }
 
         onProgress(30, 'Створення структури архіву...');
+        await ensureJsZip();
         const zip = new JSZip();
 
         // 1. mimetype (повинен бути без стиснення, але JSZip дозволяє просто додати його)
@@ -138,6 +140,7 @@ export async function downloadMultipleChaptersAsEpub(mangaId, chapters, { onProg
         }
 
         onProgress(20, 'Створення структури архіву...');
+        await ensureJsZip();
         const zip = new JSZip();
 
         zip.file("mimetype", "application/epub+zip");

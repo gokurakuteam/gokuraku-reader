@@ -32,14 +32,32 @@ document.addEventListener('DOMContentLoaded', async () => {
     
     if (window.lucide) {
         lucide.createIcons();
+    } else {
+        window.addEventListener('load', () => {
+            if (window.lucide) lucide.createIcons();
+        });
     }
 
-    document.querySelector('app-header').shadowRoot.querySelectorAll('nav a').forEach(link => {
-        link.addEventListener('click', (e) => {
-            const page = e.currentTarget.dataset.page;
-            if (window.location.hash.substring(1).startsWith(page)) {
-                 e.preventDefault();
-            }
+    const appHeader = document.querySelector('app-header');
+    if (appHeader && appHeader.shadowRoot) {
+        const logoLink = appHeader.shadowRoot.querySelector('.logo');
+        if (logoLink) {
+            logoLink.addEventListener('click', (e) => {
+                const currentHash = window.location.hash.substring(1);
+                if (!currentHash || currentHash.startsWith('home')) {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+        }
+
+        appHeader.shadowRoot.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                const page = e.currentTarget.dataset.page;
+                if (window.location.hash.substring(1).startsWith(page)) {
+                     e.preventDefault();
+                }
+            });
         });
-    });
+    }
 });

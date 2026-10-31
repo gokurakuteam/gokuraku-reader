@@ -220,6 +220,7 @@ export function renderChapterList(manga, sortOrder) {
     chapterList.innerHTML = sortedChapters.map(ch => {
         const isRead = isChapterRead(manga.id, ch.id);
         const chapterUrl = ch.externalUrl ? ch.externalUrl : `#reader?mangaId=${manga.slug || manga.id}&chapterId=${ch.chapter}`;
+        const absoluteUrl = ch.externalUrl ? ch.externalUrl : new URL(chapterUrl, window.location.href).href;
         const targetAttr = ch.externalUrl ? 'target="_blank" rel="noopener noreferrer"' : '';
         const externalIcon = ch.externalUrl ? `<i data-lucide="external-link" style="width: 14px; height: 14px; margin-left: 4px; vertical-align: middle;"></i>` : '';
         
@@ -227,12 +228,25 @@ export function renderChapterList(manga, sortOrder) {
         if (dateStr.length === 10) dateStr += 'T00:00:00';
         const displayDate = dateStr ? new Date(dateStr).toLocaleDateString('uk-UA') : '';
 
+        const chapterTeams = (ch.teams && ch.teams.length > 0) ? ch.teams : (manga.teams || []);
+        const teamsHtml = chapterTeams.length > 0 ? `
+            <span class="chapter-teams">
+                ${chapterTeams.map(t => `<a href="${t.url}" target="_blank" rel="noopener noreferrer" class="chapter-team-badge" title="Команда співпраці: ${t.name}" onclick="event.stopPropagation();"><i data-lucide="users" style="width: 12px; height: 12px; margin-right: 3px; vertical-align: middle;"></i>${t.name}</a>`).join('')}
+            </span>
+        ` : '';
+
         return `
             <li class="${isRead ? 'read-chapter' : ''}">
-                <a href="${chapterUrl}" ${targetAttr}>Том ${ch.volume}, Розділ ${ch.chapter}${ch.title ? `: ${ch.title}` : ''}${externalIcon}</a>
+                <div class="chapter-info-col">
+                    <a href="${chapterUrl}" ${targetAttr} class="chapter-link">Том ${ch.volume}, Розділ ${ch.chapter}${ch.title ? `: ${ch.title}` : ''}${externalIcon}</a>
+                    ${teamsHtml}
+                </div>
                 <span class="chapter-meta">
                     <i data-lucide="eye" class="eye-icon ${isRead ? 'read' : ''}" data-manga-id="${manga.id}" data-chapter-id="${ch.id}"></i>
                     ${displayDate}
+                    <button class="icon-button copy-chapter-btn" title="Скопіювати посилання" data-chapter-url="${absoluteUrl}">
+                        <i data-lucide="copy"></i>
+                    </button>
                     <button class="icon-button download-chapter-btn" title="Завантажити розділ" data-manga-id="${manga.id}" data-chapter-id="${ch.id}">
                         <i data-lucide="download"></i>
                     </button>
@@ -289,11 +303,39 @@ export function handleChapterListClicks(manga) {
                     eyeIcon.classList.remove('read');
                     chapterItem.classList.remove('read-chapter');
                 } else {
-                    addChapterToHistory(mangaId, chapterId);
+                    const targetChapter = manga?.chapters?.find(c => c.id === chapterId);
+                    addChapterToHistory(mangaId, chapterId, targetChapter?.chapter, targetChapter?.volume);
                     eyeIcon.classList.add('read');
                     chapterItem.classList.add('read-chapter');
                 }
                 updateReadButton(manga);
+            }
+
+            const copyBtn = target.closest('.copy-chapter-btn');
+            if (copyBtn) {
+                e.preventDefault();
+                e.stopPropagation();
+                const url = copyBtn.dataset.chapterUrl || copyBtn.getAttribute('data-chapter-url');
+                if (url) {
+                    navigator.clipboard.writeText(url).then(() => {
+                        copyBtn.classList.add('copied');
+                        copyBtn.setAttribute('title', 'Посилання скопійовано!');
+                        copyBtn.innerHTML = '<i data-lucide="check" style="width: 22px; height: 22px; color: var(--accent-color);"></i>';
+                        if (window.lucide) {
+                            lucide.createIcons({ root: copyBtn });
+                        }
+                        setTimeout(() => {
+                            copyBtn.classList.remove('copied');
+                            copyBtn.setAttribute('title', 'Скопіювати посилання');
+                            copyBtn.innerHTML = '<i data-lucide="copy" style="width: 22px; height: 22px;"></i>';
+                            if (window.lucide) {
+                                lucide.createIcons({ root: copyBtn });
+                            }
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('Failed to copy: ', err);
+                    });
+                }
             }
 
             if (downloadBtn) {

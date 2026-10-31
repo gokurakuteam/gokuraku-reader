@@ -1,0 +1,2039 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Концепт 4: Hybrid Showcase — Каталог Gokuraku</title>
+    <link rel="icon" type="image/x-icon" href="/icons/icon-256.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --surface-canvas: #141218;
+            --surface-card: #2B2930;
+            --surface-elevated: #36343B;
+            --surface-overlay: rgba(20, 18, 24, 0.92);
+            --border-subtle: #49454F;
+            --text-primary: #E6E0E9;
+            --text-secondary: #CAC4D0;
+            --accent-primary: #D0BCFF;
+            --accent-glow: rgba(208, 188, 255, 0.25);
+            --motion-ease-fluid: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+            --motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1.0);
+            --radius-s: 8px;
+            --radius-m: 16px;
+            --radius-l: 24px;
+            --radius-xl: 32px;
+            --radius-pill: 100px;
+
+            /* Always-light tokens for media card overlays */
+            --text-on-media: #FFFFFF;
+            --text-sub-on-media: rgba(255, 255, 255, 0.78);
+            --overlay-gradient: linear-gradient(to top, rgba(15, 13, 19, 0.96) 12%, rgba(15, 13, 19, 0.5) 50%, transparent 80%);
+        }
+
+        html[data-theme="light"] {
+            --surface-canvas: #FEF7FF;
+            --surface-card: #F3EDF7;
+            --surface-elevated: #EDE7F0;
+            --surface-overlay: rgba(254, 247, 255, 0.92);
+            --border-subtle: #CAC4D0;
+            --text-primary: #1D1B20;
+            --text-secondary: #49454F;
+            --accent-primary: #6750A4;
+            --accent-glow: rgba(103, 80, 164, 0.2);
+
+            /* Media card overlay stays contrasty and clean */
+            --text-on-media: #FFFFFF;
+            --text-sub-on-media: rgba(255, 255, 255, 0.85);
+            --overlay-gradient: linear-gradient(to top, rgba(20, 16, 26, 0.94) 15%, rgba(20, 16, 26, 0.45) 55%, transparent 82%);
+        }
+
+        *, *::before, *::after { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            text-decoration: none !important; 
+        }
+        a, a:hover, a:focus, a:visited, a:active { 
+            text-decoration: none !important; 
+            color: inherit; 
+        }
+        body {
+            background-color: var(--surface-canvas);
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.5;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23808080" fill-opacity="0.03" fill-rule="evenodd"%3E%3Cpath d="M0 60L60 0H30L0 30M60 60V30L30 60"/%3E%3C/g%3E%3C/svg%3E');
+            min-height: 100vh;
+            padding-bottom: 95px;
+        }
+
+        /* 1. Top Concept Bar */
+        .concept-bar {
+            background: var(--surface-card);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0.5rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .concept-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            background: rgba(208, 188, 255, 0.15);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-pill);
+            white-space: nowrap;
+        }
+        html[data-theme="light"] .concept-badge {
+            background: rgba(103, 80, 164, 0.12);
+        }
+        .concept-links {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .concept-links::-webkit-scrollbar { display: none; }
+        .concept-btn {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.3rem 0.75rem;
+            border-radius: var(--radius-pill);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            border: 1px solid transparent;
+        }
+        .concept-btn.active, .concept-btn:hover {
+            color: var(--text-primary);
+            background: var(--surface-canvas);
+            border-color: var(--border-subtle);
+        }
+        .concept-btn.hub {
+            background: var(--accent-primary);
+            color: #ffffff;
+            font-weight: 700;
+        }
+        html[data-theme="dark"] .concept-btn.hub {
+            color: #141218;
+        }
+        .theme-toggle-btn {
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.2s var(--motion-ease-spring);
+        }
+        .theme-toggle-btn:hover {
+            transform: rotate(15deg);
+            border-color: var(--accent-primary);
+        }
+
+        /* 2. Floating Header (Desktop) */
+        .app-header-wrap {
+            padding: 0.85rem 1.5rem;
+            position: sticky;
+            top: 44px;
+            z-index: 500;
+            pointer-events: none;
+        }
+        .app-header {
+            pointer-events: auto;
+            max-width: 1280px;
+            margin: 0 auto;
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--radius-pill);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--accent-primary);
+            font-size: 1.45rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .logo-flower { width: 26px; height: 26px; fill: currentColor; }
+        .header-nav { display: flex; align-items: center; gap: 0.5rem; }
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 0.4rem 0.9rem;
+            border-radius: var(--radius-pill);
+            transition: all 0.2s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--text-primary);
+            background: var(--surface-canvas);
+        }
+        .nav-link.active {
+            color: var(--accent-primary);
+            font-weight: 700;
+        }
+
+        /* Mobile Top App Bar (Native App Style) */
+        .mobile-app-bar {
+            display: none;
+            padding: 0.75rem 1.25rem;
+            background: var(--surface-card);
+            border-bottom: 1px solid var(--border-subtle);
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 42px;
+            z-index: 400;
+        }
+        .mobile-logo {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            text-decoration: none;
+            color: var(--accent-primary);
+            font-weight: 800;
+            font-size: 1.25rem;
+        }
+
+        /* 3. Main Container */
+        .hybrid-container {
+            max-width: 1280px;
+            margin: 1.25rem auto 0;
+            padding: 0 1.25rem;
+        }
+
+        /* 4. RANDOM SHOWCASE BANNER (Ultra Minimalist) */
+        .random-showcase-card {
+            position: relative;
+            background: var(--surface-card);
+            border-radius: var(--radius-l);
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s var(--motion-ease-standard);
+        }
+        .showcase-bg-blur {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            filter: blur(40px) brightness(0.28);
+            transform: scale(1.2);
+            pointer-events: none;
+            opacity: 0.9;
+            transition: background-image 0.4s ease;
+        }
+        html[data-theme="light"] .showcase-bg-blur {
+            filter: blur(40px) brightness(0.85);
+            opacity: 0.4;
+        }
+        .showcase-content-grid {
+            position: relative;
+            z-index: 2;
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            gap: 1.15rem;
+        }
+        .showcase-cover-box {
+            position: relative;
+            width: 46px;
+            height: 66px;
+            border-radius: var(--radius-s);
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .showcase-cover-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .showcase-details {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 0.2rem;
+        }
+        .showcase-badge-row {
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            flex-wrap: wrap;
+        }
+        .sc-badge {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 0.15rem 0.55rem;
+            border-radius: var(--radius-pill);
+            background: rgba(255, 255, 255, 0.12);
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+        }
+        html[data-theme="light"] .sc-badge {
+            background: rgba(0, 0, 0, 0.08);
+            color: var(--text-primary);
+        }
+        .sc-badge.featured {
+            background: var(--accent-primary);
+            color: #141218;
+            font-weight: 800;
+        }
+        html[data-theme="light"] .sc-badge.featured {
+            color: #ffffff;
+        }
+        .showcase-title-text {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin: 0;
+            line-height: 1.3;
+        }
+        html[data-theme="light"] .showcase-title-text {
+            color: var(--text-primary);
+        }
+        .showcase-meta-line {
+            font-size: 0.78rem;
+            color: rgba(255, 255, 255, 0.75);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        html[data-theme="light"] .showcase-meta-line {
+            color: var(--text-secondary);
+        }
+        .showcase-btn-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        .sc-read-btn {
+            background: var(--accent-primary);
+            color: #141218;
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 0.45rem 1rem;
+            border-radius: var(--radius-pill);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: transform 0.2s var(--motion-ease-spring);
+        }
+        html[data-theme="light"] .sc-read-btn { color: #ffffff; }
+        .sc-read-btn:hover { transform: scale(1.03); }
+        .sc-roll-btn {
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.45rem 0.9rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: all 0.2s;
+        }
+        .sc-roll-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+        .showcase-close {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: color 0.2s;
+            flex-shrink: 0;
+        }
+        .showcase-close:hover {
+            color: var(--text-primary);
+        }
+
+        /* 5. Bento Fast Strip (Desktop only, Sleek Horizontal Ribbon) */
+        .hybrid-bento-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.25rem;
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-l);
+            padding: 0.65rem 1.25rem;
+            margin-bottom: 1.25rem;
+            flex-wrap: wrap;
+        }
+        .b-module {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            background: transparent;
+            border: none;
+            padding: 0;
+        }
+        .b-module-label {
+            font-size: 0.74rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            white-space: nowrap;
+        }
+        .b-chips-row {
+            display: flex;
+            gap: 0.35rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .b-filter-chip {
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.35rem 0.75rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            transition: all 0.2s var(--motion-ease-spring);
+            font-family: inherit;
+            user-select: none;
+        }
+        .b-filter-chip:hover {
+            color: var(--text-primary);
+            border-color: var(--accent-primary);
+        }
+        .b-filter-chip.active {
+            background: var(--accent-primary);
+            color: #141218;
+            border-color: var(--accent-primary);
+            font-weight: 700;
+            box-shadow: 0 2px 8px var(--accent-glow);
+        }
+        html[data-theme="light"] .b-filter-chip.active {
+            color: #ffffff;
+        }
+
+        /* 6. Layout: Main Content + Classic Sticky Sidebar */
+        .hybrid-main-layout {
+            display: flex;
+            gap: 1.75rem;
+            align-items: flex-start;
+        }
+
+        /* Content Area */
+        .main-content-flow {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* Full Width Search & Controls Toolbar */
+        .catalog-search-fullwidth-wrap {
+            width: 100%;
+        }
+        .ht-search-wrap {
+            position: relative;
+            width: 100%;
+        }
+        .ht-search-icon {
+            position: absolute;
+            left: 1.15rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            width: 18px;
+            height: 18px;
+            pointer-events: none;
+        }
+        .ht-search-input {
+            width: 100%;
+            height: 48px;
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 0 2.8rem 0 3.2rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.92rem;
+            outline: none;
+            font-family: inherit;
+            transition: all 0.2s var(--motion-ease-standard);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .ht-search-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 2px var(--accent-glow);
+        }
+        .ht-search-clear {
+            position: absolute;
+            right: 0.85rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: none;
+            padding: 0.25rem;
+            border-radius: 50%;
+        }
+
+        .catalog-sub-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            padding: 0.25rem 0.5rem;
+        }
+        .catalog-counter-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+        .catalog-counter-text strong {
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+        .ht-actions-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            margin-left: auto;
+        }
+        .ht-sort-select {
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 0.45rem 1rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.8rem;
+            font-weight: 600;
+            outline: none;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        /* View Mode Switcher (Grid vs Stream from Concept 1) */
+        .view-toggle-pill {
+            display: inline-flex;
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-pill);
+            padding: 0.2rem;
+        }
+        .vt-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.35rem 0.65rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        .vt-btn.active {
+            background: var(--surface-card);
+            color: var(--accent-primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        /* Active Filter Chips */
+        .active-chips-strip {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+        }
+        .act-chip {
+            background: rgba(208, 188, 255, 0.15);
+            border: 1px solid var(--accent-primary);
+            color: var(--accent-primary);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.25rem 0.7rem;
+            border-radius: var(--radius-pill);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        html[data-theme="light"] .act-chip {
+            background: rgba(103, 80, 164, 0.12);
+        }
+        .act-chip.exclude {
+            background: rgba(255, 91, 91, 0.15);
+            border-color: #ff5b5b;
+            color: #ff5b5b;
+        }
+        .act-chip-remove {
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+        }
+        .act-clear-all {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+        }
+
+        /* 7. Titles Grid & Stream Views */
+        .hybrid-manga-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(185px, 1fr));
+            gap: 1.25rem;
+        }
+
+        /* Poster Grid Card (2:3) */
+        .hm-card {
+            background: var(--surface-card);
+            border-radius: var(--radius-l);
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.35s var(--motion-ease-spring), box-shadow 0.35s, border-color 0.3s;
+            position: relative;
+        }
+        .hm-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.25), 0 0 20px var(--accent-glow);
+            border-color: var(--accent-primary);
+        }
+        .hm-cover-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 2 / 3;
+            overflow: hidden;
+            background: #1a1820;
+        }
+        .hm-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s var(--motion-ease-fluid);
+            display: block;
+        }
+        .hm-card:hover .hm-cover {
+            transform: scale(1.06);
+        }
+        .hm-overlay {
+            position: absolute;
+            inset: 0;
+            background: var(--overlay-gradient);
+            pointer-events: none;
+        }
+        .hm-badges-top {
+            position: absolute;
+            top: 0.6rem;
+            left: 0.6rem;
+            right: 0.6rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2;
+        }
+        .hm-type-tag {
+            font-size: 0.68rem;
+            font-weight: 700;
+            background: rgba(20, 18, 24, 0.85);
+            backdrop-filter: blur(8px);
+            color: #ffffff;
+            padding: 0.2rem 0.5rem;
+            border-radius: var(--radius-s);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .hm-status-tag {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: var(--radius-s);
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .hm-status-tag.ongoing { background: #28a745; }
+        .hm-status-tag.completed { background: #007bff; }
+        .hm-status-tag.frozen { background: #6c757d; }
+
+        .hm-card-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 0.85rem;
+            z-index: 2;
+        }
+        .hm-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 0.3rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: var(--text-on-media);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        .hm-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.74rem;
+            color: var(--text-sub-on-media);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+        .hm-chapter {
+            color: var(--accent-primary);
+            font-weight: 700;
+        }
+
+        /* Stream View (List Mode) */
+        .hybrid-manga-grid.stream-mode {
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+        }
+        .hybrid-manga-grid.stream-mode .hm-card {
+            flex-direction: row;
+            height: 155px;
+            border-radius: var(--radius-l);
+        }
+        .hybrid-manga-grid.stream-mode .hm-cover-wrap {
+            width: 105px;
+            height: 100%;
+            aspect-ratio: auto;
+            flex-shrink: 0;
+        }
+        .hybrid-manga-grid.stream-mode .hm-overlay { display: none; }
+        .hybrid-manga-grid.stream-mode .hm-card-info {
+            position: static;
+            flex: 1;
+            padding: 1rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .hybrid-manga-grid.stream-mode .hm-title {
+            font-size: 1.05rem;
+            color: var(--text-primary);
+            text-shadow: none;
+            -webkit-line-clamp: 1;
+        }
+        .hybrid-manga-grid.stream-mode .hm-meta-row {
+            color: var(--text-secondary);
+            text-shadow: none;
+        }
+        .stream-tag-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin: 0.3rem 0;
+        }
+        .stream-tag {
+            font-size: 0.7rem;
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            padding: 0.15rem 0.45rem;
+            border-radius: var(--radius-s);
+            color: var(--text-secondary);
+        }
+        .stream-read-btn {
+            background: var(--accent-primary);
+            color: #141218;
+            border: none;
+            padding: 0.35rem 0.95rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+            transition: transform 0.2s var(--motion-ease-spring);
+        }
+        html[data-theme="light"] .stream-read-btn { color: #fff; }
+        .stream-read-btn:hover { transform: scale(1.04); }
+
+        /* 8. Desktop Sticky Sidebar (Like current site) */
+        .classic-sidebar {
+            width: 280px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 105px;
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-l);
+            padding: 1.35rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            max-height: calc(100vh - 125px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        .cs-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .cs-header h3 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+        .cs-reset-btn {
+            background: transparent;
+            border: none;
+            color: var(--accent-primary);
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+        .cs-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+        .cs-section-title {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+        }
+        .genre-search-field {
+            position: relative;
+        }
+        .genre-search-field input {
+            width: 100%;
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 0.4rem 0.75rem 0.4rem 1.85rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.78rem;
+            outline: none;
+            font-family: inherit;
+        }
+        .genre-search-field i {
+            position: absolute;
+            left: 0.65rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 13px;
+            height: 13px;
+            color: var(--text-secondary);
+        }
+        .genre-chips-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.45rem;
+            max-height: 240px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        .tri-chip {
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            font-weight: 600;
+            padding: 0.45rem 0.85rem;
+            min-height: 40px;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+            touch-action: manipulation;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        .tri-chip:hover {
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+        }
+        .chip-state-indicator {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 14px;
+            height: 14px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            line-height: 1;
+            pointer-events: none;
+        }
+        .tri-chip .chip-state-indicator::before {
+            content: '';
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--border-subtle);
+        }
+        .tri-chip.include {
+            background: var(--accent-primary);
+            color: #141218;
+            border-color: var(--accent-primary);
+            font-weight: 700;
+        }
+        html[data-theme="light"] .tri-chip.include { color: #ffffff; }
+        .tri-chip.include .chip-state-indicator::before {
+            content: '✓';
+            width: auto;
+            height: auto;
+            background: transparent;
+            font-size: 0.85rem;
+        }
+        .tri-chip.exclude {
+            background: #ff5b5b;
+            color: #ffffff;
+            border-color: #ff5b5b;
+            font-weight: 700;
+        }
+        .tri-chip.exclude .chip-state-indicator::before {
+            content: '✕';
+            width: auto;
+            height: auto;
+            background: transparent;
+            font-size: 0.85rem;
+        }
+        .tri-chip-cnt {
+            font-size: 0.72rem;
+            opacity: 0.75;
+            background: rgba(0, 0, 0, 0.12);
+            padding: 0.1rem 0.4rem;
+            border-radius: var(--radius-pill);
+            pointer-events: none;
+        }
+        html[data-theme="light"] .tri-chip-cnt {
+            background: rgba(0, 0, 0, 0.08);
+        }
+        html[data-theme="dark"] .tri-chip.include .tri-chip-cnt {
+            background: rgba(0, 0, 0, 0.25);
+        }
+        .tri-chip-cnt { font-size: 0.68rem; opacity: 0.7; }
+
+        /* 9. Mobile Bottom Nav & Floating Action Pill */
+        .mobile-filter-dock {
+            display: none;
+            position: fixed;
+            bottom: 76px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 900;
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-pill);
+            padding: 0.3rem 0.45rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 20px var(--accent-glow);
+        }
+        .dock-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.82rem;
+            font-weight: 700;
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            min-height: 44px;
+        }
+        .dock-btn.primary {
+            background: var(--accent-primary);
+            color: #141218;
+        }
+        html[data-theme="light"] .dock-btn.primary { color: #fff; }
+        .dock-count-badge {
+            background: var(--surface-canvas);
+            color: var(--accent-primary);
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 66px;
+            background: var(--surface-card);
+            border-top: 1px solid var(--border-subtle);
+            z-index: 800;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .m-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.15rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.72rem;
+            font-weight: 600;
+            min-width: 60px;
+            min-height: 44px;
+            justify-content: center;
+        }
+        .m-nav-item.active { color: var(--accent-primary); font-weight: 700; }
+
+        /* 10. Mobile Bottom Sheet */
+        .sheet-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(6px);
+            z-index: 1500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .sheet-backdrop.open { display: block; opacity: 1; }
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-height: 85vh;
+            background: var(--surface-card);
+            border-top: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            z-index: 1600;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.35s var(--motion-ease-fluid);
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.4);
+        }
+        .bottom-sheet.open { transform: translateY(0); }
+        .sheet-handle-wrap {
+            padding: 0.75rem 0 0.25rem;
+            display: flex;
+            justify-content: center;
+        }
+        .sheet-handle {
+            width: 40px;
+            height: 4px;
+            background: var(--border-subtle);
+            border-radius: var(--radius-pill);
+        }
+        .sheet-head {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .sheet-head h3 { font-size: 1.1rem; font-weight: 800; }
+        .sheet-close {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sheet-content {
+            padding: 1.25rem 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .sheet-actions {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            gap: 0.75rem;
+            background: var(--surface-card);
+        }
+        .sheet-apply {
+            flex: 1;
+            background: var(--accent-primary);
+            color: #141218;
+            font-weight: 700;
+            border: none;
+            padding: 0.8rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.92rem;
+            cursor: pointer;
+            min-height: 46px;
+        }
+        html[data-theme="light"] .sheet-apply { color: #fff; }
+        .sheet-reset {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-weight: 600;
+            padding: 0.8rem 1.25rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            min-height: 46px;
+        }
+
+        /* 11. Quick-View Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .modal-overlay.open { display: flex; opacity: 1; }
+        .qv-window {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            max-width: 720px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            display: flex;
+            position: relative;
+            max-height: 85vh;
+        }
+        .qv-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1024px) {
+            .classic-sidebar { display: none; }
+            .mobile-filter-dock { display: flex; }
+            .mobile-bottom-nav { display: flex; }
+            .app-header-wrap { display: none; }
+            .mobile-app-bar { display: flex; }
+            .hybrid-bento-strip { display: none !important; }
+        }
+        @media (max-width: 650px) {
+            .concept-bar { padding: 0.4rem 0.85rem; }
+            .concept-badge span { display: none; }
+            .showcase-content-grid {
+                padding: 0.65rem 0.85rem;
+                gap: 0.75rem;
+            }
+            .showcase-cover-box { width: 38px; height: 54px; }
+            .showcase-title-text { font-size: 0.95rem; }
+            .sc-roll-btn span, .sc-read-btn span { display: none; }
+            .sc-roll-btn, .sc-read-btn {
+                padding: 0.45rem 0.65rem;
+                min-width: 38px;
+                min-height: 38px;
+                justify-content: center;
+            }
+            .hybrid-manga-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+            .catalog-sub-toolbar { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .ht-actions-wrap { width: 100%; justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Concept Bar -->
+    <header class="concept-bar">
+        <div class="concept-badge">
+            <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i>
+            <span>Концепт 4: Hybrid Showcase</span>
+        </div>
+        <div class="concept-links">
+            <a href="catalog-concepts.html" class="concept-btn hub">
+                <i data-lucide="layout-grid" style="width: 13px; height: 13px;"></i> Хаб
+            </a>
+            <a href="concept-catalog-stream.html" class="concept-btn">1. Stream</a>
+            <a href="concept-catalog-bento.html" class="concept-btn">2. Bento</a>
+            <a href="concept-catalog-editorial.html" class="concept-btn">3. Editorial</a>
+            <button class="theme-toggle-btn" onclick="toggleTheme()" title="Перемкнути тему">
+                <i data-lucide="sun-moon" style="width: 16px; height: 16px;"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Floating App Header (Desktop) -->
+    <div class="app-header-wrap">
+        <header class="app-header">
+            <a href="#" class="logo-wrap">
+                <svg class="logo-flower" viewBox="-50 -50 100 100">
+                    <path d="M 0.00 -44.00 C 4.59 -44.00, 8.59 -35.41, 13.78 -33.26 C 18.96 -31.11, 27.87 -34.36, 31.11 -31.11 C 34.36 -27.87, 31.11 -18.96, 33.26 -13.78 C 35.41 -8.59, 44.00 -4.59, 44.00 0.00 C 44.00 4.59, 35.41 8.59, 33.26 13.78 C 31.11 18.96, 34.36 27.87, 31.11 31.11 C 27.87 34.36, 18.96 31.11, 13.78 33.26 C 8.59 35.41, 4.59 44.00, 0.00 44.00 C -4.59 44.00, -8.59 35.41, -13.78 33.26 C -18.96 31.11, -27.87 34.36, -31.11 31.11 C -34.36 27.87, -31.11 18.96, -33.26 13.78 C -35.41 8.59, -44.00 4.59, -44.00 0.00 C -44.00 -4.59, -35.41 -8.59, -33.26 -13.78 C -31.11 -18.96, -34.36 -27.87, -31.11 -31.11 C -27.87 -34.36, -18.96 -31.11, -13.78 -33.26 C -8.59 -35.41, -4.59 -44.00, 0.00 -44.00 Z" />
+                </svg>
+                <span>Gokuraku</span>
+            </a>
+            <nav class="header-nav">
+                <a href="#" class="nav-link"><i data-lucide="home" style="width: 16px; height: 16px;"></i> Головна</a>
+                <a href="#catalog" class="nav-link active"><i data-lucide="compass" style="width: 16px; height: 16px;"></i> Каталог</a>
+                <a href="#cabinet" class="nav-link"><i data-lucide="user" style="width: 16px; height: 16px;"></i> Кабінет</a>
+            </nav>
+        </header>
+    </div>
+
+    <!-- Mobile Top Header -->
+    <div class="mobile-app-bar">
+        <a href="#" class="mobile-logo">
+            <i data-lucide="sparkles" style="width: 20px; height: 20px;"></i>
+            <span>Gokuraku</span>
+        </a>
+        <button class="theme-toggle-btn" onclick="toggleTheme()">
+            <i data-lucide="sun-moon" style="width: 15px; height: 15px;"></i>
+        </button>
+    </div>
+
+    <!-- Main Container -->
+    <main class="hybrid-container">
+
+        <!-- 4. RANDOM SHOWCASE BANNER (Ultra Minimalist) -->
+        <section class="random-showcase-card" id="random-showcase">
+            <div class="showcase-bg-blur" id="sc-bg-blur" style="background-image: url('https://files.catbox.moe/h3nvsn.webp');"></div>
+            <div class="showcase-content-grid">
+                <div class="showcase-cover-box">
+                    <img id="sc-cover" src="https://files.catbox.moe/h3nvsn.webp" alt="Обкладинка" class="showcase-cover-img">
+                </div>
+                <div class="showcase-details">
+                    <div class="showcase-badge-row">
+                        <span class="sc-badge featured">
+                            <i data-lucide="sparkles" style="width: 11px; height: 11px;"></i> Випадковий
+                        </span>
+                        <span class="sc-badge" id="sc-type">Манхва</span>
+                        <span class="sc-badge" id="sc-status">Завершено</span>
+                    </div>
+                    <h2 class="showcase-title-text" id="sc-title">Кохання — це ілюзія</h2>
+                    <div class="showcase-meta-line" id="sc-meta-sub">Глава 117 • Яой, Драма, Комедія</div>
+                </div>
+                <div class="showcase-btn-row">
+                    <button class="sc-roll-btn" onclick="rollNextRandomTitle()" title="Обрати інший випадковий тайтл">
+                        <i data-lucide="rotate-cw" style="width: 14px; height: 14px;"></i> <span>Інший</span>
+                    </button>
+                    <a id="sc-read-link" href="#title?id=kokhannia-tse-iliuziia" class="sc-read-btn" title="Читати">
+                        <i data-lucide="book-open" style="width: 14px; height: 14px;"></i> <span>Читати</span>
+                    </a>
+                    <button class="showcase-close" onclick="dismissShowcase()" title="Згорнути">
+                        <i data-lucide="x" style="width: 15px; height: 15px;"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. Bento Fast Strip (Desktop only, Sleek Horizontal Ribbon without emojis) -->
+        <section class="hybrid-bento-strip">
+            <!-- Format module -->
+            <div class="b-module">
+                <div class="b-module-label">
+                    <i data-lucide="layers" style="width: 13px; height: 13px;"></i>
+                    <span>Формат:</span>
+                </div>
+                <div class="b-chips-row">
+                    <button class="b-filter-chip active" data-type="all" onclick="setBentoFilter('type', 'all', this)">Всі</button>
+                    <button class="b-filter-chip" data-type="Манхва" onclick="setBentoFilter('type', 'Манхва', this)">Манхва</button>
+                    <button class="b-filter-chip" data-type="Манґа" onclick="setBentoFilter('type', 'Манґа', this)">Манґа</button>
+                    <button class="b-filter-chip" data-type="Маньхва" onclick="setBentoFilter('type', 'Маньхва', this)">Маньхва</button>
+                    <button class="b-filter-chip" data-type="Роман" onclick="setBentoFilter('type', 'Роман', this)">Роман</button>
+                </div>
+            </div>
+
+            <!-- Status module -->
+            <div class="b-module">
+                <div class="b-module-label">
+                    <i data-lucide="activity" style="width: 13px; height: 13px;"></i>
+                    <span>Статус:</span>
+                </div>
+                <div class="b-chips-row">
+                    <button class="b-filter-chip active" data-status="all" onclick="setBentoFilter('status', 'all', this)">Всі</button>
+                    <button class="b-filter-chip" data-status="Виходить" onclick="setBentoFilter('status', 'Виходить', this)">Виходить</button>
+                    <button class="b-filter-chip" data-status="Завершено" onclick="setBentoFilter('status', 'Завершено', this)">Завершено</button>
+                    <button class="b-filter-chip" data-status="Закинуто" onclick="setBentoFilter('status', 'Закинуто', this)">Закинуто</button>
+                </div>
+            </div>
+
+            <!-- Length (Обсяг!) module -->
+            <div class="b-module">
+                <div class="b-module-label">
+                    <i data-lucide="clock" style="width: 13px; height: 13px;"></i>
+                    <span>Обсяг:</span>
+                </div>
+                <div class="b-chips-row">
+                    <button class="b-filter-chip active" data-len="all" onclick="setBentoFilter('length', 'all', this)">Будь-який</button>
+                    <button class="b-filter-chip" data-len="short" onclick="setBentoFilter('length', 'short', this)">&lt; 10 глав</button>
+                    <button class="b-filter-chip" data-len="medium" onclick="setBentoFilter('length', 'medium', this)">10–50</button>
+                    <button class="b-filter-chip" data-len="long" onclick="setBentoFilter('length', 'long', this)">50+ глав</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Main Layout: Main Content + Classic Sidebar -->
+        <div class="hybrid-main-layout">
+            <!-- Main Content Flow -->
+            <div class="main-content-flow">
+                <!-- Full Width Search -->
+                <div class="catalog-search-fullwidth-wrap">
+                    <div class="ht-search-wrap">
+                        <i data-lucide="search" class="ht-search-icon"></i>
+                        <input type="search" id="hybrid-search-input" class="ht-search-input" placeholder="Пошук за назвою або сюжетом..." autocomplete="off">
+                        <button id="search-clear-btn" class="ht-search-clear" onclick="clearSearch()" title="Очистити">
+                            <i data-lucide="x" style="width: 15px; height: 15px;"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Sub-toolbar: Results Counter + Controls -->
+                <div class="catalog-sub-toolbar">
+                    <div class="catalog-counter-text">
+                        Знайдено: <strong id="catalog-count-num">0</strong> тайтлів
+                    </div>
+                    <div class="ht-actions-wrap">
+                        <!-- Sort dropdown without emojis -->
+                        <select id="hybrid-sort" class="ht-sort-select" onchange="handleSortChange(this.value)">
+                            <option value="newest">За оновленням</option>
+                            <option value="chapters">За кількістю глав</option>
+                            <option value="az">За назвою (А-Я)</option>
+                            <option value="za">За назвою (Я-А)</option>
+                        </select>
+
+                        <!-- View Switcher (Grid vs Stream) -->
+                        <div class="view-toggle-pill">
+                            <button class="vt-btn active" id="vt-grid" onclick="setViewMode('grid')" title="Сітка постерів 2:3">
+                                <i data-lucide="layout-grid" style="width: 14px; height: 14px;"></i>
+                            </button>
+                            <button class="vt-btn" id="vt-stream" onclick="setViewMode('stream')" title="Детальний список">
+                                <i data-lucide="stretch-horizontal" style="width: 14px; height: 14px;"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Filter Tags -->
+                <div class="active-chips-strip" id="active-chips-strip" style="display: none;"></div>
+
+                <!-- Manga Grid / Stream -->
+                <div class="hybrid-manga-grid" id="hybrid-manga-container">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+
+            <!-- Classic Sticky Sidebar (Like current site) -->
+            <aside class="classic-sidebar">
+                <div class="cs-header">
+                    <h3><i data-lucide="sliders-horizontal" style="width: 16px; height: 16px;"></i> Фільтри</h3>
+                    <button class="cs-reset-btn" onclick="resetAllFilters()">
+                        <i data-lucide="rotate-ccw" style="width: 12px; height: 12px;"></i> Скинути
+                    </button>
+                </div>
+
+                <!-- Genres with 3-state chips & live search -->
+                <div class="cs-section">
+                    <div class="cs-section-title">
+                        <span>Жанри</span>
+                        <span style="font-size: 0.68rem; text-transform: none; color: var(--text-secondary);">✓ так | ✕ ні</span>
+                    </div>
+                    <div class="genre-search-field">
+                        <i data-lucide="search"></i>
+                        <input type="text" placeholder="Пошук серед жанрів..." oninput="filterGenreList(this.value)">
+                    </div>
+                    <div class="genre-chips-wrap" id="sidebar-genre-chips">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Format -->
+                <div class="cs-section">
+                    <div class="cs-section-title"><span>Тип</span></div>
+                    <div class="b-chips-row" id="sidebar-type-chips">
+                        <button class="b-filter-chip active" data-type="all" onclick="setBentoFilter('type', 'all', this)">Всі</button>
+                        <button class="b-filter-chip" data-type="Манхва" onclick="setBentoFilter('type', 'Манхва', this)">Манхва</button>
+                        <button class="b-filter-chip" data-type="Манґа" onclick="setBentoFilter('type', 'Манґа', this)">Манґа</button>
+                        <button class="b-filter-chip" data-type="Маньхва" onclick="setBentoFilter('type', 'Маньхва', this)">Маньхва</button>
+                    </div>
+                </div>
+
+                <!-- Status -->
+                <div class="cs-section">
+                    <div class="cs-section-title"><span>Статус</span></div>
+                    <div class="b-chips-row" id="sidebar-status-chips">
+                        <button class="b-filter-chip active" data-status="all" onclick="setBentoFilter('status', 'all', this)">Всі</button>
+                        <button class="b-filter-chip" data-status="Виходить" onclick="setBentoFilter('status', 'Виходить', this)">Виходить</button>
+                        <button class="b-filter-chip" data-status="Завершено" onclick="setBentoFilter('status', 'Завершено', this)">Завершено</button>
+                    </div>
+                </div>
+
+                <!-- Length (Обсяг!) -->
+                <div class="cs-section">
+                    <div class="cs-section-title"><span>Обсяг</span></div>
+                    <div class="b-chips-row" id="sidebar-length-chips">
+                        <button class="b-filter-chip active" data-len="all" onclick="setBentoFilter('length', 'all', this)">Будь-який</button>
+                        <button class="b-filter-chip" data-len="short" onclick="setBentoFilter('length', 'short', this)">&lt; 10</button>
+                        <button class="b-filter-chip" data-len="medium" onclick="setBentoFilter('length', 'medium', this)">10–50</button>
+                        <button class="b-filter-chip" data-len="long" onclick="setBentoFilter('length', 'long', this)">50+</button>
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Mobile Floating Filter Dock -->
+    <div class="mobile-filter-dock">
+        <button class="dock-btn primary" onclick="openMobileFilters()">
+            <i data-lucide="filter" style="width: 15px; height: 15px;"></i>
+            <span>Фільтри</span>
+            <span class="dock-count-badge" id="mobile-dock-counter">0</span>
+        </button>
+        <button class="dock-btn" onclick="rollNextRandomTitle()">
+            <i data-lucide="dices" style="width: 15px; height: 15px;"></i>
+            <span>Рандом</span>
+        </button>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <a href="#" class="m-nav-item">
+            <i data-lucide="home" style="width: 20px; height: 20px;"></i>
+            <span>Головна</span>
+        </a>
+        <a href="#catalog" class="m-nav-item active">
+            <i data-lucide="compass" style="width: 20px; height: 20px;"></i>
+            <span>Каталог</span>
+        </a>
+        <a href="#cabinet" class="m-nav-item">
+            <i data-lucide="user" style="width: 20px; height: 20px;"></i>
+            <span>Кабінет</span>
+        </a>
+    </nav>
+
+    <!-- Mobile Bottom Sheet -->
+    <div class="sheet-backdrop" id="sheet-backdrop" onclick="closeMobileFilters()"></div>
+    <div class="bottom-sheet" id="bottom-sheet">
+        <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
+        <div class="sheet-head">
+            <h3>Фільтри каталогу</h3>
+            <button class="sheet-close" onclick="closeMobileFilters()">&times;</button>
+        </div>
+        <div class="sheet-content" id="sheet-content-body">
+            <!-- Mobile filters -->
+        </div>
+        <div class="sheet-actions">
+            <button class="sheet-reset" onclick="resetAllFilters()">Скинути</button>
+            <button class="sheet-apply" id="sheet-apply-btn" onclick="closeMobileFilters()">Показати тайтли</button>
+        </div>
+    </div>
+
+    <!-- Quick-View Modal -->
+    <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+        <div class="qv-window" id="qv-window" onclick="event.stopPropagation()">
+            <button class="qv-close" onclick="closeModal()">&times;</button>
+            <div id="modal-content-area" style="padding: 1.75rem; width: 100%;">
+                <!-- Dynamically filled -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ALL_MANGA = [];
+        let CURRENT_SHOWCASE_ID = 1;
+        let STATE = {
+            search: '',
+            type: 'all',
+            status: 'all',
+            length: 'all',
+            sort: 'newest',
+            view: 'grid',
+            genresInclude: new Set(),
+            genresExclude: new Set()
+        };
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('gokuraku_theme', next);
+        }
+
+        async function initData() {
+            try {
+                const res = await fetch('api/manga-list.json');
+                if (res.ok) ALL_MANGA = await res.json();
+            } catch(e) {
+                console.warn(e);
+            }
+            if (!ALL_MANGA || ALL_MANGA.length === 0) ALL_MANGA = getSampleData();
+            
+            initShowcaseRandom();
+            initGenreList();
+            renderCatalog();
+            lucide.createIcons();
+        }
+
+        // Random Showcase Banner Logic (Minimalist)
+        function initShowcaseRandom() {
+            rollNextRandomTitle(false);
+        }
+
+        function rollNextRandomTitle(scrollToBanner = false) {
+            if (!ALL_MANGA || ALL_MANGA.length === 0) return;
+            const pool = ALL_MANGA.filter(m => m.id !== CURRENT_SHOWCASE_ID);
+            const rand = pool.length > 0 ? pool[Math.floor(Math.random() * pool.length)] : ALL_MANGA[0];
+            CURRENT_SHOWCASE_ID = rand.id;
+
+            const bgEl = document.getElementById('sc-bg-blur');
+            if (bgEl) bgEl.style.backgroundImage = `url('${rand.coverImage}')`;
+            const coverEl = document.getElementById('sc-cover');
+            if (coverEl) {
+                coverEl.src = rand.coverImage;
+                coverEl.alt = rand.title;
+            }
+            const titleEl = document.getElementById('sc-title');
+            if (titleEl) titleEl.textContent = rand.title;
+            const typeEl = document.getElementById('sc-type');
+            if (typeEl) typeEl.textContent = rand.type || 'Манхва';
+            const statusEl = document.getElementById('sc-status');
+            if (statusEl) statusEl.textContent = rand.status || 'Виходить';
+            
+            const metaSub = document.getElementById('sc-meta-sub');
+            if (metaSub) {
+                const ch = rand.lastChapter ? `Глава ${rand.lastChapter}` : '';
+                const gn = (rand.genres || []).slice(0, 3).join(', ');
+                metaSub.textContent = [ch, gn].filter(Boolean).join(' • ');
+            }
+
+            const readLink = document.getElementById('sc-read-link');
+            if (readLink) readLink.href = rand.pageUrl || '#';
+
+            if (scrollToBanner) {
+                const b = document.getElementById('random-showcase');
+                if (b) {
+                    b.style.display = 'block';
+                    b.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }
+        }
+
+        function dismissShowcase() {
+            document.getElementById('random-showcase').style.display = 'none';
+        }
+
+        // Genre List
+        function initGenreList() {
+            const genreCounts = {};
+            ALL_MANGA.forEach(m => {
+                (m.genres || []).forEach(g => {
+                    genreCounts[g] = (genreCounts[g] || 0) + 1;
+                });
+            });
+
+            const sortedGenres = Object.keys(genreCounts).sort((a,b) => genreCounts[b] - genreCounts[a]);
+            const sidebarWrap = document.getElementById('sidebar-genre-chips');
+            sidebarWrap.innerHTML = sortedGenres.map(g => `
+                <button class="tri-chip" data-genre="${g}" onclick="toggleGenre('${g}')">
+                    <span class="chip-state-indicator"></span>
+                    <span class="genre-name">${g}</span>
+                    <span class="tri-chip-cnt">${genreCounts[g]}</span>
+                </button>
+            `).join('');
+
+            populateMobileSheet(sortedGenres, genreCounts);
+        }
+
+        function populateMobileSheet(genres, counts) {
+            const body = document.getElementById('sheet-content-body');
+            body.innerHTML = `
+                <div class="cs-section">
+                    <div class="cs-section-title"><span>Формат контенту</span></div>
+                    <div class="b-chips-row">
+                        <button class="b-filter-chip ${STATE.type === 'all' ? 'active' : ''}" data-type="all" onclick="setBentoFilter('type', 'all', this)">Всі</button>
+                        <button class="b-filter-chip ${STATE.type === 'Манхва' ? 'active' : ''}" data-type="Манхва" onclick="setBentoFilter('type', 'Манхва', this)">Манхва</button>
+                        <button class="b-filter-chip ${STATE.type === 'Манґа' ? 'active' : ''}" data-type="Манґа" onclick="setBentoFilter('type', 'Манґа', this)">Манґа</button>
+                        <button class="b-filter-chip ${STATE.type === 'Маньхва' ? 'active' : ''}" data-type="Маньхва" onclick="setBentoFilter('type', 'Маньхва', this)">Маньхва</button>
+                        <button class="b-filter-chip ${STATE.type === 'Роман' ? 'active' : ''}" data-type="Роман" onclick="setBentoFilter('type', 'Роман', this)">Роман</button>
+                    </div>
+                </div>
+                <div class="cs-section">
+                    <div class="cs-section-title"><span>Статус перекладу</span></div>
+                    <div class="b-chips-row">
+                        <button class="b-filter-chip ${STATE.status === 'all' ? 'active' : ''}" data-status="all" onclick="setBentoFilter('status', 'all', this)">Всі</button>
+                        <button class="b-filter-chip ${STATE.status === 'Виходить' ? 'active' : ''}" data-status="Виходить" onclick="setBentoFilter('status', 'Виходить', this)">Виходить</button>
+                        <button class="b-filter-chip ${STATE.status === 'Завершено' ? 'active' : ''}" data-status="Завершено" onclick="setBentoFilter('status', 'Завершено', this)">Завершено</button>
+                        <button class="b-filter-chip ${STATE.status === 'Закинуто' ? 'active' : ''}" data-status="Закинуто" onclick="setBentoFilter('status', 'Закинуто', this)">Закинуто</button>
+                    </div>
+                </div>
+                <div class="cs-section">
+                    <div class="cs-section-title"><span>Обсяг тайтла (глави)</span></div>
+                    <div class="b-chips-row">
+                        <button class="b-filter-chip ${STATE.length === 'all' ? 'active' : ''}" data-len="all" onclick="setBentoFilter('length', 'all', this)">Будь-який</button>
+                        <button class="b-filter-chip ${STATE.length === 'short' ? 'active' : ''}" data-len="short" onclick="setBentoFilter('length', 'short', this)">&lt; 10</button>
+                        <button class="b-filter-chip ${STATE.length === 'medium' ? 'active' : ''}" data-len="medium" onclick="setBentoFilter('length', 'medium', this)">10–50</button>
+                        <button class="b-filter-chip ${STATE.length === 'long' ? 'active' : ''}" data-len="long" onclick="setBentoFilter('length', 'long', this)">50+</button>
+                    </div>
+                </div>
+                <div class="cs-section">
+                    <div class="cs-section-title">
+                        <span>Жанри</span>
+                        <span style="font-size: 0.72rem; color: var(--text-secondary); text-transform: none;">✓ так | ✕ ні</span>
+                    </div>
+                    <div class="genre-search-field" style="margin-bottom: 0.5rem;">
+                        <i data-lucide="search"></i>
+                        <input type="text" placeholder="Швидкий пошук жанру..." oninput="filterMobileGenres(this.value)">
+                    </div>
+                    <div class="genre-chips-wrap" id="mobile-genre-chips">
+                        ${genres.map(g => `
+                            <button class="tri-chip" data-genre="${g}" onclick="toggleGenre('${g}')">
+                                <span class="chip-state-indicator"></span>
+                                <span class="genre-name">${g}</span>
+                                <span class="tri-chip-cnt">${counts[g]}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // 3-state genre toggle (No text jumping, rock-solid on touch)
+        function toggleGenre(g) {
+            if (STATE.genresInclude.has(g)) {
+                STATE.genresInclude.delete(g);
+                STATE.genresExclude.add(g);
+            } else if (STATE.genresExclude.has(g)) {
+                STATE.genresExclude.delete(g);
+            } else {
+                STATE.genresInclude.add(g);
+            }
+            updateGenreChipsUI();
+            renderCatalog();
+        }
+
+        function updateGenreChipsUI() {
+            document.querySelectorAll('.tri-chip').forEach(btn => {
+                const g = btn.dataset.genre;
+                btn.classList.remove('include', 'exclude');
+                if (STATE.genresInclude.has(g)) {
+                    btn.classList.add('include');
+                } else if (STATE.genresExclude.has(g)) {
+                    btn.classList.add('exclude');
+                }
+            });
+            updateActiveChipsBar();
+        }
+
+        function filterMobileGenres(query) {
+            const q = query.trim().toLowerCase();
+            document.querySelectorAll('#mobile-genre-chips .tri-chip').forEach(btn => {
+                const name = btn.dataset.genre.toLowerCase();
+                btn.style.display = name.includes(q) ? 'inline-flex' : 'none';
+            });
+        }
+
+        function setBentoFilter(key, val, btn) {
+            STATE[key] = val;
+            
+            // Sync all matching buttons (in top bento and sidebar)
+            document.querySelectorAll(`[data-${key === 'length' ? 'len' : key}]`).forEach(b => {
+                const matches = (key === 'length' ? b.dataset.len : b.dataset[key]) === val;
+                b.classList.toggle('active', matches);
+            });
+
+            updateActiveChipsBar();
+            renderCatalog();
+        }
+
+        function updateActiveChipsBar() {
+            const bar = document.getElementById('active-chips-strip');
+            let total = STATE.genresInclude.size + STATE.genresExclude.size + (STATE.type !== 'all' ? 1 : 0) + (STATE.status !== 'all' ? 1 : 0) + (STATE.length !== 'all' ? 1 : 0);
+            
+            document.getElementById('mobile-dock-counter').textContent = total;
+
+            if (total === 0) {
+                bar.style.display = 'none';
+                return;
+            }
+
+            bar.style.display = 'flex';
+            let html = '';
+            if (STATE.type !== 'all') html += `<div class="act-chip">Тип: ${STATE.type} <span class="act-chip-remove" onclick="setBentoFilter('type', 'all')">&times;</span></div>`;
+            if (STATE.status !== 'all') html += `<div class="act-chip">Статус: ${STATE.status} <span class="act-chip-remove" onclick="setBentoFilter('status', 'all')">&times;</span></div>`;
+            if (STATE.length !== 'all') {
+                const lName = STATE.length === 'short' ? '< 10 глав' : (STATE.length === 'medium' ? '10–50 глав' : '50+ глав');
+                html += `<div class="act-chip">Обсяг: ${lName} <span class="act-chip-remove" onclick="setBentoFilter('length', 'all')">&times;</span></div>`;
+            }
+            STATE.genresInclude.forEach(g => {
+                html += `<div class="act-chip">✓ ${g} <span class="act-chip-remove" onclick="toggleGenre('${g}')">&times;</span></div>`;
+            });
+            STATE.genresExclude.forEach(g => {
+                html += `<div class="act-chip exclude">✕ ${g} <span class="act-chip-remove" onclick="toggleGenre('${g}')">&times;</span></div>`;
+            });
+            html += `<button class="act-clear-all" onclick="resetAllFilters()">Скинути всі</button>`;
+            bar.innerHTML = html;
+        }
+
+        function resetAllFilters() {
+            STATE.type = 'all';
+            STATE.status = 'all';
+            STATE.length = 'all';
+            STATE.genresInclude.clear();
+            STATE.genresExclude.clear();
+            STATE.search = '';
+            document.getElementById('hybrid-search-input').value = '';
+            document.getElementById('search-clear-btn').style.display = 'none';
+
+            ['type', 'status', 'length'].forEach(k => {
+                document.querySelectorAll(`[data-${k === 'length' ? 'len' : k}]`).forEach(b => {
+                    const matches = (k === 'length' ? b.dataset.len : b.dataset[k]) === 'all';
+                    b.classList.toggle('active', matches);
+                });
+            });
+
+            updateGenreChipsUI();
+            renderCatalog();
+        }
+
+        // Search & Sort & View
+        const sInput = document.getElementById('hybrid-search-input');
+        const sClear = document.getElementById('search-clear-btn');
+        sInput.addEventListener('input', (e) => {
+            STATE.search = e.target.value.trim().toLowerCase();
+            sClear.style.display = STATE.search ? 'block' : 'none';
+            renderCatalog();
+        });
+        function clearSearch() {
+            sInput.value = '';
+            STATE.search = '';
+            sClear.style.display = 'none';
+            renderCatalog();
+        }
+
+        function handleSortChange(s) {
+            STATE.sort = s;
+            renderCatalog();
+        }
+
+        function setViewMode(mode) {
+            STATE.view = mode;
+            const container = document.getElementById('hybrid-manga-container');
+            document.getElementById('vt-grid').classList.toggle('active', mode === 'grid');
+            document.getElementById('vt-stream').classList.toggle('active', mode === 'stream');
+            container.classList.toggle('stream-mode', mode === 'stream');
+            renderCatalog();
+        }
+
+        function filterGenreList(query) {
+            const q = query.trim().toLowerCase();
+            document.querySelectorAll('#sidebar-genre-chips .tri-chip').forEach(btn => {
+                const name = btn.dataset.genre.toLowerCase();
+                btn.style.display = name.includes(q) ? 'inline-flex' : 'none';
+            });
+        }
+
+        // Render List
+        function renderCatalog() {
+            let list = ALL_MANGA.filter(m => {
+                if (STATE.search) {
+                    const t = m.title.toLowerCase().includes(STATE.search);
+                    const g = (m.genres || []).some(x => x.toLowerCase().includes(STATE.search));
+                    if (!t && !g) return false;
+                }
+                if (STATE.type !== 'all' && m.type !== STATE.type) return false;
+                if (STATE.status !== 'all' && m.status !== STATE.status) return false;
+                if (STATE.length === 'short' && (m.lastChapter || 0) >= 10) return false;
+                if (STATE.length === 'medium' && ((m.lastChapter || 0) < 10 || (m.lastChapter || 0) > 50)) return false;
+                if (STATE.length === 'long' && (m.lastChapter || 0) <= 50) return false;
+
+                if (STATE.genresInclude.size > 0) {
+                    for (let x of STATE.genresInclude) {
+                        if (!m.genres || !m.genres.includes(x)) return false;
+                    }
+                }
+                if (STATE.genresExclude.size > 0) {
+                    for (let x of STATE.genresExclude) {
+                        if (m.genres && m.genres.includes(x)) return false;
+                    }
+                }
+                return true;
+            });
+
+            if (STATE.sort === 'newest') {
+                list.sort((a,b) => new Date(b.latestUpdate || 0) - new Date(a.latestUpdate || 0));
+            } else if (STATE.sort === 'chapters') {
+                list.sort((a,b) => (b.lastChapter || 0) - (a.lastChapter || 0));
+            } else if (STATE.sort === 'az') {
+                list.sort((a,b) => a.title.localeCompare(b.title, 'uk'));
+            } else if (STATE.sort === 'za') {
+                list.sort((a,b) => b.title.localeCompare(a.title, 'uk'));
+            }
+
+            document.getElementById('sheet-apply-btn').textContent = `Показати ${list.length} тайтлів`;
+            const cntEl = document.getElementById('catalog-count-num');
+            if (cntEl) cntEl.textContent = list.length;
+
+            const container = document.getElementById('hybrid-manga-container');
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; padding: 4rem 1rem; text-align: center; background: var(--surface-card); border-radius: var(--radius-l); border: 1px dashed var(--border-subtle);">
+                        <i data-lucide="search-x" style="width: 48px; height: 48px; color: var(--accent-primary); margin-bottom: 1rem;"></i>
+                        <h3 style="font-size: 1.25rem; font-weight: 700;">Нічого не знайдено</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.88rem; margin: 0.5rem 0 1.25rem;">Спробуйте змінити фільтри або скинути параметри.</p>
+                        <button class="b-filter-chip active" onclick="resetAllFilters()">Скинути всі фільтри</button>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            if (STATE.view === 'stream') {
+                container.innerHTML = list.map(m => `
+                    <article class="hm-card">
+                        <div class="hm-cover-wrap">
+                            <img src="${m.coverImage}" alt="${m.title}" class="hm-cover" loading="lazy">
+                        </div>
+                        <div class="hm-card-info">
+                            <div>
+                                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+                                    <h3 class="hm-title">${m.title}</h3>
+                                    <span class="hm-status-tag ${getStatusClass(m.status)}">${m.status}</span>
+                                </div>
+                                <div class="stream-tag-row">
+                                    <span class="stream-tag" style="background: rgba(208, 188, 255, 0.15); color: var(--accent-primary); font-weight: 700;">${m.type || 'Манхва'}</span>
+                                    ${(m.genres || []).slice(0, 4).map(g => `<span class="stream-tag">${g}</span>`).join('')}
+                                </div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 0.5rem; margin-top: auto;">
+                                <span class="hm-chapter">Глава ${m.lastChapter || 1}</span>
+                                <div style="display: flex; gap: 0.4rem;">
+                                    <button class="sc-quick-btn" style="padding: 0.3rem 0.75rem; font-size: 0.75rem; border-color: var(--border-subtle);" onclick="openQuickView(${m.id})">
+                                        <i data-lucide="eye" style="width: 13px; height: 13px;"></i> Огляд
+                                    </button>
+                                    <a href="${m.pageUrl}" class="stream-read-btn">
+                                        <i data-lucide="book-open" style="width: 13px; height: 13px;"></i> Читати
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                `).join('');
+            } else {
+                container.innerHTML = list.map(m => `
+                    <div class="hm-card">
+                        <div class="hm-cover-wrap">
+                            <img src="${m.coverImage}" alt="${m.title}" class="hm-cover" loading="lazy">
+                            <div class="hm-overlay"></div>
+                            <div class="hm-badges-top">
+                                <span class="hm-type-tag">${m.type || 'Манхва'}</span>
+                                <span class="hm-status-tag ${getStatusClass(m.status)}">${m.status}</span>
+                            </div>
+                            <div class="hm-card-info">
+                                <a href="${m.pageUrl}" class="hm-title">${m.title}</a>
+                                <div class="hm-meta-row">
+                                    <span class="hm-chapter">Глава ${m.lastChapter || 1}</span>
+                                    <span>${(m.genres && m.genres[0]) || ''}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            lucide.createIcons();
+        }
+
+        function getStatusClass(st) {
+            if (st === 'Виходить') return 'ongoing';
+            if (st === 'Завершено') return 'completed';
+            return 'frozen';
+        }
+
+        // Quick-View Modal
+        function openQuickView(id) {
+            const m = ALL_MANGA.find(x => x.id === id) || ALL_MANGA[0];
+            const area = document.getElementById('modal-content-area');
+            area.innerHTML = `
+                <div style="display: flex; gap: 1.5rem; flex-wrap: wrap;">
+                    <img src="${m.coverImage}" alt="${m.title}" style="width: 140px; aspect-ratio: 2/3; object-fit: cover; border-radius: var(--radius-m); box-shadow: 0 8px 24px rgba(0,0,0,0.3);">
+                    <div style="flex: 1; min-width: 240px; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                            <span class="sc-badge featured">${m.type || 'Манхва'}</span>
+                            <span class="sc-badge ${getStatusClass(m.status)}">${m.status}</span>
+                            <span class="sc-badge">Глава ${m.lastChapter || 1}</span>
+                        </div>
+                        <h2 style="font-size: 1.35rem; font-weight: 800; line-height: 1.3;">${m.title}</h2>
+                        <div style="display: flex; gap: 0.35rem; flex-wrap: wrap; margin-top: 0.2rem;">
+                            ${(m.genres || []).map(g => `<span class="stream-tag">${g}</span>`).join('')}
+                        </div>
+                        <p style="font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-top: 0.4rem;">
+                            Український переклад від команди Gokuraku. Насолоджуйтеся комфортним читанням безкоштовно та у високій якості.
+                        </p>
+                        <div style="display: flex; gap: 0.75rem; margin-top: auto; padding-top: 1rem;">
+                            <a href="${m.pageUrl}" class="sc-read-btn" style="flex: 1; justify-content: center;">
+                                <i data-lucide="book-open" style="width: 15px; height: 15px;"></i> Почати читати
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal-overlay').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+
+        function closeModal(e) {
+            document.getElementById('modal-overlay').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        // Mobile Sheet
+        function openMobileFilters() {
+            document.getElementById('sheet-backdrop').classList.add('open');
+            document.getElementById('bottom-sheet').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeMobileFilters() {
+            document.getElementById('sheet-backdrop').classList.remove('open');
+            document.getElementById('bottom-sheet').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function getSampleData() {
+            return [
+                {"id": 1, "title": "Кохання — це ілюзія", "coverImage": "https://files.catbox.moe/h3nvsn.webp", "pageUrl": "#title?id=kokhannia-tse-iliuziia", "genres": ["Яой", "Драма", "Комедія", "Романтика", "Омегаверс"], "type": "Манхва", "status": "Завершено", "lastChapter": 117.0, "latestUpdate": "2026-02-23T20:38:15Z"},
+                {"id": 2, "title": "Щасливий Мармур", "coverImage": "https://files.catbox.moe/8c9w05.jpg", "pageUrl": "#title?id=shchaslyvyi-marmur", "genres": ["Буденність", "Драма", "Комедія", "Романтика", "Школа"], "type": "Манхва", "status": "Виходить", "lastChapter": 50.0, "latestUpdate": "2026-10-23T19:42:09Z"},
+                {"id": 3, "title": "Хлопець у мені", "coverImage": "https://files.catbox.moe/zpwhw3.webp", "pageUrl": "#title?id=khlopets-u-meni", "genres": ["Яой", "Драма", "Шьонен-ай", "Романтика", "Фентезі"], "type": "Маньхва", "status": "Виходить", "lastChapter": 53.0, "latestUpdate": "2026-08-23T13:13:06Z"},
+                {"id": 4, "title": "Форма симпатії", "coverImage": "https://files.catbox.moe/u3qcxk.jpg", "pageUrl": "#title?id=forma-sympatii", "genres": ["Яой", "Драма", "Шьонен-ай", "Школа"], "type": "Манхва", "status": "Виходить", "lastChapter": 75.6, "latestUpdate": "2026-10-22T19:38:59Z"},
+                {"id": 5, "title": "Солодке собаче життя", "coverImage": "https://files.catbox.moe/335rgs.jpg", "pageUrl": "#title?id=solodke-sobache-zhyttia", "genres": ["Яой", "Кулінарія", "Буденність", "Еротика"], "type": "Манґа", "status": "Завершено", "lastChapter": 6.5, "latestUpdate": "2025-11-12T19:08:48Z"},
+                {"id": 6, "title": "Мій кіт трохи інший", "coverImage": "https://files.catbox.moe/ftcjz4.webp", "pageUrl": "#title?id=mii-kit-trokhy-inshyi", "genres": ["Буденність", "Тварини", "Комедія"], "type": "Маньхва", "status": "Завершено", "lastChapter": 6.0, "latestUpdate": "2025-11-12T18:58:46Z"},
+                {"id": 8, "title": "Відьма Ічі", "coverImage": "https://files.catbox.moe/kslaz2.webp", "pageUrl": "#title?id=vidma-ichi", "genres": ["Шьонен", "Пригоди", "Екшн", "Комедія", "Фентезі"], "type": "Манґа", "status": "Виходить", "lastChapter": 66.0, "latestUpdate": "2026-10-17T20:39:51Z"},
+                {"id": 14, "title": "Хаскі та його вчитель білий кіт", "coverImage": "https://files.catbox.moe/lzyeyc.webp", "pageUrl": "#title?id=khaski-ta-ioho-vchytel-bilyi-kit", "genres": ["Бойовик", "Драма", "Надприродне", "Фентезі", "Яой"], "type": "Маньхва", "status": "Закинуто", "lastChapter": 8.0, "latestUpdate": "2026-08-25T19:45:30Z"},
+                {"id": 15, "title": "Лиходій хоче жити", "coverImage": "https://files.catbox.moe/36d5ct.webp", "pageUrl": "#title?id=lykhodii-khoche-zhyty", "genres": ["Школа", "Екшн", "Комедія", "Фентезі", "Ісекай"], "type": "Роман", "status": "Закинуто", "lastChapter": 4.0, "latestUpdate": "2026-08-18T19:34:45Z"},
+                {"id": 17, "title": "11-та шкільна поїздка", "coverImage": "https://files.catbox.moe/oh8ix3.jpg", "pageUrl": "#title?id=11-ta-shkilna-poizdka", "genres": ["Яой", "Фантастика", "Регресія", "Трилер"], "type": "Манхва", "status": "Виходить", "lastChapter": 29.0, "latestUpdate": "2026-10-22T19:59:23Z"},
+                {"id": 21, "title": "Душа, загублена Ґоу", "coverImage": "https://i.ibb.co/MkNxQ6n6/1.webp", "pageUrl": "#title?id=dusha-zahublena-gou", "genres": ["Шьонен", "Пригоди", "Демони", "Фентезі"], "type": "Маньхва", "status": "Виходить", "lastChapter": 12.0, "latestUpdate": "2026-10-22T19:36:32Z"},
+                {"id": 25, "title": "Невдалий приклад бездоганного прокляття", "coverImage": "https://files.catbox.moe/hu8i1f.webp", "pageUrl": "#title?id=nevdalyi-pryklad-bezdohannoho-prokliattia", "genres": ["Драма", "Фентезі", "Романтика", "Магія"], "type": "Манхва", "status": "Виходить", "lastChapter": 45.0, "latestUpdate": "2026-10-25T19:48:10Z"}
+            ];
+        }
+
+        // Listener for theme messages from hub
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.theme) {
+                document.documentElement.setAttribute('data-theme', e.data.theme);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlTheme = new URLSearchParams(window.location.search).get('theme');
+            const savedTheme = urlTheme || localStorage.getItem('gokuraku_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            initData();
+        });
+    </script>
+</body>
+</html>

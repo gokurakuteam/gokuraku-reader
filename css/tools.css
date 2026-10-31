@@ -985,21 +985,64 @@ html[data-theme="light"] .processing-overlay {
 
 @media (max-width: 768px) {
     .tools-header-wrapper {
-        padding: 0.5rem;
+        padding: 0.75rem 1rem;
     }
     .tools-header {
-        padding: 0.4rem 0.75rem;
-    }
-    .tools-back-btn span {
-        display: none;
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        justify-content: flex-start;
     }
     .tools-back-btn {
-        padding: 0.5rem 0.75rem;
+        padding: 0.6rem 1.25rem;
+        font-size: 0.9rem;
+        background-color: var(--card-background);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    }
+    .tools-back-btn span {
+        display: inline;
+    }
+
+    /* Floating Bottom Navigation Tabs on Mobile */
+    .tools-tabs {
+        position: fixed;
+        bottom: 1.25rem;
+        left: 1rem;
+        right: 1rem;
+        margin: 0 auto;
+        max-width: 380px;
+        z-index: 999;
+        background-color: rgba(43, 41, 48, 0.94);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-full);
+        padding: 0.35rem;
+        box-shadow: 0 10px 35px rgba(0, 0, 0, 0.5), 0 0 20px var(--glow-color);
+        display: flex;
+        justify-content: space-around;
+    }
+    html[data-theme="light"] .tools-tabs {
+        background-color: rgba(243, 237, 247, 0.94);
     }
     .tool-tab {
-        padding: 0.45rem 0.9rem;
-        font-size: 0.8rem;
+        flex: 1;
+        justify-content: center;
+        padding: 0.75rem 1rem;
+        min-height: 44px;
+        font-size: 0.9rem;
+        border-radius: var(--radius-full);
     }
+    .tool-tab i, .tool-tab svg {
+        width: 18px;
+        height: 18px;
+    }
+
+    .tools-container {
+        padding-bottom: 95px;
+    }
+
     .slicer-card {
         padding: 1.25rem;
         border-radius: var(--radius-m);
@@ -1017,34 +1060,14 @@ html[data-theme="light"] .processing-overlay {
     .info-feature-list {
         grid-template-columns: 1fr;
     }
+    .tools-info-section {
+        margin-top: 2.5rem;
+        padding-top: 2rem;
+        margin-bottom: 1rem;
+    }
 
-    /* Mobile Footer styling on tools.html */
+    /* Completely hide footer on mobile for tools page */
     footer.expressive-footer {
-        display: block !important;
-        margin-top: 3rem;
-        padding: 2rem 1.25rem 2rem;
-        border-top-left-radius: 28px;
-        border-top-right-radius: 28px;
-    }
-    footer.expressive-footer .footer-content {
-        flex-direction: column;
-        text-align: center;
-        gap: 1.5rem;
-    }
-    footer.expressive-footer .footer-brand {
-        text-align: center;
-    }
-    footer.expressive-footer .footer-logo {
-        text-align: center;
-        font-size: 1.8rem;
-    }
-    footer.expressive-footer .footer-slogan {
-        text-align: center;
-        font-size: 0.9rem;
-    }
-    footer.expressive-footer .footer-links {
-        justify-content: center;
-        width: 100%;
-        gap: 0.75rem;
+        display: none !important;
     }
 }

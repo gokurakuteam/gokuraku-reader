@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Лабораторія концептів каталогу — Gokuraku Design Labs</title>
+    <link rel="icon" type="image/x-icon" href="/icons/icon-256.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --surface-canvas: #121016;
+            --surface-card: #22202A;
+            --surface-elevated: #2E2B38;
+            --border-subtle: #454052;
+            --text-primary: #EAE5F3;
+            --text-secondary: #ADA7BA;
+            --accent-primary: #D0BCFF;
+            --accent-glow: rgba(208, 188, 255, 0.25);
+            --radius-s: 8px;
+            --radius-m: 16px;
+            --radius-l: 24px;
+            --radius-pill: 100px;
+        }
+
+        html[data-theme="light"] {
+            --surface-canvas: #FAF6FD;
+            --surface-card: #EDE7F4;
+            --surface-elevated: #E4DDEC;
+            --border-subtle: #C9C2D2;
+            --text-primary: #1A1721;
+            --text-secondary: #575262;
+            --accent-primary: #6750A4;
+            --accent-glow: rgba(103, 80, 164, 0.15);
+        }
+
+        *, *::before, *::after { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            text-decoration: none !important; 
+        }
+        a, a:hover, a:focus, a:visited, a:active { 
+            text-decoration: none !important; 
+            color: inherit; 
+        }
+        body {
+            background-color: var(--surface-canvas);
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23808080" fill-opacity="0.03" fill-rule="evenodd"%3E%3Cpath d="M0 60L60 0H30L0 30M60 60V30L30 60"/%3E%3C/g%3E%3C/svg%3E');
+        }
+
+        .hub-header {
+            background: var(--surface-card);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0.85rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .hub-title {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .hub-title h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+        .hub-title span {
+            color: var(--accent-primary);
+            font-size: 0.78rem;
+            font-weight: 700;
+            background: rgba(208, 188, 255, 0.12);
+            padding: 0.25rem 0.65rem;
+            border-radius: var(--radius-pill);
+            letter-spacing: 0.5px;
+        }
+
+        /* Concept Selector Tabs */
+        .concept-selector {
+            display: flex;
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            padding: 0.25rem;
+            border-radius: var(--radius-pill);
+            gap: 0.25rem;
+        }
+        .concept-tab {
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.85rem;
+            padding: 0.5rem 1.15rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+            font-family: inherit;
+        }
+        .concept-tab.active {
+            background: var(--accent-primary);
+            color: #121016;
+            font-weight: 700;
+            box-shadow: 0 2px 10px var(--accent-glow);
+        }
+        html[data-theme="light"] .concept-tab.active {
+            color: #ffffff;
+        }
+
+        /* Viewport Controls */
+        .viewport-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .vp-btn {
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 0.45rem 0.85rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .vp-btn.active, .vp-btn:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+        .open-fullscreen-btn {
+            background: var(--accent-primary);
+            color: #121016;
+            font-weight: 700;
+            border: none;
+            padding: 0.45rem 1.1rem;
+            border-radius: var(--radius-pill);
+            text-decoration: none;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+        html[data-theme="light"] .open-fullscreen-btn {
+            color: #ffffff;
+        }
+        .open-fullscreen-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+        .hub-theme-toggle {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            cursor: pointer;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+        .hub-theme-toggle:hover {
+            transform: rotate(15deg);
+            border-color: var(--accent-primary);
+        }
+
+        /* Description Banner */
+        .concept-info-banner {
+            background: var(--surface-card);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 1.1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+        }
+        .cib-text h2 {
+            font-size: 1.15rem;
+            font-weight: 800;
+            margin-bottom: 0.35rem;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .cib-text p {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+            max-width: 900px;
+        }
+        .cib-tags {
+            display: flex;
+            gap: 0.45rem;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+            max-width: 380px;
+            justify-content: flex-end;
+        }
+        .tag {
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            padding: 0.25rem 0.65rem;
+            border-radius: var(--radius-s);
+            color: var(--text-primary);
+        }
+
+        /* Preview Area */
+        .preview-area {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 1.5rem;
+            background: #09080C;
+            overflow-y: auto;
+            transition: background 0.3s;
+        }
+        html[data-theme="light"] .preview-area {
+            background: #E8E2EE;
+        }
+        .iframe-wrapper {
+            width: 100%;
+            height: calc(100vh - 180px);
+            border-radius: var(--radius-l);
+            overflow: hidden;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            transition: width 0.4s cubic-bezier(0.05, 0.7, 0.1, 1.0);
+            background: var(--surface-canvas);
+        }
+        .iframe-wrapper.tablet {
+            width: 768px;
+        }
+        .iframe-wrapper.mobile {
+            width: 390px;
+            height: 844px;
+            border-radius: 44px;
+            border: 10px solid #2B2930;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 25px var(--accent-glow);
+        }
+        html[data-theme="light"] .iframe-wrapper.mobile {
+            border-color: #D6CCE0;
+            box-shadow: 0 20px 50px rgba(103, 80, 164, 0.2), 0 0 15px rgba(103, 80, 164, 0.1);
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        @media (max-width: 1024px) {
+            .hub-header { flex-direction: column; gap: 0.85rem; align-items: stretch; }
+            .concept-selector { overflow-x: auto; }
+            .viewport-controls { justify-content: center; flex-wrap: wrap; }
+            .concept-info-banner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .cib-tags { justify-content: flex-start; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Hub -->
+    <header class="hub-header">
+        <div class="hub-title">
+            <h1>Gokuraku Design Labs</h1>
+            <span>4 КОНЦЕПТИ КАТАЛОГУ</span>
+        </div>
+
+        <!-- Concept Switcher -->
+        <div class="concept-selector">
+            <button class="concept-tab active" onclick="loadConcept(0)">
+                <i data-lucide="sparkles" style="width: 15px; height: 15px;"></i> ⚡ 4. Hybrid Showcase
+            </button>
+            <button class="concept-tab" onclick="loadConcept(1)">
+                <i data-lucide="zap" style="width: 15px; height: 15px;"></i> 1. Modern Stream
+            </button>
+            <button class="concept-tab" onclick="loadConcept(2)">
+                <i data-lucide="layout-grid" style="width: 15px; height: 15px;"></i> 2. Bento & Quick-View
+            </button>
+            <button class="concept-tab" onclick="loadConcept(3)">
+                <i data-lucide="library" style="width: 15px; height: 15px;"></i> 3. Editorial Library
+            </button>
+        </div>
+
+        <!-- Viewport Size Controls -->
+        <div class="viewport-controls">
+            <button class="vp-btn active" onclick="setViewport('desktop', this)">
+                <i data-lucide="monitor" style="width: 14px; height: 14px;"></i> Ноутбук
+            </button>
+            <button class="vp-btn" onclick="setViewport('tablet', this)">
+                <i data-lucide="tablet" style="width: 14px; height: 14px;"></i> Планшет
+            </button>
+            <button class="vp-btn" onclick="setViewport('mobile', this)">
+                <i data-lucide="smartphone" style="width: 14px; height: 14px;"></i> Телефон
+            </button>
+            <a id="fullscreen-link" href="concept-catalog-hybrid.html" target="_blank" class="open-fullscreen-btn">
+                <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> На весь екран
+            </a>
+            <button class="hub-theme-toggle" onclick="toggleHubTheme()" title="Тема хабу">
+                <i data-lucide="sun-moon" style="width: 16px; height: 16px;"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Concept Description Banner -->
+    <div class="concept-info-banner">
+        <div class="cib-text">
+            <h2 id="concept-name">Концепт 4: Hybrid Showcase & Flow (За вашим запитом)</h2>
+            <p id="concept-desc">
+                Повний гібрид найкращих рішень: зверху інтерактивний Random Showcase банер із кнопкою «🎲 Інший випадковий» та швидким переглядом; швидкі Bento-кнопки фільтрів для формату (Манхва, Манґа, Маньхва, Роман), статусу та нового фільтра «Обсяг» (&lt;10, 10–50, 50+ глав); перемикач відображення тайтлів сіткою постерів 2:3 або детальним списком із кнопками швидкого читання; класичний сайдбар із 3-позиційними жанрами (Включити/Виключити/Нейтрально); оптимізований мобільний док та шторка.
+            </p>
+        </div>
+        <div class="cib-tags" id="concept-tags">
+            <span class="tag">🎲 Random Title Showcase</span>
+            <span class="tag">Bento формати & статус</span>
+            <span class="tag">Фільтр обсягу (глави)</span>
+            <span class="tag">Сітка 2:3 + Список</span>
+            <span class="tag">3-State Genres</span>
+            <span class="tag">Live Quick-View</span>
+            <span class="tag">Mobile Floating Dock</span>
+        </div>
+    </div>
+
+    <!-- Live Preview Area -->
+    <div class="preview-area">
+        <div id="iframe-wrap" class="iframe-wrapper">
+            <iframe id="concept-frame" src="concept-catalog-hybrid.html"></iframe>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        const CONCEPTS = [
+            {
+                url: "concept-catalog-hybrid.html",
+                name: "Концепт 4: Hybrid Showcase & Flow (За вашим запитом)",
+                desc: "Повний гібрид найкращих рішень: зверху інтерактивний Random Showcase банер із кнопкою «🎲 Інший випадковий» та швидким переглядом; швидкі Bento-кнопки фільтрів для формату (Манхва, Манґа, Маньхва, Роман), статусу та нового фільтра «Обсяг» (<10, 10–50, 50+ глав); перемикач відображення тайтлів сіткою постерів 2:3 або детальним списком із кнопками швидкого читання; класичний сайдбар із 3-позиційними жанрами (Включити/Виключити/Нейтрально); оптимізований мобільний док та шторка.",
+                tags: ["🎲 Random Title Showcase", "Bento формати & статус", "Фільтр обсягу (глави)", "Сітка 2:3 + Список", "3-State Genres", "Live Quick-View", "Mobile Floating Dock"]
+            },
+            {
+                url: "concept-catalog-stream.html",
+                name: "Концепт 1: Modern Stream & Quick Presets",
+                desc: "Стримінговий хаб із миттєвими фільтрами-пігулками у шапці («Гарячі оновлення», «Завершено», «Манхва», «Манґа», «Мені пощастить»). Перемикання між сіткою постерів та детальним списком із кнопками читання, розширений сайдбар із пошуком всередині жанрів та плаваючий мобільний фільтр-док під великий палець.",
+                tags: ["Quick Presets", "Сітка / Список", "Пошук жанрів", "3-State Chips", "Mobile Floating Dock", "Thumb Bottom Sheet"]
+            },
+            {
+                url: "concept-catalog-bento.html",
+                name: "Концепт 2: Visual Bento Showcase & Live Quick-View",
+                desc: "Візуальний журнал із банером тренду каталогу та модульним Bento-центром управління (окремі інтерактивні плитки для форматів із прапорцями, статусів та сортування). Головна фішка: Live Quick-View модальне вікно без переходу зі сторінки каталогу!",
+                tags: ["Showcase Hero", "Bento-модулі", "Live Quick-View", "Швидкий огляд", "Щільна / Звичайна сітка", "Жанровий барабан"]
+            },
+            {
+                url: "concept-catalog-editorial.html",
+                name: "Концепт 3: Editorial Library & Power Search",
+                desc: "Витончена бібліотека для активних читачів. Верхній алфавітний покажчик (А-Я / A-Z / 1-9), швидкий мульти-вибір статусів та форматів у єдиному тулбарі, фільтрація за обсягом тайтла (< 10 чи 50+ глав) та картки з детальними метаданими.",
+                tags: ["Алфавітний покажчик", "Power Toolbar", "Фільтр обсягу (глави)", "Журнальні картки", "Статистика бібліотеки"]
+            }
+        ];
+
+        let currentConceptId = 0;
+
+        function loadConcept(id) {
+            currentConceptId = id;
+            const data = CONCEPTS[id];
+            const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+            const frame = document.getElementById('concept-frame');
+            frame.src = `${data.url}?theme=${currentTheme}`;
+            document.getElementById('fullscreen-link').href = `${data.url}?theme=${currentTheme}`;
+
+            document.querySelectorAll('.concept-tab').forEach((tab, index) => {
+                tab.classList.toggle('active', index === id);
+            });
+
+            document.getElementById('concept-name').textContent = data.name;
+            document.getElementById('concept-desc').textContent = data.desc;
+            document.getElementById('concept-tags').innerHTML = data.tags.map(t => `<span class="tag">${t}</span>`).join('');
+            lucide.createIcons();
+        }
+
+        function setViewport(mode, btn) {
+            const wrap = document.getElementById('iframe-wrap');
+            wrap.className = 'iframe-wrapper ' + (mode === 'desktop' ? '' : mode);
+            
+            document.querySelectorAll('.vp-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        function toggleHubTheme() {
+            const html = document.documentElement;
+            const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            
+            // Also toggle iframe theme if accessible
+            try {
+                const frame = document.getElementById('concept-frame');
+                if (frame.contentDocument) {
+                    frame.contentDocument.documentElement.setAttribute('data-theme', next);
+                }
+                if (frame.contentWindow) {
+                    frame.contentWindow.postMessage({ theme: next }, '*');
+                }
+                const data = CONCEPTS[currentConceptId];
+                document.getElementById('fullscreen-link').href = `${data.url}?theme=${next}`;
+            } catch(e) {}
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Концепт 1: Modern Stream — Каталог Gokuraku</title>
+    <link rel="icon" type="image/x-icon" href="/icons/icon-256.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --surface-canvas: #141218;
+            --surface-card: #2B2930;
+            --surface-elevated: #36343B;
+            --surface-overlay: rgba(20, 18, 24, 0.92);
+            --border-subtle: #49454F;
+            --text-primary: #E6E0E9;
+            --text-secondary: #CAC4D0;
+            --accent-primary: #D0BCFF;
+            --accent-glow: rgba(208, 188, 255, 0.25);
+            --motion-ease-fluid: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+            --motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1.0);
+            --radius-s: 8px;
+            --radius-m: 16px;
+            --radius-l: 24px;
+            --radius-xl: 32px;
+            --radius-pill: 100px;
+
+            --text-on-media: #FFFFFF;
+            --text-sub-on-media: rgba(255, 255, 255, 0.8);
+        }
+
+        html[data-theme="light"] {
+            --surface-canvas: #FEF7FF;
+            --surface-card: #F3EDF7;
+            --surface-elevated: #EDE7F0;
+            --surface-overlay: rgba(254, 247, 255, 0.92);
+            --border-subtle: #CAC4D0;
+            --text-primary: #1D1B20;
+            --text-secondary: #49454F;
+            --accent-primary: #6750A4;
+            --accent-glow: rgba(103, 80, 164, 0.2);
+
+            --text-on-media: #FFFFFF;
+            --text-sub-on-media: rgba(255, 255, 255, 0.85);
+        }
+
+        *, *::before, *::after { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            text-decoration: none !important; 
+        }
+        a, a:hover, a:focus, a:visited, a:active { 
+            text-decoration: none !important; 
+            color: inherit; 
+        }
+        body {
+            background-color: var(--surface-canvas);
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.5;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23808080" fill-opacity="0.03" fill-rule="evenodd"%3E%3Cpath d="M0 60L60 0H30L0 30M60 60V30L30 60"/%3E%3C/g%3E%3C/svg%3E');
+            min-height: 100vh;
+            padding-bottom: 95px;
+        }
+
+        /* Top Concept Switcher Bar */
+        .concept-bar {
+            background: var(--surface-card);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0.5rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .concept-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            background: rgba(208, 188, 255, 0.15);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-pill);
+            white-space: nowrap;
+        }
+        html[data-theme="light"] .concept-badge {
+            background: rgba(103, 80, 164, 0.12);
+        }
+        .concept-links {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .concept-links::-webkit-scrollbar { display: none; }
+        .concept-btn {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.3rem 0.75rem;
+            border-radius: var(--radius-pill);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            border: 1px solid transparent;
+        }
+        .concept-btn.active, .concept-btn:hover {
+            color: var(--text-primary);
+            background: var(--surface-canvas);
+            border-color: var(--border-subtle);
+        }
+        .concept-btn.hub {
+            background: var(--accent-primary);
+            color: #ffffff;
+            font-weight: 700;
+        }
+        html[data-theme="dark"] .concept-btn.hub {
+            color: #141218;
+        }
+        .theme-toggle-btn {
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.2s var(--motion-ease-spring);
+        }
+        .theme-toggle-btn:hover {
+            transform: rotate(15deg) scale(1.05);
+            border-color: var(--accent-primary);
+        }
+
+        /* Floating App Header */
+        .app-header-wrap {
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 48px;
+            z-index: 500;
+            pointer-events: none;
+        }
+        .app-header {
+            pointer-events: auto;
+            max-width: 1280px;
+            margin: 0 auto;
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--radius-pill);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--accent-primary);
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+        .logo-flower {
+            width: 28px;
+            height: 28px;
+            fill: currentColor;
+            opacity: 0.85;
+        }
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 0.4rem 0.9rem;
+            border-radius: var(--radius-pill);
+            transition: all 0.2s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .nav-link.active {
+            color: var(--accent-primary);
+            background: rgba(208, 188, 255, 0.12);
+        }
+
+        /* Container */
+        .catalog-container {
+            max-width: 1280px;
+            margin: 1.5rem auto 0;
+            padding: 0 1.5rem;
+        }
+
+        /* Section Header */
+        .catalog-hero-header {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .hero-title-row {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .hero-title-row h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .count-badge {
+            font-size: 0.8rem;
+            font-weight: 700;
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--accent-primary);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-pill);
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        /* 1. Quick Presets Bar (Pills) */
+        .quick-presets-scroll {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .quick-presets-scroll::-webkit-scrollbar { display: none; }
+        .preset-pill {
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.5rem 1.1rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            transition: all 0.25s var(--motion-ease-spring);
+            user-select: none;
+            min-height: 40px;
+        }
+        .preset-pill:hover {
+            color: var(--text-primary);
+            border-color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+        .preset-pill:active {
+            transform: scale(0.96);
+        }
+        .preset-pill.active {
+            background: var(--accent-primary);
+            color: #141218;
+            border-color: var(--accent-primary);
+            font-weight: 700;
+            box-shadow: 0 2px 12px var(--accent-glow);
+        }
+        .preset-pill.random-btn {
+            background: linear-gradient(135deg, rgba(208, 188, 255, 0.15), rgba(208, 188, 255, 0.05));
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            margin-left: auto;
+        }
+        .preset-pill.random-btn:hover {
+            background: var(--accent-primary);
+            color: #141218;
+            box-shadow: 0 4px 16px var(--accent-glow);
+        }
+
+        /* 2. Main Catalog Layout */
+        .catalog-main-layout {
+            display: flex;
+            gap: 1.75rem;
+            align-items: flex-start;
+        }
+
+        /* Left/Center Content Area */
+        .content-area {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* Modern Toolbar */
+        .catalog-toolbar {
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-l);
+            padding: 0.75rem 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+        .search-box-wrap {
+            position: relative;
+            flex: 1;
+            min-width: 220px;
+            max-width: 480px;
+        }
+        .search-box-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            pointer-events: none;
+            width: 18px;
+            height: 18px;
+        }
+        .search-input {
+            width: 100%;
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 0.65rem 2.4rem 0.65rem 2.75rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.9rem;
+            font-family: inherit;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+        .search-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .search-clear-btn {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: none;
+            padding: 0.2rem;
+            border-radius: 50%;
+        }
+        .search-clear-btn:hover { color: var(--text-primary); }
+
+        .toolbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        /* Sort Dropdown */
+        .sort-select-wrap {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+        }
+        .sort-select {
+            appearance: none;
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 0.6rem 2.2rem 0.6rem 1rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: inherit;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .sort-select:focus, .sort-select:hover {
+            border-color: var(--accent-primary);
+        }
+        .sort-arrow {
+            position: absolute;
+            right: 0.75rem;
+            pointer-events: none;
+            color: var(--text-secondary);
+            width: 16px;
+            height: 16px;
+        }
+
+        /* View Mode Switcher */
+        .view-switcher {
+            display: inline-flex;
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-pill);
+            padding: 0.2rem;
+        }
+        .view-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 0.4rem 0.65rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all 0.2s var(--motion-ease-spring);
+        }
+        .view-btn.active {
+            background: var(--surface-card);
+            color: var(--accent-primary);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        /* Active Filter Chips Bar */
+        .active-filter-chips {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+        .filter-chip {
+            background: rgba(208, 188, 255, 0.15);
+            border: 1px solid var(--accent-primary);
+            color: var(--accent-primary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.3rem 0.75rem;
+            border-radius: var(--radius-pill);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .filter-chip.exclude {
+            background: rgba(255, 91, 91, 0.15);
+            border-color: #ff5b5b;
+            color: #ff8585;
+        }
+        .chip-remove {
+            cursor: pointer;
+            font-size: 1rem;
+            line-height: 1;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+        .chip-remove:hover { opacity: 1; }
+        .clear-all-chips-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            padding: 0.3rem 0.5rem;
+        }
+        .clear-all-chips-btn:hover { color: var(--text-primary); }
+
+        /* Manga Grid & Stream Styles */
+        .manga-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* 2:3 Standard Card */
+        .manga-card {
+            background: var(--surface-card);
+            border-radius: var(--radius-l);
+            overflow: hidden;
+            text-decoration: none;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: transform 0.35s var(--motion-ease-spring), box-shadow 0.35s var(--motion-ease-spring), border-color 0.35s;
+            position: relative;
+        }
+        .manga-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), 0 0 20px var(--accent-glow);
+            border-color: var(--accent-primary);
+        }
+        .manga-card:active {
+            transform: translateY(-2px) scale(0.98);
+        }
+        .card-cover-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 2 / 3;
+            overflow: hidden;
+            background: #1e1c24;
+        }
+        .card-cover {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s var(--motion-ease-fluid);
+            display: block;
+        }
+        .manga-card:hover .card-cover {
+            transform: scale(1.06);
+        }
+        .card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(20, 18, 24, 0.95) 12%, rgba(20, 18, 24, 0.4) 45%, transparent 75%);
+            pointer-events: none;
+        }
+        .card-badges-top {
+            position: absolute;
+            top: 0.65rem;
+            left: 0.65rem;
+            right: 0.65rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.4rem;
+            z-index: 2;
+        }
+        .badge-type {
+            font-size: 0.68rem;
+            font-weight: 700;
+            background: rgba(20, 18, 24, 0.85);
+            backdrop-filter: blur(8px);
+            color: var(--text-primary);
+            padding: 0.2rem 0.55rem;
+            border-radius: var(--radius-s);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .badge-status {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 0.2rem 0.55rem;
+            border-radius: var(--radius-s);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: #fff;
+        }
+        .badge-status.ongoing {
+            background: rgba(40, 167, 69, 0.9);
+        }
+        .badge-status.completed {
+            background: rgba(0, 123, 255, 0.9);
+        }
+        .badge-status.frozen {
+            background: rgba(108, 117, 125, 0.9);
+        }
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        .card-content-bottom {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 0.9rem;
+            z-index: 2;
+        }
+        .card-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            line-height: 1.3;
+            margin-bottom: 0.35rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            color: var(--text-on-media);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        .card-meta-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-sub-on-media);
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+        }
+        .card-chapter {
+            color: var(--accent-primary);
+            font-weight: 700;
+        }
+
+        /* Stream View (List Mode) */
+        .manga-grid.view-stream {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        .manga-grid.view-stream .manga-card {
+            flex-direction: row;
+            height: 160px;
+            border-radius: var(--radius-l);
+        }
+        .manga-grid.view-stream .card-cover-wrap {
+            width: 110px;
+            height: 100%;
+            aspect-ratio: auto;
+            flex-shrink: 0;
+        }
+        .manga-grid.view-stream .card-overlay {
+            display: none;
+        }
+        .manga-grid.view-stream .card-content-bottom {
+            position: static;
+            flex: 1;
+            padding: 1rem 1.25rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .stream-top-row {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 1rem;
+        }
+        .manga-grid.view-stream .card-title {
+            font-size: 1.1rem;
+            margin-bottom: 0.3rem;
+            -webkit-line-clamp: 1;
+        }
+        .stream-genres {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+            margin: 0.35rem 0;
+        }
+        .genre-mini-tag {
+            font-size: 0.7rem;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-subtle);
+            padding: 0.15rem 0.45rem;
+            border-radius: var(--radius-s);
+            color: var(--text-secondary);
+        }
+        .stream-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 0.4rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .read-now-btn {
+            background: var(--accent-primary);
+            color: #141218;
+            border: none;
+            padding: 0.35rem 0.9rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.8rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            cursor: pointer;
+            transition: transform 0.2s var(--motion-ease-spring);
+        }
+        .read-now-btn:hover {
+            transform: scale(1.04);
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        /* 3. Desktop Sidebar */
+        .catalog-sidebar {
+            width: 290px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 110px;
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-l);
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+            max-height: calc(100vh - 130px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+        }
+        .sidebar-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .sidebar-header-row h3 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+        .sidebar-reset-btn {
+            background: transparent;
+            border: none;
+            color: var(--accent-primary);
+            font-size: 0.78rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: var(--radius-pill);
+            transition: background 0.2s;
+        }
+        .sidebar-reset-btn:hover {
+            background: rgba(208, 188, 255, 0.12);
+        }
+
+        .filter-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.65rem;
+        }
+        .section-subhead {
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: var(--text-secondary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Search inside genres */
+        .genre-search-wrap {
+            position: relative;
+        }
+        .genre-search-input {
+            width: 100%;
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 0.4rem 0.75rem 0.4rem 2rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.8rem;
+            outline: none;
+        }
+        .genre-search-icon {
+            position: absolute;
+            left: 0.65rem;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 14px;
+            height: 14px;
+            color: var(--text-secondary);
+        }
+
+        /* 3-State Filter Chips */
+        .filter-chip-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            max-height: 220px;
+            overflow-y: auto;
+            padding-right: 0.25rem;
+            scrollbar-width: thin;
+        }
+        .tri-chip {
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.35rem 0.7rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            user-select: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.2s var(--motion-ease-spring);
+        }
+        .tri-chip:hover {
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+        .tri-chip.include {
+            background: var(--accent-primary);
+            color: #141218;
+            border-color: var(--accent-primary);
+            font-weight: 700;
+        }
+        .tri-chip.exclude {
+            background: #ff5b5b;
+            color: #fff;
+            border-color: #ff5b5b;
+            font-weight: 700;
+        }
+        .tri-chip-count {
+            font-size: 0.7rem;
+            opacity: 0.7;
+        }
+
+        /* Status & Type radio pills */
+        .pill-select-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        .select-pill {
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.35rem 0.8rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .select-pill:hover {
+            color: var(--text-primary);
+            border-color: var(--text-primary);
+        }
+        .select-pill.active {
+            background: rgba(208, 188, 255, 0.15);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            font-weight: 700;
+        }
+
+        /* 4. Mobile Floating Filter Dock */
+        .mobile-filter-dock {
+            display: none;
+            position: fixed;
+            bottom: 76px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 900;
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-pill);
+            padding: 0.35rem 0.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35), 0 0 20px var(--accent-glow);
+        }
+        .dock-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 700;
+            padding: 0.55rem 1.1rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            min-height: 44px;
+        }
+        .dock-btn.primary {
+            background: var(--accent-primary);
+            color: #141218;
+        }
+        html[data-theme="light"] .dock-btn.primary {
+            color: #ffffff;
+        }
+        .dock-badge {
+            background: var(--surface-canvas);
+            color: var(--accent-primary);
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            font-size: 0.72rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+        }
+
+        /* Mobile Bottom Sheet */
+        .sheet-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(6px);
+            z-index: 1500;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .sheet-backdrop.open {
+            display: block;
+            opacity: 1;
+        }
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-height: 85vh;
+            background: var(--surface-card);
+            border-top: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            z-index: 1600;
+            display: flex;
+            flex-direction: column;
+            transform: translateY(100%);
+            transition: transform 0.35s var(--motion-ease-fluid);
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5);
+        }
+        .bottom-sheet.open {
+            transform: translateY(0);
+        }
+        .sheet-handle-bar {
+            padding: 0.75rem 0 0.25rem;
+            display: flex;
+            justify-content: center;
+            cursor: grab;
+        }
+        .sheet-handle {
+            width: 40px;
+            height: 4px;
+            background: var(--border-subtle);
+            border-radius: var(--radius-pill);
+        }
+        .sheet-header {
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+        .sheet-header h3 {
+            font-size: 1.1rem;
+            font-weight: 800;
+        }
+        .sheet-close-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 44px;
+            height: 44px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .sheet-body {
+            padding: 1.25rem 1.5rem;
+            overflow-y: auto;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .sheet-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            gap: 1rem;
+            background: var(--surface-card);
+        }
+        .sheet-apply-btn {
+            flex: 1;
+            background: var(--accent-primary);
+            color: #141218;
+            font-weight: 700;
+            border: none;
+            padding: 0.85rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.95rem;
+            cursor: pointer;
+            min-height: 48px;
+        }
+        html[data-theme="light"] .sheet-apply-btn {
+            color: #ffffff;
+        }
+        .sheet-reset-btn {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-weight: 600;
+            padding: 0.85rem 1.25rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            min-height: 48px;
+        }
+
+        /* 5. Mobile Bottom Navigation Bar (Thumb ergonomic) */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 66px;
+            background: var(--surface-card);
+            border-top: 1px solid var(--border-subtle);
+            z-index: 800;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 1rem;
+        }
+        .m-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.72rem;
+            font-weight: 600;
+            min-width: 60px;
+            min-height: 44px;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+        .m-nav-item.active {
+            color: var(--accent-primary);
+        }
+
+        /* Toast / Random notification */
+        .toast-notify {
+            position: fixed;
+            bottom: 100px;
+            right: 2rem;
+            background: var(--surface-elevated);
+            border: 1px solid var(--accent-primary);
+            color: var(--text-primary);
+            padding: 0.9rem 1.4rem;
+            border-radius: var(--radius-l);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 15px var(--accent-glow);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateY(100px);
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.35s var(--motion-ease-spring);
+        }
+        .toast-notify.show {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Responsive Breakpoints */
+        @media (max-width: 1024px) {
+            .catalog-sidebar { display: none; }
+            .mobile-filter-dock { display: flex; }
+            .mobile-bottom-nav { display: flex; }
+            .app-header-wrap { display: none; }
+            .concept-bar { padding: 0.6rem 1rem; }
+            .manga-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 1rem; }
+        }
+        @media (max-width: 600px) {
+            .manga-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+            .catalog-hero-header h1 { font-size: 1.35rem; }
+            .preset-pill { font-size: 0.78rem; padding: 0.4rem 0.85rem; }
+            .search-box-wrap { min-width: 100%; max-width: 100%; }
+            .toolbar-actions { width: 100%; justify-content: space-between; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Concept Bar -->
+    <header class="concept-bar">
+        <div class="concept-badge">
+            <i data-lucide="zap" style="width: 14px; height: 14px;"></i>
+            <span>1. Modern Stream</span>
+        </div>
+        <div class="concept-links">
+            <a href="catalog-concepts.html" class="concept-btn hub">
+                <i data-lucide="layout-grid" style="width: 13px; height: 13px;"></i> Хаб
+            </a>
+            <a href="concept-catalog-hybrid.html" class="concept-btn" style="color: var(--accent-primary); font-weight: 700;">⚡ 4. Hybrid</a>
+            <a href="concept-catalog-bento.html" class="concept-btn">2. Bento</a>
+            <a href="concept-catalog-editorial.html" class="concept-btn">3. Editorial</a>
+            <button class="theme-toggle-btn" onclick="toggleTheme()" title="Перемкнути тему">
+                <i data-lucide="sun-moon" style="width: 16px; height: 16px;"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Top App Bar -->
+    <div style="display: none;" class="mobile-app-bar">
+        <a href="#" style="display: flex; align-items: center; gap: 0.45rem; text-decoration: none; color: var(--accent-primary); font-weight: 800; font-size: 1.25rem;">
+            <i data-lucide="sparkles" style="width: 20px; height: 20px;"></i>
+            <span>Gokuraku</span>
+        </a>
+        <button class="theme-toggle-btn" onclick="toggleTheme()">
+            <i data-lucide="sun-moon" style="width: 15px; height: 15px;"></i>
+        </button>
+    </div>
+
+    <!-- Floating Header -->
+    <div class="app-header-wrap">
+        <header class="app-header">
+            <a href="#" class="logo-wrap">
+                <svg class="logo-flower" viewBox="-50 -50 100 100">
+                    <path d="M 0.00 -44.00 C 4.59 -44.00, 8.59 -35.41, 13.78 -33.26 C 18.96 -31.11, 27.87 -34.36, 31.11 -31.11 C 34.36 -27.87, 31.11 -18.96, 33.26 -13.78 C 35.41 -8.59, 44.00 -4.59, 44.00 0.00 C 44.00 4.59, 35.41 8.59, 33.26 13.78 C 31.11 18.96, 34.36 27.87, 31.11 31.11 C 27.87 34.36, 18.96 31.11, 13.78 33.26 C 8.59 35.41, 4.59 44.00, 0.00 44.00 C -4.59 44.00, -8.59 35.41, -13.78 33.26 C -18.96 31.11, -27.87 34.36, -31.11 31.11 C -34.36 27.87, -31.11 18.96, -33.26 13.78 C -35.41 8.59, -44.00 4.59, -44.00 0.00 C -44.00 -4.59, -35.41 -8.59, -33.26 -13.78 C -31.11 -18.96, -34.36 -27.87, -31.11 -31.11 C -27.87 -34.36, -18.96 -31.11, -13.78 -33.26 C -8.59 -35.41, -4.59 -44.00, 0.00 -44.00 Z" />
+                </svg>
+                <span>Gokuraku</span>
+            </a>
+            <nav class="header-nav">
+                <a href="#" class="nav-link"><i data-lucide="home" style="width: 16px; height: 16px;"></i> Головна</a>
+                <a href="#catalog" class="nav-link active"><i data-lucide="compass" style="width: 16px; height: 16px;"></i> Каталог</a>
+                <a href="#cabinet" class="nav-link"><i data-lucide="user" style="width: 16px; height: 16px;"></i> Кабінет</a>
+            </nav>
+        </header>
+    </div>
+
+    <!-- Main Container -->
+    <main class="catalog-container">
+        <!-- Hero Header -->
+        <section class="catalog-hero-header">
+            <div class="hero-title-row">
+                <h1>
+                    <span>Каталог тайтлів</span>
+                    <span class="count-badge" id="results-count-badge">32 тайтли</span>
+                </h1>
+            </div>
+
+            <!-- Quick Presets -->
+            <div class="quick-presets-scroll">
+                <button class="preset-pill active" data-preset="all" onclick="selectPreset('all', this)">
+                    <i data-lucide="layers" style="width: 14px; height: 14px;"></i> Всі тайтли
+                </button>
+                <button class="preset-pill" data-preset="latest" onclick="selectPreset('latest', this)">
+                    <i data-lucide="flame" style="width: 14px; height: 14px; color: #ff9800;"></i> Гарячі оновлення
+                </button>
+                <button class="preset-pill" data-preset="completed" onclick="selectPreset('completed', this)">
+                    <i data-lucide="check-circle-2" style="width: 14px; height: 14px; color: #007bff;"></i> Завершені хіти
+                </button>
+                <button class="preset-pill" data-preset="manhwa" onclick="selectPreset('manhwa', this)">
+                    🇰🇷 Манхва
+                </button>
+                <button class="preset-pill" data-preset="manga" onclick="selectPreset('manga', this)">
+                    🇯🇵 Манґа
+                </button>
+                <button class="preset-pill" data-preset="yaoi" onclick="selectPreset('yaoi', this)">
+                    ❤️ Яой / Романтика
+                </button>
+                <button class="preset-pill random-btn" onclick="rollRandomTitle()">
+                    <i data-lucide="dices" style="width: 16px; height: 16px;"></i> Мені пощастить
+                </button>
+            </div>
+        </section>
+
+        <!-- Main Layout: Content + Sidebar -->
+        <div class="catalog-main-layout">
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Toolbar -->
+                <div class="catalog-toolbar">
+                    <div class="search-box-wrap">
+                        <i data-lucide="search" class="search-box-icon"></i>
+                        <input type="search" id="catalog-search" class="search-input" placeholder="Пошук за назвою або сюжетом..." autocomplete="off">
+                        <button id="search-clear" class="search-clear-btn" onclick="clearSearch()">
+                            <i data-lucide="x" style="width: 14px; height: 14px;"></i>
+                        </button>
+                    </div>
+
+                    <div class="toolbar-actions">
+                        <!-- Sort -->
+                        <div class="sort-select-wrap">
+                            <select id="sort-select" class="sort-select" onchange="handleSortChange(this.value)">
+                                <option value="newest">🕒 За оновленням</option>
+                                <option value="chapters">📚 За кількістю глав</option>
+                                <option value="az">🔤 За назвою (А-Я)</option>
+                                <option value="za">🔤 За назвою (Я-А)</option>
+                            </select>
+                            <i data-lucide="chevron-down" class="sort-arrow"></i>
+                        </div>
+
+                        <!-- View Switcher -->
+                        <div class="view-switcher">
+                            <button id="view-grid-btn" class="view-btn active" onclick="switchView('grid')" title="Сітка постерів">
+                                <i data-lucide="layout-grid" style="width: 15px; height: 15px;"></i>
+                            </button>
+                            <button id="view-stream-btn" class="view-btn" onclick="switchView('stream')" title="Детальний список">
+                                <i data-lucide="stretch-horizontal" style="width: 15px; height: 15px;"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Filter Tags -->
+                <div id="active-chips-container" class="active-filter-chips" style="display: none;"></div>
+
+                <!-- Manga Grid / Stream -->
+                <div id="manga-container" class="manga-grid">
+                    <!-- Cards will be populated by JS -->
+                </div>
+            </div>
+
+            <!-- Desktop Sidebar -->
+            <aside class="catalog-sidebar">
+                <div class="sidebar-header-row">
+                    <h3><i data-lucide="sliders-horizontal" style="width: 17px; height: 17px;"></i> Фільтри</h3>
+                    <button class="sidebar-reset-btn" onclick="resetAllFilters()">
+                        <i data-lucide="rotate-ccw" style="width: 13px; height: 13px;"></i> Скинути
+                    </button>
+                </div>
+
+                <!-- Status Filter -->
+                <div class="filter-section">
+                    <div class="section-subhead">
+                        <span>Статус</span>
+                    </div>
+                    <div class="pill-select-group" id="status-pill-group">
+                        <button class="select-pill active" data-status="all" onclick="selectStatusFilter('all', this)">Всі</button>
+                        <button class="select-pill" data-status="Виходить" onclick="selectStatusFilter('Виходить', this)">🟢 Виходить</button>
+                        <button class="select-pill" data-status="Завершено" onclick="selectStatusFilter('Завершено', this)">🔵 Завершено</button>
+                        <button class="select-pill" data-status="Закинуто" onclick="selectStatusFilter('Закинуто', this)">⚪ Закинуто</button>
+                    </div>
+                </div>
+
+                <!-- Type Filter -->
+                <div class="filter-section">
+                    <div class="section-subhead">
+                        <span>Формат</span>
+                    </div>
+                    <div class="pill-select-group" id="type-pill-group">
+                        <button class="select-pill active" data-type="all" onclick="selectTypeFilter('all', this)">Всі</button>
+                        <button class="select-pill" data-type="Манхва" onclick="selectTypeFilter('Манхва', this)">Манхва</button>
+                        <button class="select-pill" data-type="Манґа" onclick="selectTypeFilter('Манґа', this)">Манґа</button>
+                        <button class="select-pill" data-type="Маньхва" onclick="selectTypeFilter('Маньхва', this)">Маньхва</button>
+                        <button class="select-pill" data-type="Роман" onclick="selectTypeFilter('Роман', this)">Роман</button>
+                    </div>
+                </div>
+
+                <!-- Genres with 3-state logic & search -->
+                <div class="filter-section">
+                    <div class="section-subhead">
+                        <span>Жанри</span>
+                        <span style="font-size: 0.72rem; color: var(--text-secondary); text-transform: none;">✓ додати | ✕ виключити</span>
+                    </div>
+                    <div class="genre-search-wrap">
+                        <i data-lucide="search" class="genre-search-icon"></i>
+                        <input type="text" id="genre-search-input" class="genre-search-input" placeholder="Швидкий пошук жанру..." oninput="filterGenreList(this.value)">
+                    </div>
+                    <div class="filter-chip-cloud" id="genre-chips-container">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </aside>
+        </div>
+    </main>
+
+    <!-- Mobile Floating Filter Dock -->
+    <div class="mobile-filter-dock">
+        <button class="dock-btn primary" onclick="openMobileFilters()">
+            <i data-lucide="filter" style="width: 16px; height: 16px;"></i>
+            <span>Фільтри</span>
+            <span class="dock-badge" id="mobile-dock-count">0</span>
+        </button>
+        <button class="dock-btn" onclick="rollRandomTitle()">
+            <i data-lucide="dices" style="width: 16px; height: 16px;"></i>
+            <span>Рандом</span>
+        </button>
+    </div>
+
+    <!-- Mobile Bottom Sheet Backdrop & Sheet -->
+    <div id="sheet-backdrop" class="sheet-backdrop" onclick="closeMobileFilters()"></div>
+    <div id="mobile-bottom-sheet" class="bottom-sheet">
+        <div class="sheet-handle-bar">
+            <div class="sheet-handle"></div>
+        </div>
+        <div class="sheet-header">
+            <h3>Фільтри та сортування</h3>
+            <button class="sheet-close-btn" onclick="closeMobileFilters()">&times;</button>
+        </div>
+        <div class="sheet-body" id="sheet-body-content">
+            <!-- Cloned/Rendered filter groups for mobile -->
+        </div>
+        <div class="sheet-footer">
+            <button class="sheet-reset-btn" onclick="resetAllFilters()">Скинути</button>
+            <button class="sheet-apply-btn" id="sheet-apply-btn" onclick="closeMobileFilters()">
+                Показати тайтли
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation (Ergonomic thumb reach) -->
+    <nav class="mobile-bottom-nav">
+        <a href="#" class="m-nav-item">
+            <i data-lucide="home" style="width: 20px; height: 20px;"></i>
+            <span>Головна</span>
+        </a>
+        <a href="#catalog" class="m-nav-item active">
+            <i data-lucide="compass" style="width: 20px; height: 20px;"></i>
+            <span>Каталог</span>
+        </a>
+        <a href="#cabinet" class="m-nav-item">
+            <i data-lucide="user" style="width: 20px; height: 20px;"></i>
+            <span>Кабінет</span>
+        </a>
+    </nav>
+
+    <!-- Toast Notification for Randomizer -->
+    <div id="toast-notify" class="toast-notify">
+        <i data-lucide="sparkles" style="width: 20px; height: 20px; color: var(--accent-primary);"></i>
+        <div id="toast-text">Обрано випадковий тайтл!</div>
+    </div>
+
+    <!-- Core Script -->
+    <script>
+        let ALL_MANGA = [];
+        let ACTIVE_STATE = {
+            search: '',
+            preset: 'all',
+            status: 'all',
+            type: 'all',
+            genresInclude: new Set(),
+            genresExclude: new Set(),
+            sort: 'newest',
+            view: 'grid'
+        };
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('gokuraku_theme', next);
+        }
+
+        async function loadCatalogData() {
+            try {
+                const res = await fetch('api/manga-list.json');
+                if (res.ok) {
+                    ALL_MANGA = await res.json();
+                }
+            } catch (e) {
+                console.warn("Fetch failed, using embedded fallback", e);
+            }
+
+            if (!ALL_MANGA || ALL_MANGA.length === 0) {
+                ALL_MANGA = getSampleData();
+            }
+
+            initGenreList();
+            renderCatalog();
+            lucide.createIcons();
+        }
+
+        function initGenreList() {
+            const genreCounts = {};
+            ALL_MANGA.forEach(m => {
+                (m.genres || []).forEach(g => {
+                    genreCounts[g] = (genreCounts[g] || 0) + 1;
+                });
+            });
+
+            const sortedGenres = Object.keys(genreCounts).sort((a,b) => genreCounts[b] - genreCounts[a]);
+            const container = document.getElementById('genre-chips-container');
+            container.innerHTML = sortedGenres.map(g => `
+                <button class="tri-chip" data-genre="${g}" onclick="toggleGenreState('${g}')">
+                    <span class="genre-label">${g}</span>
+                    <span class="tri-chip-count">${genreCounts[g]}</span>
+                </button>
+            `).join('');
+
+            populateMobileSheet(sortedGenres, genreCounts);
+        }
+
+        function populateMobileSheet(genres, genreCounts) {
+            const sheetBody = document.getElementById('sheet-body-content');
+            sheetBody.innerHTML = `
+                <div class="filter-section">
+                    <div class="section-subhead"><span>Статус</span></div>
+                    <div class="pill-select-group">
+                        <button class="select-pill ${ACTIVE_STATE.status === 'all' ? 'active' : ''}" onclick="selectStatusFilter('all', this)">Всі</button>
+                        <button class="select-pill ${ACTIVE_STATE.status === 'Виходить' ? 'active' : ''}" onclick="selectStatusFilter('Виходить', this)">🟢 Виходить</button>
+                        <button class="select-pill ${ACTIVE_STATE.status === 'Завершено' ? 'active' : ''}" onclick="selectStatusFilter('Завершено', this)">🔵 Завершено</button>
+                        <button class="select-pill ${ACTIVE_STATE.status === 'Закинуто' ? 'active' : ''}" onclick="selectStatusFilter('Закинуто', this)">⚪ Закинуто</button>
+                    </div>
+                </div>
+                <div class="filter-section">
+                    <div class="section-subhead"><span>Формат</span></div>
+                    <div class="pill-select-group">
+                        <button class="select-pill ${ACTIVE_STATE.type === 'all' ? 'active' : ''}" onclick="selectTypeFilter('all', this)">Всі</button>
+                        <button class="select-pill ${ACTIVE_STATE.type === 'Манхва' ? 'active' : ''}" onclick="selectTypeFilter('Манхва', this)">Манхва</button>
+                        <button class="select-pill ${ACTIVE_STATE.type === 'Манґа' ? 'active' : ''}" onclick="selectTypeFilter('Манґа', this)">Манґа</button>
+                        <button class="select-pill ${ACTIVE_STATE.type === 'Маньхва' ? 'active' : ''}" onclick="selectTypeFilter('Маньхва', this)">Маньхва</button>
+                    </div>
+                </div>
+                <div class="filter-section">
+                    <div class="section-subhead"><span>Жанри (✓ включити / ✕ виключити)</span></div>
+                    <div class="filter-chip-cloud" style="max-height: 250px;">
+                        ${genres.map(g => `
+                            <button class="tri-chip mobile-tri-chip" data-genre="${g}" onclick="toggleGenreState('${g}')">
+                                <span class="genre-label">${g}</span>
+                                <span class="tri-chip-count">${genreCounts[g]}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleGenreState(genre) {
+            if (ACTIVE_STATE.genresInclude.has(genre)) {
+                ACTIVE_STATE.genresInclude.delete(genre);
+                ACTIVE_STATE.genresExclude.add(genre);
+            } else if (ACTIVE_STATE.genresExclude.has(genre)) {
+                ACTIVE_STATE.genresExclude.delete(genre);
+            } else {
+                ACTIVE_STATE.genresInclude.add(genre);
+            }
+            updateGenreUI();
+            renderCatalog();
+        }
+
+        function updateGenreUI() {
+            document.querySelectorAll('.tri-chip').forEach(btn => {
+                const g = btn.dataset.genre;
+                btn.classList.remove('include', 'exclude');
+                const label = btn.querySelector('.genre-label');
+                if (ACTIVE_STATE.genresInclude.has(g)) {
+                    btn.classList.add('include');
+                    label.textContent = `✓ ${g}`;
+                } else if (ACTIVE_STATE.genresExclude.has(g)) {
+                    btn.classList.add('exclude');
+                    label.textContent = `✕ ${g}`;
+                } else {
+                    label.textContent = g;
+                }
+            });
+            updateActiveChipsUI();
+        }
+
+        function updateActiveChipsUI() {
+            const container = document.getElementById('active-chips-container');
+            const totalFilters = ACTIVE_STATE.genresInclude.size + ACTIVE_STATE.genresExclude.size + (ACTIVE_STATE.status !== 'all' ? 1 : 0) + (ACTIVE_STATE.type !== 'all' ? 1 : 0);
+            
+            document.getElementById('mobile-dock-count').textContent = totalFilters;
+
+            if (totalFilters === 0) {
+                container.style.display = 'none';
+                return;
+            }
+
+            container.style.display = 'flex';
+            let chipsHtml = '';
+
+            if (ACTIVE_STATE.status !== 'all') {
+                chipsHtml += `<div class="filter-chip">Статус: ${ACTIVE_STATE.status} <span class="chip-remove" onclick="selectStatusFilter('all')">&times;</span></div>`;
+            }
+            if (ACTIVE_STATE.type !== 'all') {
+                chipsHtml += `<div class="filter-chip">Формат: ${ACTIVE_STATE.type} <span class="chip-remove" onclick="selectTypeFilter('all')">&times;</span></div>`;
+            }
+            ACTIVE_STATE.genresInclude.forEach(g => {
+                chipsHtml += `<div class="filter-chip">✓ ${g} <span class="chip-remove" onclick="toggleGenreState('${g}')">&times;</span></div>`;
+            });
+            ACTIVE_STATE.genresExclude.forEach(g => {
+                chipsHtml += `<div class="filter-chip exclude">✕ ${g} <span class="chip-remove" onclick="toggleGenreState('${g}')">&times;</span></div>`;
+            });
+
+            chipsHtml += `<button class="clear-all-chips-btn" onclick="resetAllFilters()">Скинути всі</button>`;
+            container.innerHTML = chipsHtml;
+        }
+
+        function selectPreset(preset, btn) {
+            ACTIVE_STATE.preset = preset;
+            document.querySelectorAll('.preset-pill').forEach(p => p.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+
+            if (preset === 'all') {
+                resetAllFilters(false);
+            } else if (preset === 'latest') {
+                ACTIVE_STATE.sort = 'newest';
+                document.getElementById('sort-select').value = 'newest';
+            } else if (preset === 'completed') {
+                ACTIVE_STATE.status = 'Завершено';
+                updatePillGroup('status-pill-group', 'Завершено');
+            } else if (preset === 'manhwa') {
+                ACTIVE_STATE.type = 'Манхва';
+                updatePillGroup('type-pill-group', 'Манхва');
+            } else if (preset === 'manga') {
+                ACTIVE_STATE.type = 'Манґа';
+                updatePillGroup('type-pill-group', 'Манґа');
+            } else if (preset === 'yaoi') {
+                ACTIVE_STATE.genresInclude.add('Яой');
+                updateGenreUI();
+            }
+            renderCatalog();
+        }
+
+        function updatePillGroup(groupId, val) {
+            const group = document.getElementById(groupId);
+            if (!group) return;
+            group.querySelectorAll('.select-pill').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.status === val || btn.dataset.type === val);
+            });
+        }
+
+        function selectStatusFilter(val, btn) {
+            ACTIVE_STATE.status = val;
+            updatePillGroup('status-pill-group', val);
+            updateActiveChipsUI();
+            renderCatalog();
+        }
+
+        function selectTypeFilter(val, btn) {
+            ACTIVE_STATE.type = val;
+            updatePillGroup('type-pill-group', val);
+            updateActiveChipsUI();
+            renderCatalog();
+        }
+
+        function resetAllFilters(reRender = true) {
+            ACTIVE_STATE.status = 'all';
+            ACTIVE_STATE.type = 'all';
+            ACTIVE_STATE.genresInclude.clear();
+            ACTIVE_STATE.genresExclude.clear();
+            ACTIVE_STATE.search = '';
+            document.getElementById('catalog-search').value = '';
+            document.getElementById('search-clear').style.display = 'none';
+            updatePillGroup('status-pill-group', 'all');
+            updatePillGroup('type-pill-group', 'all');
+            updateGenreUI();
+            if (reRender) renderCatalog();
+        }
+
+        const searchInput = document.getElementById('catalog-search');
+        const searchClear = document.getElementById('search-clear');
+        searchInput.addEventListener('input', (e) => {
+            ACTIVE_STATE.search = e.target.value.trim().toLowerCase();
+            searchClear.style.display = ACTIVE_STATE.search ? 'block' : 'none';
+            renderCatalog();
+        });
+        function clearSearch() {
+            searchInput.value = '';
+            ACTIVE_STATE.search = '';
+            searchClear.style.display = 'none';
+            renderCatalog();
+        }
+
+        function filterGenreList(val) {
+            const q = val.trim().toLowerCase();
+            document.querySelectorAll('#genre-chips-container .tri-chip').forEach(btn => {
+                const g = btn.dataset.genre.toLowerCase();
+                btn.style.display = g.includes(q) ? 'inline-flex' : 'none';
+            });
+        }
+
+        function handleSortChange(val) {
+            ACTIVE_STATE.sort = val;
+            renderCatalog();
+        }
+
+        function switchView(view) {
+            ACTIVE_STATE.view = view;
+            const container = document.getElementById('manga-container');
+            document.getElementById('view-grid-btn').classList.toggle('active', view === 'grid');
+            document.getElementById('view-stream-btn').classList.toggle('active', view === 'stream');
+            container.className = `manga-grid ${view === 'stream' ? 'view-stream' : ''}`;
+            renderCatalog();
+        }
+
+        function renderCatalog() {
+            let list = ALL_MANGA.filter(m => {
+                if (ACTIVE_STATE.search) {
+                    const titleMatch = m.title.toLowerCase().includes(ACTIVE_STATE.search);
+                    const genreMatch = (m.genres || []).some(g => g.toLowerCase().includes(ACTIVE_STATE.search));
+                    if (!titleMatch && !genreMatch) return false;
+                }
+                if (ACTIVE_STATE.status !== 'all' && m.status !== ACTIVE_STATE.status) {
+                    return false;
+                }
+                if (ACTIVE_STATE.type !== 'all' && m.type !== ACTIVE_STATE.type) {
+                    return false;
+                }
+                if (ACTIVE_STATE.genresInclude.size > 0) {
+                    for (let g of ACTIVE_STATE.genresInclude) {
+                        if (!m.genres || !m.genres.includes(g)) return false;
+                    }
+                }
+                if (ACTIVE_STATE.genresExclude.size > 0) {
+                    for (let g of ACTIVE_STATE.genresExclude) {
+                        if (m.genres && m.genres.includes(g)) return false;
+                    }
+                }
+                return true;
+            });
+
+            if (ACTIVE_STATE.sort === 'newest') {
+                list.sort((a,b) => new Date(b.latestUpdate || 0) - new Date(a.latestUpdate || 0));
+            } else if (ACTIVE_STATE.sort === 'chapters') {
+                list.sort((a,b) => (b.lastChapter || 0) - (a.lastChapter || 0));
+            } else if (ACTIVE_STATE.sort === 'az') {
+                list.sort((a,b) => a.title.localeCompare(b.title, 'uk'));
+            } else if (ACTIVE_STATE.sort === 'za') {
+                list.sort((a,b) => b.title.localeCompare(a.title, 'uk'));
+            }
+
+            document.getElementById('results-count-badge').textContent = `${list.length} ${pluralizeTitles(list.length)}`;
+            document.getElementById('sheet-apply-btn').textContent = `Показати ${list.length} ${pluralizeTitles(list.length)}`;
+
+            const container = document.getElementById('manga-container');
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; padding: 4rem 1rem; text-align: center; background: var(--surface-card); border-radius: var(--radius-l); border: 1px dashed var(--border-subtle);">
+                        <i data-lucide="search-x" style="width: 48px; height: 48px; color: var(--accent-primary); margin-bottom: 1rem;"></i>
+                        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem;">Нічого не знайдено</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.25rem;">Спробуйте змінити фільтри або пошуковий запит.</p>
+                        <button class="preset-pill active" onclick="resetAllFilters()">Скинути всі фільтри</button>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            if (ACTIVE_STATE.view === 'stream') {
+                container.innerHTML = list.map(m => `
+                    <article class="manga-card">
+                        <div class="card-cover-wrap">
+                            <img src="${m.coverImage}" alt="${m.title}" class="card-cover" loading="lazy">
+                        </div>
+                        <div class="card-content-bottom">
+                            <div>
+                                <div class="stream-top-row">
+                                    <h3 class="card-title">${m.title}</h3>
+                                    <span class="badge-status ${getStatusClass(m.status)}">${m.status}</span>
+                                </div>
+                                <div class="stream-genres">
+                                    <span class="genre-mini-tag" style="background: rgba(208, 188, 255, 0.1); color: var(--accent-primary);">${m.type || 'Манхва'}</span>
+                                    ${(m.genres || []).slice(0, 4).map(g => `<span class="genre-mini-tag">${g}</span>`).join('')}
+                                </div>
+                            </div>
+                            <div class="stream-actions">
+                                <span class="card-chapter">Глава ${m.lastChapter || 1} • Оновлено</span>
+                                <a href="${m.pageUrl}" class="read-now-btn">
+                                    <i data-lucide="book-open" style="width: 14px; height: 14px;"></i> Читати
+                                </a>
+                            </div>
+                        </div>
+                    </article>
+                `).join('');
+            } else {
+                container.innerHTML = list.map(m => `
+                    <a href="${m.pageUrl}" class="manga-card">
+                        <div class="card-cover-wrap">
+                            <img src="${m.coverImage}" alt="${m.title}" class="card-cover" loading="lazy">
+                            <div class="card-overlay"></div>
+                            <div class="card-badges-top">
+                                <span class="badge-type">${m.type || 'Манхва'}</span>
+                                <span class="badge-status ${getStatusClass(m.status)}">
+                                    <span class="status-dot"></span>
+                                    <span>${m.status}</span>
+                                </span>
+                            </div>
+                            <div class="card-content-bottom">
+                                <h3 class="card-title">${m.title}</h3>
+                                <div class="card-meta-row">
+                                    <span class="card-chapter">Глава ${m.lastChapter || 1}</span>
+                                    <span>${(m.genres && m.genres[0]) || ''}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                `).join('');
+            }
+            lucide.createIcons();
+        }
+
+        function getStatusClass(st) {
+            if (st === 'Виходить') return 'ongoing';
+            if (st === 'Завершено') return 'completed';
+            return 'frozen';
+        }
+
+        function pluralizeTitles(count) {
+            const mod10 = count % 10;
+            const mod100 = count % 100;
+            if (mod100 >= 11 && mod100 <= 19) return 'тайтлів';
+            if (mod10 === 1) return 'тайтл';
+            if (mod10 >= 2 && mod10 <= 4) return 'тайтли';
+            return 'тайтлів';
+        }
+
+        function rollRandomTitle() {
+            if (ALL_MANGA.length === 0) return;
+            const rand = ALL_MANGA[Math.floor(Math.random() * ALL_MANGA.length)];
+            const toast = document.getElementById('toast-notify');
+            const text = document.getElementById('toast-text');
+            text.innerHTML = `<strong>🎲 Випадковий вибір:</strong> ${rand.title}`;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+            
+            searchInput.value = rand.title;
+            ACTIVE_STATE.search = rand.title.toLowerCase();
+            searchClear.style.display = 'block';
+            renderCatalog();
+            window.scrollTo({ top: 180, behavior: 'smooth' });
+        }
+
+        function openMobileFilters() {
+            document.getElementById('sheet-backdrop').classList.add('open');
+            document.getElementById('mobile-bottom-sheet').classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeMobileFilters() {
+            document.getElementById('sheet-backdrop').classList.remove('open');
+            document.getElementById('mobile-bottom-sheet').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function getSampleData() {
+            return [
+                {"id": 1, "title": "Кохання — це ілюзія", "coverImage": "https://files.catbox.moe/h3nvsn.webp", "pageUrl": "#title?id=kokhannia-tse-iliuziia", "genres": ["Яой", "Драма", "Комедія", "Романтика", "Омегаверс"], "type": "Манхва", "status": "Завершено", "lastChapter": 117.0, "latestUpdate": "2026-02-23T20:38:15Z"},
+                {"id": 2, "title": "Щасливий Мармур", "coverImage": "https://files.catbox.moe/8c9w05.jpg", "pageUrl": "#title?id=shchaslyvyi-marmur", "genres": ["Буденність", "Драма", "Комедія", "Романтика", "Школа"], "type": "Манхва", "status": "Виходить", "lastChapter": 50.0, "latestUpdate": "2026-10-23T19:42:09Z"},
+                {"id": 3, "title": "Хлопець у мені", "coverImage": "https://files.catbox.moe/zpwhw3.webp", "pageUrl": "#title?id=khlopets-u-meni", "genres": ["Яой", "Драма", "Шьонен-ай", "Романтика", "Фентезі"], "type": "Маньхва", "status": "Виходить", "lastChapter": 53.0, "latestUpdate": "2026-08-23T13:13:06Z"},
+                {"id": 4, "title": "Форма симпатії", "coverImage": "https://files.catbox.moe/u3qcxk.jpg", "pageUrl": "#title?id=forma-sympatii", "genres": ["Яой", "Драма", "Шьонен-ай", "Школа"], "type": "Манхва", "status": "Виходить", "lastChapter": 75.6, "latestUpdate": "2026-10-22T19:38:59Z"},
+                {"id": 5, "title": "Солодке собаче життя", "coverImage": "https://files.catbox.moe/335rgs.jpg", "pageUrl": "#title?id=solodke-sobache-zhyttia", "genres": ["Яой", "Кулінарія", "Буденність", "Еротика"], "type": "Манґа", "status": "Завершено", "lastChapter": 6.5, "latestUpdate": "2025-11-12T19:08:48Z"},
+                {"id": 6, "title": "Мій кіт трохи інший", "coverImage": "https://files.catbox.moe/ftcjz4.webp", "pageUrl": "#title?id=mii-kit-trokhy-inshyi", "genres": ["Буденність", "Тварини", "Комедія"], "type": "Маньхва", "status": "Завершено", "lastChapter": 6.0, "latestUpdate": "2025-11-12T18:58:46Z"},
+                {"id": 8, "title": "Відьма Ічі", "coverImage": "https://files.catbox.moe/kslaz2.webp", "pageUrl": "#title?id=vidma-ichi", "genres": ["Шьонен", "Пригоди", "Екшн", "Комедія", "Фентезі"], "type": "Манґа", "status": "Виходить", "lastChapter": 66.0, "latestUpdate": "2026-10-17T20:39:51Z"},
+                {"id": 14, "title": "Хаскі та його вчитель білий кіт", "coverImage": "https://files.catbox.moe/lzyeyc.webp", "pageUrl": "#title?id=khaski-ta-ioho-vchytel-bilyi-kit", "genres": ["Бойовик", "Драма", "Надприродне", "Фентезі", "Яой"], "type": "Маньхва", "status": "Закинуто", "lastChapter": 8.0, "latestUpdate": "2026-08-25T19:45:30Z"},
+                {"id": 15, "title": "Лиходій хоче жити", "coverImage": "https://files.catbox.moe/36d5ct.webp", "pageUrl": "#title?id=lykhodii-khoche-zhyty", "genres": ["Школа", "Екшн", "Комедія", "Фентезі", "Ісекай"], "type": "Роман", "status": "Закинуто", "lastChapter": 4.0, "latestUpdate": "2026-08-18T19:34:45Z"},
+                {"id": 17, "title": "11-та шкільна поїздка", "coverImage": "https://files.catbox.moe/oh8ix3.jpg", "pageUrl": "#title?id=11-ta-shkilna-poizdka", "genres": ["Яой", "Фантастика", "Регресія", "Трилер"], "type": "Манхва", "status": "Виходить", "lastChapter": 29.0, "latestUpdate": "2026-10-22T19:59:23Z"},
+                {"id": 21, "title": "Душа, загублена Ґоу", "coverImage": "https://i.ibb.co/MkNxQ6n6/1.webp", "pageUrl": "#title?id=dusha-zahublena-gou", "genres": ["Шьонен", "Пригоди", "Демони", "Фентезі"], "type": "Маньхва", "status": "Виходить", "lastChapter": 12.0, "latestUpdate": "2026-10-22T19:36:32Z"},
+                {"id": 22, "title": "Ян Ільву та я", "coverImage": "https://files.catbox.moe/0ex1tu.webp", "pageUrl": "#title?id=ian-ilvu-ta-ia", "genres": ["Яой", "Романтика", "Трагедія", "Школа", "Драма"], "type": "Манхва", "status": "Виходить", "lastChapter": 38.0, "latestUpdate": "2026-10-30T18:27:36Z"},
+                {"id": 25, "title": "Невдалий приклад бездоганного прокляття", "coverImage": "https://files.catbox.moe/hu8i1f.webp", "pageUrl": "#title?id=nevdalyi-pryklad-bezdohannoho-prokliattia", "genres": ["Драма", "Фентезі", "Романтика", "Магія"], "type": "Манхва", "status": "Виходить", "lastChapter": 45.0, "latestUpdate": "2026-10-25T19:48:10Z"},
+                {"id": 27, "title": "Шах і мат", "coverImage": "https://cdn.dgmanga.app/titles/6934df67f313014416371ba3/1765106931658-1e69466f89d39aaa-cover.webp", "pageUrl": "#title?id=shakh-i-mat", "genres": ["Романтика", "Драма", "Психологія", "Яой"], "type": "Манхва", "status": "Виходить", "lastChapter": 60.0, "latestUpdate": "2026-10-24T19:19:27Z"}
+            ];
+        }
+
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.theme) {
+                document.documentElement.setAttribute('data-theme', e.data.theme);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlTheme = new URLSearchParams(window.location.search).get('theme');
+            const savedTheme = urlTheme || localStorage.getItem('gokuraku_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            loadCatalogData();
+        });
+    </script>
+</body>
+</html>

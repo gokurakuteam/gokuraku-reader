@@ -7,8 +7,10 @@ const THEME_KEY = 'gokuActiveThemeId';
 const THEME_MODE_KEY = 'gokuThemeMode'; // 'light', 'dark', 'system'
 const SELECTED_COVER_KEY = 'gokuSelectedCover';
 
+let cachedBookmarks = null;
+let cachedHistory = null;
+
 // --- Bookmarks ---
-// ... (код закладок без змін) ...
 function createDefaultBookmarks() {
     return {
         "categories": [
@@ -20,6 +22,7 @@ function createDefaultBookmarks() {
 }
 
 export function getBookmarks() {
+    if (cachedBookmarks) return cachedBookmarks;
     const rawData = localStorage.getItem(BOOKMARKS_KEY);
     if (!rawData) {
         const defaultBookmarks = createDefaultBookmarks();
@@ -28,7 +31,10 @@ export function getBookmarks() {
     }
     try {
         const parsed = JSON.parse(rawData);
-        if (parsed && Array.isArray(parsed.categories)) return parsed;
+        if (parsed && Array.isArray(parsed.categories)) {
+            cachedBookmarks = parsed;
+            return parsed;
+        }
         // Migration logic
         const newStructure = createDefaultBookmarks();
         if (Array.isArray(parsed)) {
@@ -56,6 +62,7 @@ export function getBookmarks() {
 }
 
 function saveBookmarks(bookmarks) {
+    cachedBookmarks = bookmarks;
     localStorage.setItem(BOOKMARKS_KEY, JSON.stringify(bookmarks));
 }
 
@@ -125,19 +132,33 @@ export function deleteCategory(categoryName) {
 }
 
 // --- History ---
-export function getHistory() {
-    const history = localStorage.getItem(HISTORY_KEY);
-    return history ? JSON.parse(history) : [];
+function saveHistory(history) {
+    cachedHistory = history;
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
 }
 
-export function addChapterToHistory(mangaId, chapterId) {
+export function getHistory() {
+    if (cachedHistory) return cachedHistory;
+    const history = localStorage.getItem(HISTORY_KEY);
+    cachedHistory = history ? JSON.parse(history) : [];
+    return cachedHistory;
+}
+
+export function addChapterToHistory(mangaId, chapterId, chapterNumber = null, volumeNumber = null) {
     let history = getHistory();
     const wasRead = history.some(item => item.mangaId === mangaId && item.chapterId === chapterId);
     
     history = history.filter(item => !(item.mangaId === mangaId && item.chapterId === chapterId));
-    history.unshift({ mangaId, chapterId, timestamp: new Date().toISOString() });
-    if (history.length > 200) history.pop();
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    const historyEntry = { mangaId, chapterId, timestamp: new Date().toISOString() };
+    if (chapterNumber !== null && chapterNumber !== undefined) {
+        historyEntry.chapterNumber = chapterNumber;
+    }
+    if (volumeNumber !== null && volumeNumber !== undefined) {
+        historyEntry.volumeNumber = volumeNumber;
+    }
+    history.unshift(historyEntry);
+    if (history.length > 500) history.pop();
+    saveHistory(history);
 
     if (!wasRead) {
         const clickerData = getClickerData();
@@ -160,12 +181,17 @@ export function addAllChaptersToHistory(mangaId) {
     });
 
     history = history.filter(item => item.mangaId !== mangaId);
+    const now = new Date().toISOString();
     const chaptersToAdd = manga.chapters.map(ch => ({
-        mangaId: mangaId, chapterId: ch.id, timestamp: new Date().toISOString()
+        mangaId: mangaId,
+        chapterId: ch.id,
+        chapterNumber: ch.chapter,
+        volumeNumber: ch.volume,
+        timestamp: now
     }));
     const updatedHistory = [...chaptersToAdd, ...history];
-    if (updatedHistory.length > 200) updatedHistory.length = 200;
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(updatedHistory));
+    if (updatedHistory.length > 500) updatedHistory.length = 500;
+    saveHistory(updatedHistory);
 
     if (newChaptersCount > 0) {
         const clickerData = getClickerData();
@@ -177,13 +203,17 @@ export function addAllChaptersToHistory(mangaId) {
 export function removeChapterFromHistory(mangaId, chapterId) {
     let history = getHistory();
     history = history.filter(item => !(item.mangaId === mangaId && item.chapterId === chapterId));
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    saveHistory(history);
 }
 
 export function removeAllChaptersFromHistory(mangaId) {
     let history = getHistory();
     history = history.filter(item => item.mangaId !== mangaId);
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
+    saveHistory(history);
+}
+
+export function clearAllHistory() {
+    saveHistory([]);
 }
 
 export function isChapterRead(mangaId, chapterId) {

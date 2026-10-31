@@ -11,6 +11,9 @@ export function loadMangaData() {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 mangaData = await response.json();
+                mangaData.forEach(m => {
+                    m._updateTime = m.latestUpdate ? new Date(m.latestUpdate).getTime() : 0;
+                });
                 console.log('Manga list loaded successfully!');
             } catch (error) {
                 console.error("Could not load manga list:", error);
@@ -66,24 +69,10 @@ export function getMangaById(id) {
     return mangaData.find(manga => manga.id === parseInt(id));
 }
 
-export function getLatestUpdates(limit) {
-    const allChapters = mangaData.flatMap(manga => 
-        manga.chapters.map(chapter => ({ ...chapter, mangaTitle: manga.title, coverImage: manga.coverImage, pageUrl: manga.pageUrl }))
-    );
-    
-    const sortedUpdates = allChapters.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    const latestByManga = {};
-    mangaData.forEach(manga => {
-        const latestChapter = [...manga.chapters].sort((a, b) => new Date(b.date) - new Date(a.date))[0];
-        if (latestChapter) {
-            latestByManga[manga.id] = { ...manga, latestUpdate: latestChapter.date };
-        }
-    });
-
-    const sortedManga = Object.values(latestByManga).sort((a, b) => new Date(b.latestUpdate) - new Date(a.latestUpdate));
-    
-    return sortedManga.slice(0, limit);
+export function getLatestUpdates(limit = 5) {
+    const withChapters = mangaData.filter(manga => manga.chapters && manga.chapters.length > 0);
+    const sorted = [...withChapters].sort((a, b) => (b._updateTime || 0) - (a._updateTime || 0));
+    return sorted.slice(0, limit);
 }
 
 export function getChapterById(id) {

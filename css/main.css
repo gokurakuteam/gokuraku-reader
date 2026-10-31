@@ -26,6 +26,7 @@
 
     /* Акцентні (змінюються через JS) */
     --accent-color: var(--theme-accent-dark, #D0BCFF); /* Primary */
+    --on-accent-color: #141218;
     --glow-color: var(--theme-glow-dark, rgba(208, 188, 255, 0.25)); /* M'якше світіння */
 
     /* Кольори сповіщень (Alerts) - Темна тема */
@@ -33,6 +34,21 @@
     --alert-border: rgba(255, 180, 171, 0.5);
     --alert-text: #FFB4AB;
     
+    /* Шкала симетричних радіусів (DESIGN.md) */
+    --radius-s: 8px;
+    --radius-m: 16px;
+    --radius-l: 24px;
+    --radius-xl: 32px;
+    --radius-full: 100px;
+
+    /* Фізика руху та анімації (DESIGN.md) */
+    --motion-ease-fluid: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+    --motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1.0);
+    --motion-ease-standard: cubic-bezier(0.2, 0.0, 0.0, 1.0);
+    --motion-duration-micro: 200ms;
+    --motion-duration-medium: 300ms;
+    --motion-duration-macro: 450ms;
+
     /* Анімації (Material 3 standard easing) */
     --md-sys-motion-easing-emphasized: cubic-bezier(0.2, 0, 0, 1);
 }
@@ -60,6 +76,7 @@ html[data-theme="light"] {
 
     /* Акцентні (світла тема) */
     --accent-color: var(--theme-accent-light, #6750A4); /* Primary */
+    --on-accent-color: #FFFFFF;
     --glow-color: var(--theme-glow-light, rgba(103, 80, 164, 0.15));
 
     /* Кольори сповіщень (Alerts) - Світла тема */
@@ -99,61 +116,121 @@ main.fade-out {
 
 .expressive-footer {
     margin-top: 4rem;
-    padding: 3rem 2rem 2rem;
+    padding: 3.5rem 2rem 2rem;
     background-color: var(--card-background);
+    border-top: 1px solid var(--border-color);
     border-top-left-radius: 32px;
     border-top-right-radius: 32px;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
     transition: background-color 0.3s var(--md-sys-motion-easing-emphasized);
 }
 
-.footer-content {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 2rem;
+.footer-grid {
     max-width: 1200px;
     margin: 0 auto;
-    padding-bottom: 2rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 2.5rem;
+    padding-bottom: 2.5rem;
     border-bottom: 1px solid var(--border-color);
 }
 
 .footer-brand {
-    flex: 1 1 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
     text-align: left;
 }
 
 .footer-logo {
     font-size: 2.2rem;
     font-weight: 800;
-    margin: 0 0 0.35rem 0;
     color: var(--accent-color);
-    text-transform: none;
     letter-spacing: -0.5px;
+    line-height: 1;
+    margin: 0;
     text-align: left;
-    line-height: 1.1;
+    text-transform: none;
 }
 
 .footer-slogan {
     margin: 0;
     color: var(--secondary-text);
-    font-size: 1rem;
-    line-height: 1.4;
-    text-align: left;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    max-width: 300px;
 }
 
-.footer-links {
+.footer-col h4 {
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-light);
+    margin: 0 0 1.1rem 0;
+}
+
+.footer-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
     display: flex;
-    gap: 1rem;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 0.65rem;
+}
+
+.footer-col a {
+    color: var(--secondary-text);
+    text-decoration: none;
+    font-size: 0.88rem;
+    font-weight: 500;
+    transition: color 0.2s, transform 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.footer-col a:hover {
+    color: var(--accent-color);
+    transform: translateX(3px);
 }
 
 .footer-bottom {
-    text-align: center;
-    padding-top: 1.5rem;
+    max-width: 1200px;
+    margin: 1.5rem auto 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.82rem;
     color: var(--secondary-text);
-    font-size: 0.9rem;
+    padding-top: 0;
+}
+
+.footer-heart-icon {
+    width: 15px;
+    height: 15px;
+    color: var(--accent-color);
+    fill: currentColor;
+    vertical-align: middle;
+    display: inline-block;
+    margin-inline: 2px;
+}
+
+@media (max-width: 900px) {
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 600px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+    .footer-bottom {
+        flex-direction: column;
+        gap: 0.6rem;
+        text-align: center;
+    }
 }
 
 /* Animations */
