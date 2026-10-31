@@ -203,7 +203,7 @@ export class AppHeader extends HTMLElement {
                     position: relative;
                     flex: 1 1 300px;
                     margin: 0 1.25rem;
-                    margin-left: 15rem;
+                    margin-left: 15rem; 
                 }
                 .header-search {
                     position: relative;
