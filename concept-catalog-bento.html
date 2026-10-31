@@ -1,0 +1,1373 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Концепт 2: Visual Bento & Quick-View — Каталог Gokuraku</title>
+    <link rel="icon" type="image/x-icon" href="/icons/icon-256.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --surface-canvas: #141218;
+            --surface-card: #2B2930;
+            --surface-elevated: #36343B;
+            --surface-overlay: rgba(20, 18, 24, 0.92);
+            --border-subtle: #49454F;
+            --text-primary: #E6E0E9;
+            --text-secondary: #CAC4D0;
+            --accent-primary: #D0BCFF;
+            --accent-glow: rgba(208, 188, 255, 0.25);
+            --motion-ease-fluid: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+            --motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1.0);
+            --radius-s: 8px;
+            --radius-m: 16px;
+            --radius-l: 24px;
+            --radius-xl: 32px;
+            --radius-pill: 100px;
+        }
+
+        html[data-theme="light"] {
+            --surface-canvas: #FEF7FF;
+            --surface-card: #F3EDF7;
+            --surface-elevated: #EDE7F0;
+            --surface-overlay: rgba(254, 247, 255, 0.92);
+            --border-subtle: #CAC4D0;
+            --text-primary: #1D1B20;
+            --text-secondary: #49454F;
+            --accent-primary: #6750A4;
+            --accent-glow: rgba(103, 80, 164, 0.2);
+        }
+
+        *, *::before, *::after { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            text-decoration: none !important; 
+        }
+        a, a:hover, a:focus, a:visited, a:active { 
+            text-decoration: none !important; 
+            color: inherit; 
+        }
+        body {
+            background-color: var(--surface-canvas);
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.5;
+            overflow-x: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23808080" fill-opacity="0.03" fill-rule="evenodd"%3E%3Cpath d="M0 60L60 0H30L0 30M60 60V30L30 60"/%3E%3C/g%3E%3C/svg%3E');
+            min-height: 100vh;
+            padding-bottom: 95px;
+        }
+
+        /* Top Concept Switcher Bar */
+        .concept-bar {
+            background: var(--surface-card);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0.5rem 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .concept-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            background: rgba(208, 188, 255, 0.15);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-pill);
+            white-space: nowrap;
+        }
+        html[data-theme="light"] .concept-badge {
+            background: rgba(103, 80, 164, 0.12);
+        }
+        .concept-links {
+            display: flex;
+            gap: 0.4rem;
+            align-items: center;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .concept-links::-webkit-scrollbar { display: none; }
+        .concept-btn {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 0.3rem 0.75rem;
+            border-radius: var(--radius-pill);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            border: 1px solid transparent;
+        }
+        .concept-btn.active, .concept-btn:hover {
+            color: var(--text-primary);
+            background: var(--surface-canvas);
+            border-color: var(--border-subtle);
+        }
+        .concept-btn.hub {
+            background: var(--accent-primary);
+            color: #ffffff;
+            font-weight: 700;
+        }
+        html[data-theme="dark"] .concept-btn.hub {
+            color: #141218;
+        }
+        .theme-toggle-btn {
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            transition: transform 0.2s var(--motion-ease-spring);
+        }
+        .theme-toggle-btn:hover {
+            transform: rotate(15deg) scale(1.05);
+            border-color: var(--accent-primary);
+        }
+
+        /* Floating App Header */
+        .app-header-wrap {
+            padding: 1rem 1.5rem;
+            position: sticky;
+            top: 48px;
+            z-index: 500;
+            pointer-events: none;
+        }
+        .app-header {
+            pointer-events: auto;
+            max-width: 1280px;
+            margin: 0 auto;
+            background: rgba(43, 41, 48, 0.88);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--radius-pill);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+        }
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--accent-primary);
+            font-size: 1.5rem;
+            font-weight: 800;
+        }
+        .logo-flower { width: 28px; height: 28px; fill: currentColor; opacity: 0.85; }
+        .header-nav { display: flex; align-items: center; gap: 0.5rem; }
+        .nav-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 0.4rem 0.9rem;
+            border-radius: var(--radius-pill);
+            transition: all 0.2s ease;
+        }
+        .nav-link:hover, .nav-link.active {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .nav-link.active {
+            color: var(--accent-primary);
+            background: rgba(208, 188, 255, 0.12);
+        }
+
+        /* Container */
+        .bento-catalog-container {
+            max-width: 1280px;
+            margin: 1.5rem auto 0;
+            padding: 0 1.5rem;
+        }
+
+        /* 1. Feature Highlight Showcase (Can be minimized) */
+        .showcase-banner {
+            position: relative;
+            background: var(--surface-card);
+            border-radius: var(--radius-l);
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: max-height 0.4s var(--motion-ease-fluid), opacity 0.3s;
+        }
+        .showcase-banner.minimized {
+            display: none;
+        }
+        .showcase-backdrop {
+            position: absolute;
+            inset: 0;
+            background-size: cover;
+            background-position: center;
+            filter: blur(28px) brightness(0.35);
+            transform: scale(1.1);
+            pointer-events: none;
+        }
+        .showcase-inner {
+            position: relative;
+            z-index: 2;
+            padding: 1.75rem 2rem;
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        .showcase-thumb-wrap {
+            position: relative;
+            width: 120px;
+            aspect-ratio: 2 / 3;
+            border-radius: var(--radius-m);
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            flex-shrink: 0;
+        }
+        .showcase-thumb {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .showcase-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .showcase-tag {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--accent-primary);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .showcase-title {
+            font-size: 1.45rem;
+            font-weight: 800;
+            line-height: 1.25;
+            color: var(--text-primary);
+        }
+        .showcase-desc {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            max-width: 720px;
+        }
+        .showcase-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 0.5rem;
+        }
+        .showcase-read-btn {
+            background: var(--accent-primary);
+            color: #141218;
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-decoration: none;
+            padding: 0.55rem 1.25rem;
+            border-radius: var(--radius-pill);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            transition: transform 0.2s var(--motion-ease-spring);
+        }
+        .showcase-read-btn:hover {
+            transform: scale(1.04);
+        }
+        .showcase-quick-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            padding: 0.55rem 1rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+        .showcase-quick-btn:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: var(--accent-primary);
+        }
+        .showcase-dismiss-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 5;
+            transition: background 0.2s;
+        }
+        .showcase-dismiss-btn:hover { background: rgba(255, 255, 255, 0.1); color: var(--text-primary); }
+
+        /* 2. Bento Filter Control Center */
+        .bento-controls-grid {
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .bento-card {
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-l);
+            padding: 1.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.85rem;
+            position: relative;
+        }
+        .bento-card-title {
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Search + Sort Card */
+        .bento-search-row {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .bento-search-input {
+            flex: 1;
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 0.6rem 1rem 0.6rem 2.4rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.88rem;
+            outline: none;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .bento-search-input:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .bento-search-icon {
+            position: absolute;
+            left: 2rem;
+            top: calc(50% + 14px);
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+            width: 16px;
+            height: 16px;
+            pointer-events: none;
+        }
+        .bento-sort-select {
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 0.6rem 1rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.82rem;
+            font-weight: 600;
+            outline: none;
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        /* Format selector tiles */
+        .bento-format-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.4rem;
+        }
+        .bento-format-tile {
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-m);
+            padding: 0.6rem 0.4rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s var(--motion-ease-spring);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+            color: var(--text-secondary);
+        }
+        .bento-format-tile:hover {
+            border-color: var(--text-primary);
+            color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+        .bento-format-tile.active {
+            background: rgba(208, 188, 255, 0.15);
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            font-weight: 700;
+            box-shadow: 0 0 12px var(--accent-glow);
+        }
+        .bento-flag { font-size: 1.1rem; line-height: 1; }
+        .bento-format-name { font-size: 0.75rem; font-weight: 600; }
+
+        /* Status & Density Card */
+        .bento-status-row {
+            display: flex;
+            gap: 0.4rem;
+        }
+        .bento-status-btn {
+            flex: 1;
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 0.5rem 0.4rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .bento-status-btn:hover { border-color: var(--text-primary); color: var(--text-primary); }
+        .bento-status-btn.active {
+            background: var(--accent-primary);
+            color: #141218;
+            border-color: var(--accent-primary);
+            font-weight: 700;
+        }
+
+        /* Density / Layout Switch */
+        .density-btn-group {
+            display: flex;
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-pill);
+            padding: 0.2rem;
+            margin-top: auto;
+        }
+        .density-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.35rem 0;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.3rem;
+            transition: all 0.2s;
+        }
+        .density-btn.active {
+            background: var(--surface-card);
+            color: var(--accent-primary);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        /* Popular Genres Pill Bar */
+        .bento-genres-bar {
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-l);
+            padding: 0.85rem 1.25rem;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .bento-genres-bar::-webkit-scrollbar { display: none; }
+        .bg-label {
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .genre-pill-tag {
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 0.35rem 0.85rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s var(--motion-ease-spring);
+        }
+        .genre-pill-tag:hover {
+            color: var(--text-primary);
+            border-color: var(--text-primary);
+            transform: translateY(-2px);
+        }
+        .genre-pill-tag.active {
+            background: var(--accent-primary);
+            color: #141218;
+            border-color: var(--accent-primary);
+            font-weight: 700;
+        }
+
+        /* 3. Manga Grid with Quick-View Layer */
+        .catalog-results-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+        .results-heading {
+            font-size: 1.25rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .results-count {
+            font-size: 0.8rem;
+            font-weight: 700;
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--accent-primary);
+            padding: 0.2rem 0.7rem;
+            border-radius: var(--radius-pill);
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        /* Grid */
+        .bento-manga-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1.75rem;
+            transition: all 0.3s ease;
+        }
+        .bento-manga-grid.density-compact {
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        /* Bento Card Structure */
+        .b-card {
+            background: var(--surface-card);
+            border-radius: var(--radius-l);
+            border: 1px solid var(--border-subtle);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+            transition: transform 0.35s var(--motion-ease-spring), box-shadow 0.35s var(--motion-ease-spring), border-color 0.3s;
+        }
+        .b-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35), 0 0 20px var(--accent-glow);
+            border-color: var(--accent-primary);
+        }
+        .b-cover-wrap {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 2 / 3;
+            overflow: hidden;
+            background: #1a1820;
+        }
+        .b-cover-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.4s var(--motion-ease-fluid);
+        }
+        .b-card:hover .b-cover-img {
+            transform: scale(1.07);
+        }
+
+        /* Interactive Card Overlay on Hover */
+        .b-hover-actions {
+            position: absolute;
+            inset: 0;
+            background: rgba(20, 18, 24, 0.85);
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 0.65rem;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.25s var(--motion-ease-fluid);
+            padding: 1rem;
+            z-index: 4;
+        }
+        .b-card:hover .b-hover-actions {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .quick-view-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid var(--accent-primary);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 0.55rem 1.1rem;
+            border-radius: var(--radius-pill);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s var(--motion-ease-spring);
+        }
+        .quick-view-btn:hover {
+            background: var(--accent-primary);
+            color: #141218;
+            transform: scale(1.05);
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+        .direct-open-link {
+            color: var(--text-secondary);
+            font-size: 0.78rem;
+            font-weight: 600;
+            text-decoration: underline;
+            transition: color 0.2s;
+        }
+        .direct-open-link:hover { color: var(--accent-primary); }
+
+        /* Meta tags */
+        .b-meta-top {
+            position: absolute;
+            top: 0.65rem;
+            left: 0.65rem;
+            right: 0.65rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 2;
+        }
+        .b-badge-type {
+            font-size: 0.68rem;
+            font-weight: 700;
+            background: rgba(20, 18, 24, 0.85);
+            backdrop-filter: blur(8px);
+            color: var(--text-primary);
+            padding: 0.2rem 0.5rem;
+            border-radius: var(--radius-s);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .b-badge-status {
+            font-size: 0.68rem;
+            font-weight: 700;
+            padding: 0.2rem 0.5rem;
+            border-radius: var(--radius-s);
+            color: #fff;
+        }
+        .b-badge-status.ongoing { background: rgba(40, 167, 69, 0.9); }
+        .b-badge-status.completed { background: rgba(0, 123, 255, 0.9); }
+        .b-badge-status.frozen { background: rgba(108, 117, 125, 0.9); }
+
+        .b-info {
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .b-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            line-height: 1.3;
+            color: var(--text-primary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-decoration: none;
+        }
+        .b-submeta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .b-chapters {
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        /* 4. Live Quick-View Modal (M3 Elevation 3) */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+        }
+        .modal-backdrop.open {
+            display: flex;
+            opacity: 1;
+        }
+        .qv-modal {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl);
+            max-width: 780px;
+            width: 100%;
+            overflow: hidden;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.6), 0 0 35px var(--accent-glow);
+            transform: scale(0.94) translateY(20px);
+            transition: transform 0.35s var(--motion-ease-spring);
+            position: relative;
+            max-height: 90vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-backdrop.open .qv-modal {
+            transform: scale(1) translateY(0);
+        }
+        .qv-close-btn {
+            position: absolute;
+            top: 1.25rem;
+            right: 1.25rem;
+            background: rgba(20, 18, 24, 0.7);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            cursor: pointer;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.2s;
+        }
+        .qv-close-btn:hover { background: var(--accent-primary); color: #141218; }
+
+        .qv-body {
+            display: flex;
+            overflow-y: auto;
+            padding: 2rem;
+            gap: 2rem;
+        }
+        .qv-cover-col {
+            width: 220px;
+            flex-shrink: 0;
+        }
+        .qv-cover {
+            width: 100%;
+            aspect-ratio: 2 / 3;
+            border-radius: var(--radius-l);
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .qv-info-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+        .qv-title {
+            font-size: 1.5rem;
+            font-weight: 800;
+            line-height: 1.2;
+            color: var(--text-primary);
+        }
+        .qv-meta-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+        .qv-tag {
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            padding: 0.25rem 0.65rem;
+            border-radius: var(--radius-s);
+            color: var(--text-secondary);
+        }
+        .qv-synopsis {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-top: 0.5rem;
+        }
+        .qv-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-m);
+            padding: 0.75rem;
+            margin: 0.5rem 0;
+            text-align: center;
+        }
+        .qv-stat-label { font-size: 0.72rem; color: var(--text-secondary); }
+        .qv-stat-val { font-size: 0.95rem; font-weight: 700; color: var(--accent-primary); }
+
+        .qv-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: auto;
+            padding-top: 1rem;
+        }
+        .qv-read-btn {
+            flex: 1;
+            background: var(--accent-primary);
+            color: #141218;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-decoration: none;
+            padding: 0.75rem;
+            border-radius: var(--radius-pill);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 15px var(--accent-glow);
+            transition: transform 0.2s var(--motion-ease-spring);
+        }
+        .qv-read-btn:hover { transform: scale(1.02); }
+        .qv-detail-link {
+            background: var(--surface-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-decoration: none;
+            padding: 0.75rem 1.25rem;
+            border-radius: var(--radius-pill);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            transition: all 0.2s;
+        }
+        .qv-detail-link:hover { border-color: var(--accent-primary); }
+
+        /* 5. Mobile Ergonomics */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: rgba(43, 41, 48, 0.95);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border-subtle);
+            z-index: 800;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .m-nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.2rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.72rem;
+            font-weight: 600;
+            min-width: 60px;
+            min-height: 44px;
+            justify-content: center;
+        }
+        .m-nav-item.active { color: var(--accent-primary); }
+
+        @media (max-width: 1024px) {
+            .bento-controls-grid { grid-template-columns: 1fr; }
+            .app-header-wrap { display: none; }
+            .mobile-bottom-nav { display: flex; }
+        }
+        @media (max-width: 768px) {
+            .showcase-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .showcase-thumb-wrap { width: 90px; }
+            .qv-body { flex-direction: column; padding: 1.5rem; }
+            .qv-cover-col { width: 100%; display: flex; justify-content: center; }
+            .qv-cover { width: 140px; }
+            .bento-manga-grid { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+            .bento-format-row { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Concept Bar -->
+    <header class="concept-bar">
+        <div class="concept-badge">
+            <i data-lucide="layout-grid" style="width: 14px; height: 14px;"></i>
+            <span>2. Bento Showcase</span>
+        </div>
+        <div class="concept-links">
+            <a href="catalog-concepts.html" class="concept-btn hub">
+                <i data-lucide="layout-grid" style="width: 13px; height: 13px;"></i> Хаб
+            </a>
+            <a href="concept-catalog-hybrid.html" class="concept-btn" style="color: var(--accent-primary); font-weight: 700;">⚡ 4. Hybrid</a>
+            <a href="concept-catalog-stream.html" class="concept-btn">1. Stream</a>
+            <a href="concept-catalog-editorial.html" class="concept-btn">3. Editorial</a>
+            <button class="theme-toggle-btn" onclick="toggleTheme()" title="Перемкнути тему">
+                <i data-lucide="sun-moon" style="width: 16px; height: 16px;"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Top App Bar -->
+    <div style="display: none;" class="mobile-app-bar">
+        <a href="#" style="display: flex; align-items: center; gap: 0.45rem; text-decoration: none; color: var(--accent-primary); font-weight: 800; font-size: 1.25rem;">
+            <i data-lucide="sparkles" style="width: 20px; height: 20px;"></i>
+            <span>Gokuraku</span>
+        </a>
+        <button class="theme-toggle-btn" onclick="toggleTheme()">
+            <i data-lucide="sun-moon" style="width: 15px; height: 15px;"></i>
+        </button>
+    </div>
+
+    <!-- Floating App Header -->
+    <div class="app-header-wrap">
+        <header class="app-header">
+            <a href="#" class="logo-wrap">
+                <svg class="logo-flower" viewBox="-50 -50 100 100">
+                    <path d="M 0.00 -44.00 C 4.59 -44.00, 8.59 -35.41, 13.78 -33.26 C 18.96 -31.11, 27.87 -34.36, 31.11 -31.11 C 34.36 -27.87, 31.11 -18.96, 33.26 -13.78 C 35.41 -8.59, 44.00 -4.59, 44.00 0.00 C 44.00 4.59, 35.41 8.59, 33.26 13.78 C 31.11 18.96, 34.36 27.87, 31.11 31.11 C 27.87 34.36, 18.96 31.11, 13.78 33.26 C 8.59 35.41, 4.59 44.00, 0.00 44.00 C -4.59 44.00, -8.59 35.41, -13.78 33.26 C -18.96 31.11, -27.87 34.36, -31.11 31.11 C -34.36 27.87, -31.11 18.96, -33.26 13.78 C -35.41 8.59, -44.00 4.59, -44.00 0.00 C -44.00 -4.59, -35.41 -8.59, -33.26 -13.78 C -31.11 -18.96, -34.36 -27.87, -31.11 -31.11 C -27.87 -34.36, -18.96 -31.11, -13.78 -33.26 C -8.59 -35.41, -4.59 -44.00, 0.00 -44.00 Z" />
+                </svg>
+                <span>Gokuraku</span>
+            </a>
+            <nav class="header-nav">
+                <a href="#" class="nav-link"><i data-lucide="home" style="width: 16px; height: 16px;"></i> Головна</a>
+                <a href="#catalog" class="nav-link active"><i data-lucide="compass" style="width: 16px; height: 16px;"></i> Каталог</a>
+                <a href="#cabinet" class="nav-link"><i data-lucide="user" style="width: 16px; height: 16px;"></i> Кабінет</a>
+            </nav>
+        </header>
+    </div>
+
+    <!-- Main Container -->
+    <main class="bento-catalog-container">
+        <!-- 1. Highlight Showcase Banner -->
+        <section class="showcase-banner" id="showcase-banner">
+            <div class="showcase-backdrop" style="background-image: url('https://files.catbox.moe/h3nvsn.webp');"></div>
+            <button class="showcase-dismiss-btn" onclick="dismissShowcase()" title="Згорнути банер">
+                <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+            </button>
+            <div class="showcase-inner">
+                <div class="showcase-thumb-wrap">
+                    <img src="https://files.catbox.moe/h3nvsn.webp" alt="Кохання — це ілюзія" class="showcase-thumb">
+                </div>
+                <div class="showcase-content">
+                    <div class="showcase-tag">
+                        <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i> Тренд каталогу цього тижня
+                    </div>
+                    <h2 class="showcase-title">Кохання — це ілюзія</h2>
+                    <p class="showcase-desc">
+                        Хесон усе життя вважав себе звичайним бетою, доки доля не зв'язала його життя з Доджіном. Завершена культова романтична історія з 117 розділами в повному українському перекладі.
+                    </p>
+                    <div class="showcase-actions">
+                        <a href="#title?id=kokhannia-tse-iliuziia" class="showcase-read-btn">
+                            <i data-lucide="book-open" style="width: 15px; height: 15px;"></i> Читати зараз
+                        </a>
+                        <button class="showcase-quick-btn" onclick="openQuickView(1)">
+                            <i data-lucide="eye" style="width: 15px; height: 15px;"></i> Швидкий огляд
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. Bento Control Center -->
+        <section class="bento-controls-grid">
+            <!-- Bento 1: Пошук та сортування -->
+            <div class="bento-card">
+                <div class="bento-card-title">
+                    <span>Пошук та сортування</span>
+                    <i data-lucide="search" style="width: 15px; height: 15px;"></i>
+                </div>
+                <div class="bento-search-row">
+                    <i data-lucide="search" class="bento-search-icon"></i>
+                    <input type="search" id="bento-search" class="bento-search-input" placeholder="Пошук тайтлів...">
+                    <select id="bento-sort" class="bento-sort-select" onchange="handleSortChange(this.value)">
+                        <option value="newest">🕒 Найновіші</option>
+                        <option value="chapters">📚 Розділи</option>
+                        <option value="az">🔤 А-Я</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Bento 2: Формат контенту -->
+            <div class="bento-card">
+                <div class="bento-card-title">
+                    <span>Формат</span>
+                    <span id="format-active-badge" style="color: var(--accent-primary); font-size: 0.72rem;">Всі</span>
+                </div>
+                <div class="bento-format-row">
+                    <div class="bento-format-tile active" data-type="all" onclick="selectBentoType('all', this)">
+                        <span class="bento-flag">🌐</span>
+                        <span class="bento-format-name">Всі</span>
+                    </div>
+                    <div class="bento-format-tile" data-type="Манхва" onclick="selectBentoType('Манхва', this)">
+                        <span class="bento-flag">🇰🇷</span>
+                        <span class="bento-format-name">Манхва</span>
+                    </div>
+                    <div class="bento-format-tile" data-type="Манґа" onclick="selectBentoType('Манґа', this)">
+                        <span class="bento-flag">🇯🇵</span>
+                        <span class="bento-format-name">Манґа</span>
+                    </div>
+                    <div class="bento-format-tile" data-type="Маньхва" onclick="selectBentoType('Маньхва', this)">
+                        <span class="bento-flag">🇨🇳</span>
+                        <span class="bento-format-name">Маньхва</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bento 3: Статус та Щільність -->
+            <div class="bento-card">
+                <div class="bento-card-title">
+                    <span>Статус</span>
+                    <i data-lucide="sliders" style="width: 14px; height: 14px;"></i>
+                </div>
+                <div class="bento-status-row">
+                    <button class="bento-status-btn active" data-status="all" onclick="selectBentoStatus('all', this)">Всі</button>
+                    <button class="bento-status-btn" data-status="Виходить" onclick="selectBentoStatus('Виходить', this)">Виходить</button>
+                    <button class="bento-status-btn" data-status="Завершено" onclick="selectBentoStatus('Завершено', this)">Завершено</button>
+                </div>
+                <div class="density-btn-group">
+                    <button class="density-btn active" id="btn-density-normal" onclick="setDensity('normal')">
+                        <i data-lucide="layout-grid" style="width: 13px; height: 13px;"></i> Постери
+                    </button>
+                    <button class="density-btn" id="btn-density-compact" onclick="setDensity('compact')">
+                        <i data-lucide="grid" style="width: 13px; height: 13px;"></i> Щільна
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Popular Genres Carousel Pill Bar -->
+        <section class="bento-genres-bar" id="bento-genres-bar">
+            <span class="bg-label"><i data-lucide="tag" style="width: 14px; height: 14px;"></i> Жанри:</span>
+            <!-- Populated by JS -->
+        </section>
+
+        <!-- 3. Manga Grid Section -->
+        <section>
+            <div class="catalog-results-header">
+                <h3 class="results-heading">
+                    <span>Всі тайтли каталогу</span>
+                    <span class="results-count" id="bento-results-count">32 тайтли</span>
+                </h3>
+            </div>
+            <div class="bento-manga-grid" id="bento-manga-grid">
+                <!-- Cards populated by JS -->
+            </div>
+        </section>
+    </main>
+
+    <!-- 4. Live Quick-View Modal -->
+    <div class="modal-backdrop" id="modal-backdrop" onclick="closeQuickView(event)">
+        <div class="qv-modal" id="qv-modal" onclick="event.stopPropagation()">
+            <button class="qv-close-btn" onclick="closeQuickView()" title="Закрити">
+                <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+            <div class="qv-body" id="qv-body-content">
+                <!-- Dynamically injected -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <a href="#" class="m-nav-item">
+            <i data-lucide="home" style="width: 20px; height: 20px;"></i>
+            <span>Головна</span>
+        </a>
+        <a href="#catalog" class="m-nav-item active">
+            <i data-lucide="compass" style="width: 20px; height: 20px;"></i>
+            <span>Каталог</span>
+        </a>
+        <a href="#cabinet" class="m-nav-item">
+            <i data-lucide="user" style="width: 20px; height: 20px;"></i>
+            <span>Кабінет</span>
+        </a>
+    </nav>
+
+    <script>
+        let ALL_MANGA = [];
+        let ACTIVE_STATE = {
+            search: '',
+            type: 'all',
+            status: 'all',
+            genre: 'all',
+            sort: 'newest',
+            density: 'normal'
+        };
+
+        function toggleTheme() {
+            const html = document.documentElement;
+            const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+            html.setAttribute('data-theme', next);
+            localStorage.setItem('gokuraku_theme', next);
+        }
+
+        async function loadData() {
+            try {
+                const res = await fetch('api/manga-list.json');
+                if (res.ok) ALL_MANGA = await res.json();
+            } catch (e) {
+                console.warn(e);
+            }
+            if (!ALL_MANGA || ALL_MANGA.length === 0) {
+                ALL_MANGA = getSampleData();
+            }
+            initGenresBar();
+            renderGrid();
+            lucide.createIcons();
+        }
+
+        function initGenresBar() {
+            const genres = ["Всі", "Яой", "Романтика", "Драма", "Комедія", "Фентезі", "Школа", "Шьонен-ай", "Буденність", "Еротика", "Пригоди", "Бойовик"];
+            const bar = document.getElementById('bento-genres-bar');
+            bar.innerHTML = `<span class="bg-label"><i data-lucide="tag" style="width: 14px; height: 14px;"></i> Жанри:</span>` +
+                genres.map(g => `
+                    <button class="genre-pill-tag ${g === 'Всі' ? 'active' : ''}" onclick="selectGenre('${g}', this)">${g}</button>
+                `).join('');
+        }
+
+        function selectGenre(g, btn) {
+            ACTIVE_STATE.genre = g === 'Всі' ? 'all' : g;
+            document.querySelectorAll('.genre-pill-tag').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            renderGrid();
+        }
+
+        function selectBentoType(type, elem) {
+            ACTIVE_STATE.type = type;
+            document.querySelectorAll('.bento-format-tile').forEach(t => t.classList.remove('active'));
+            elem.classList.add('active');
+            document.getElementById('format-active-badge').textContent = type === 'all' ? 'Всі' : type;
+            renderGrid();
+        }
+
+        function selectBentoStatus(st, elem) {
+            ACTIVE_STATE.status = st;
+            document.querySelectorAll('.bento-status-btn').forEach(b => b.classList.remove('active'));
+            elem.classList.add('active');
+            renderGrid();
+        }
+
+        function handleSortChange(sort) {
+            ACTIVE_STATE.sort = sort;
+            renderGrid();
+        }
+
+        function setDensity(mode) {
+            ACTIVE_STATE.density = mode;
+            const grid = document.getElementById('bento-manga-grid');
+            grid.classList.toggle('density-compact', mode === 'compact');
+            document.getElementById('btn-density-normal').classList.toggle('active', mode === 'normal');
+            document.getElementById('btn-density-compact').classList.toggle('active', mode === 'compact');
+        }
+
+        document.getElementById('bento-search').addEventListener('input', (e) => {
+            ACTIVE_STATE.search = e.target.value.trim().toLowerCase();
+            renderGrid();
+        });
+
+        function renderGrid() {
+            let list = ALL_MANGA.filter(m => {
+                if (ACTIVE_STATE.search && !m.title.toLowerCase().includes(ACTIVE_STATE.search)) return false;
+                if (ACTIVE_STATE.type !== 'all' && m.type !== ACTIVE_STATE.type) return false;
+                if (ACTIVE_STATE.status !== 'all' && m.status !== ACTIVE_STATE.status) return false;
+                if (ACTIVE_STATE.genre !== 'all' && (!m.genres || !m.genres.includes(ACTIVE_STATE.genre))) return false;
+                return true;
+            });
+
+            if (ACTIVE_STATE.sort === 'newest') {
+                list.sort((a,b) => new Date(b.latestUpdate || 0) - new Date(a.latestUpdate || 0));
+            } else if (ACTIVE_STATE.sort === 'chapters') {
+                list.sort((a,b) => (b.lastChapter || 0) - (a.lastChapter || 0));
+            } else if (ACTIVE_STATE.sort === 'az') {
+                list.sort((a,b) => a.title.localeCompare(b.title, 'uk'));
+            }
+
+            document.getElementById('bento-results-count').textContent = `${list.length} тайтлів`;
+
+            const container = document.getElementById('bento-manga-grid');
+            if (list.length === 0) {
+                container.innerHTML = `
+                    <div style="grid-column: 1 / -1; padding: 4rem 1rem; text-align: center; background: var(--surface-card); border-radius: var(--radius-l); border: 1px dashed var(--border-subtle);">
+                        <i data-lucide="search-x" style="width: 48px; height: 48px; color: var(--accent-primary); margin-bottom: 1rem;"></i>
+                        <h3 style="font-size: 1.2rem; font-weight: 700;">Нічого не знайдено</h3>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            container.innerHTML = list.map(m => `
+                <div class="b-card">
+                    <div class="b-cover-wrap">
+                        <img src="${m.coverImage}" alt="${m.title}" class="b-cover-img" loading="lazy">
+                        <div class="b-meta-top">
+                            <span class="b-badge-type">${m.type || 'Манхва'}</span>
+                            <span class="b-badge-status ${m.status === 'Виходить' ? 'ongoing' : (m.status === 'Завершено' ? 'completed' : 'frozen')}">${m.status}</span>
+                        </div>
+                        <div class="b-hover-actions">
+                            <button class="quick-view-btn" onclick="openQuickView(${m.id})">
+                                <i data-lucide="eye" style="width: 14px; height: 14px;"></i> Швидкий огляд
+                            </button>
+                            <a href="${m.pageUrl}" class="direct-open-link">Перейти на сторінку &rarr;</a>
+                        </div>
+                    </div>
+                    <div class="b-info">
+                        <a href="${m.pageUrl}" class="b-title" title="${m.title}">${m.title}</a>
+                        <div class="b-submeta">
+                            <span class="b-chapters">Глава ${m.lastChapter || 1}</span>
+                            <span>${(m.genres && m.genres[0]) || ''}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        // Live Quick-View Logic
+        function openQuickView(id) {
+            const m = ALL_MANGA.find(item => item.id === id) || ALL_MANGA[0];
+            const content = document.getElementById('qv-body-content');
+            content.innerHTML = `
+                <div class="qv-cover-col">
+                    <img src="${m.coverImage}" alt="${m.title}" class="qv-cover">
+                </div>
+                <div class="qv-info-col">
+                    <div class="qv-meta-row">
+                        <span class="qv-tag" style="background: rgba(208, 188, 255, 0.15); color: var(--accent-primary); font-weight: 700;">${m.type || 'Манхва'}</span>
+                        <span class="qv-tag" style="color: ${m.status === 'Виходить' ? '#28a745' : '#007bff'}; font-weight: 700;">${m.status}</span>
+                        <span class="qv-tag">Оновлено: ${new Date(m.latestUpdate || Date.now()).toLocaleDateString('uk-UA')}</span>
+                    </div>
+                    <h2 class="qv-title">${m.title}</h2>
+                    <div class="qv-meta-row" style="margin-top: 0.2rem;">
+                        ${(m.genres || []).map(g => `<span class="qv-tag">${g}</span>`).join('')}
+                    </div>
+                    <p class="qv-synopsis">
+                        Захоплююча історія у всесвіті Gokuraku. Читайте якісний український переклад, насолоджуйтесь оригінальною графікою та повною історією без рекламних перешкод.
+                    </p>
+                    <div class="qv-stats-grid">
+                        <div>
+                            <div class="qv-stat-label">Розділів</div>
+                            <div class="qv-stat-val">${m.lastChapter || 1}</div>
+                        </div>
+                        <div>
+                            <div class="qv-stat-label">Переклад</div>
+                            <div class="qv-stat-val">100%</div>
+                        </div>
+                        <div>
+                            <div class="qv-stat-label">Рейтинг</div>
+                            <div class="qv-stat-val">⭐ 4.9</div>
+                        </div>
+                    </div>
+                    <div class="qv-actions">
+                        <a href="${m.pageUrl}" class="qv-read-btn">
+                            <i data-lucide="book-open" style="width: 16px; height: 16px;"></i> Читати тайтл
+                        </a>
+                        <a href="${m.pageUrl}" class="qv-detail-link">
+                            <i data-lucide="info" style="width: 16px; height: 16px;"></i> Деталі
+                        </a>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal-backdrop').classList.add('open');
+            document.body.style.overflow = 'hidden';
+            lucide.createIcons();
+        }
+
+        function closeQuickView() {
+            document.getElementById('modal-backdrop').classList.remove('open');
+            document.body.style.overflow = '';
+        }
+
+        function dismissShowcase() {
+            document.getElementById('showcase-banner').classList.add('minimized');
+        }
+
+        function getSampleData() {
+            return [
+                {"id": 1, "title": "Кохання — це ілюзія", "coverImage": "https://files.catbox.moe/h3nvsn.webp", "pageUrl": "#title?id=kokhannia-tse-iliuziia", "genres": ["Яой", "Драма", "Комедія", "Романтика", "Омегаверс"], "type": "Манхва", "status": "Завершено", "lastChapter": 117.0, "latestUpdate": "2026-02-23T20:38:15Z"},
+                {"id": 2, "title": "Щасливий Мармур", "coverImage": "https://files.catbox.moe/8c9w05.jpg", "pageUrl": "#title?id=shchaslyvyi-marmur", "genres": ["Буденність", "Драма", "Комедія", "Романтика", "Школа"], "type": "Манхва", "status": "Виходить", "lastChapter": 50.0, "latestUpdate": "2026-10-23T19:42:09Z"},
+                {"id": 3, "title": "Хлопець у мені", "coverImage": "https://files.catbox.moe/zpwhw3.webp", "pageUrl": "#title?id=khlopets-u-meni", "genres": ["Яой", "Драма", "Шьонен-ай", "Романтика", "Фентезі"], "type": "Маньхва", "status": "Виходить", "lastChapter": 53.0, "latestUpdate": "2026-08-23T13:13:06Z"},
+                {"id": 4, "title": "Форма симпатії", "coverImage": "https://files.catbox.moe/u3qcxk.jpg", "pageUrl": "#title?id=forma-sympatii", "genres": ["Яой", "Драма", "Шьонен-ай", "Школа"], "type": "Манхва", "status": "Виходить", "lastChapter": 75.6, "latestUpdate": "2026-10-22T19:38:59Z"},
+                {"id": 5, "title": "Солодке собаче життя", "coverImage": "https://files.catbox.moe/335rgs.jpg", "pageUrl": "#title?id=solodke-sobache-zhyttia", "genres": ["Яой", "Кулінарія", "Буденність", "Еротика"], "type": "Манґа", "status": "Завершено", "lastChapter": 6.5, "latestUpdate": "2025-11-12T19:08:48Z"},
+                {"id": 6, "title": "Мій кіт трохи інший", "coverImage": "https://files.catbox.moe/ftcjz4.webp", "pageUrl": "#title?id=mii-kit-trokhy-inshyi", "genres": ["Буденність", "Тварини", "Комедія"], "type": "Маньхва", "status": "Завершено", "lastChapter": 6.0, "latestUpdate": "2025-11-12T18:58:46Z"},
+                {"id": 8, "title": "Відьма Ічі", "coverImage": "https://files.catbox.moe/kslaz2.webp", "pageUrl": "#title?id=vidma-ichi", "genres": ["Шьонен", "Пригоди", "Екшн", "Комедія", "Фентезі"], "type": "Манґа", "status": "Виходить", "lastChapter": 66.0, "latestUpdate": "2026-10-17T20:39:51Z"},
+                {"id": 14, "title": "Хаскі та його вчитель білий кіт", "coverImage": "https://files.catbox.moe/lzyeyc.webp", "pageUrl": "#title?id=khaski-ta-ioho-vchytel-bilyi-kit", "genres": ["Бойовик", "Драма", "Надприродне", "Фентезі", "Яой"], "type": "Маньхва", "status": "Закинуто", "lastChapter": 8.0, "latestUpdate": "2026-08-25T19:45:30Z"},
+                {"id": 17, "title": "11-та шкільна поїздка", "coverImage": "https://files.catbox.moe/oh8ix3.jpg", "pageUrl": "#title?id=11-ta-shkilna-poizdka", "genres": ["Яой", "Фантастика", "Регресія", "Трилер"], "type": "Манхва", "status": "Виходить", "lastChapter": 29.0, "latestUpdate": "2026-10-22T19:59:23Z"},
+                {"id": 21, "title": "Душа, загублена Ґоу", "coverImage": "https://i.ibb.co/MkNxQ6n6/1.webp", "pageUrl": "#title?id=dusha-zahublena-gou", "genres": ["Шьонен", "Пригоди", "Демони", "Фентезі"], "type": "Маньхва", "status": "Виходить", "lastChapter": 12.0, "latestUpdate": "2026-10-22T19:36:32Z"},
+                {"id": 22, "title": "Ян Ільву та я", "coverImage": "https://files.catbox.moe/0ex1tu.webp", "pageUrl": "#title?id=ian-ilvu-ta-ia", "genres": ["Яой", "Романтика", "Трагедія", "Школа", "Драма"], "type": "Манхва", "status": "Виходить", "lastChapter": 38.0, "latestUpdate": "2026-10-30T18:27:36Z"},
+                {"id": 25, "title": "Невдалий приклад бездоганного прокляття", "coverImage": "https://files.catbox.moe/hu8i1f.webp", "pageUrl": "#title?id=nevdalyi-pryklad-bezdohannoho-prokliattia", "genres": ["Драма", "Фентезі", "Романтика", "Магія"], "type": "Манхва", "status": "Виходить", "lastChapter": 45.0, "latestUpdate": "2026-10-25T19:48:10Z"}
+            ];
+        }
+
+        window.addEventListener('message', (e) => {
+            if (e.data && e.data.theme) {
+                document.documentElement.setAttribute('data-theme', e.data.theme);
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const urlTheme = new URLSearchParams(window.location.search).get('theme');
+            const savedTheme = urlTheme || localStorage.getItem('gokuraku_theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            loadData();
+        });
+    </script>
+</body>
+</html>

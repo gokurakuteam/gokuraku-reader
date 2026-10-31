@@ -130,6 +130,26 @@ function updateClickerArea() {
     if(score) score.textContent = state.coins;
 }
 
+let clickerSaveTimer = null;
+function scheduleSaveClickerData() {
+    if (!clickerSaveTimer) {
+        clickerSaveTimer = setTimeout(() => {
+            saveClickerData(state);
+            clickerSaveTimer = null;
+        }, 1000);
+    }
+}
+
+if (typeof window !== 'undefined') {
+    window.addEventListener('beforeunload', () => {
+        if (clickerSaveTimer) {
+            clearTimeout(clickerSaveTimer);
+            saveClickerData(state);
+            clickerSaveTimer = null;
+        }
+    });
+}
+
 function setupClickerListeners() {
     const clickArea = document.querySelector('.clicker-area');
     if (clickArea) {
@@ -137,14 +157,27 @@ function setupClickerListeners() {
         clickArea.parentNode.replaceChild(newArea, clickArea);
         newArea.addEventListener('click', (e) => {
             const img = newArea.querySelector('img');
-            img.classList.remove('bounce');
-            void img.offsetWidth;
-            img.classList.add('bounce');
+            if (img) {
+                if (img.animate) {
+                    img.animate([
+                        { transform: 'scale(1)' },
+                        { transform: 'scale(1.18)' },
+                        { transform: 'scale(0.96)' },
+                        { transform: 'scale(1)' }
+                    ], { duration: 180, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)' });
+                } else {
+                    img.classList.remove('bounce');
+                    void img.offsetWidth;
+                    img.classList.add('bounce');
+                }
+            }
 
             state.coins += 1;
             state.clickCount += 1;
-            document.getElementById('clicker-score').textContent = state.coins;
-            saveClickerData(state);
+            const scoreEl = document.getElementById('clicker-score');
+            if (scoreEl) scoreEl.textContent = state.coins;
+            
+            scheduleSaveClickerData();
 
             spawnCoin(e.clientX, e.clientY);
             spawnParticles(e.clientX, e.clientY);

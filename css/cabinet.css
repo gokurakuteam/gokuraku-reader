@@ -615,3 +615,499 @@ html[data-theme="light"] .shop-btn.active {
         width: 100%;
     }
 }
+
+/* === CABINET READING HISTORY (DESIGN.md Certified) === */
+.history-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.75rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.history-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+}
+
+.history-section-title {
+    margin: 0;
+    font-size: 1.35rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-light);
+}
+
+.history-count-badge {
+    background: rgba(208, 188, 255, 0.12);
+    color: var(--accent-color);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 0.35rem 0.85rem;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--accent-color);
+    box-shadow: 0 0 10px var(--glow-color);
+}
+
+.history-clear-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--secondary-text);
+    min-height: 44px;
+    padding: 0.6rem 1.25rem;
+    border-radius: var(--radius-full);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: transform var(--motion-duration-micro) var(--motion-ease-spring),
+                border-color var(--motion-duration-micro) ease,
+                color var(--motion-duration-micro) ease,
+                background-color var(--motion-duration-micro) ease,
+                box-shadow var(--motion-duration-micro) ease;
+}
+
+.history-clear-btn:hover {
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+    background: rgba(255, 107, 107, 0.08);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.18);
+}
+
+.history-clear-btn:active {
+    transform: scale(0.96);
+    transition: transform 180ms var(--motion-ease-spring);
+}
+
+.history-clear-btn svg, .history-clear-btn i {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+/* Content Card per DESIGN.md (Radius 24px, Elevation 1 -> Elevation 2) */
+.history-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-l);
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transition: transform var(--motion-duration-medium) var(--motion-ease-fluid),
+                box-shadow var(--motion-duration-medium) var(--motion-ease-fluid),
+                border-color 200ms ease,
+                opacity 250ms ease;
+    position: relative;
+    overflow: hidden;
+    box-sizing: border-box;
+}
+
+.history-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-color);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25), 0 0 15px var(--glow-color);
+}
+
+.history-card.removing {
+    opacity: 0;
+    transform: translateX(40px) scale(0.95);
+    pointer-events: none;
+}
+
+.history-card-left {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Media Cover (aspect-ratio: 2 / 3, radius: 16px) */
+.history-card-cover {
+    position: relative;
+    width: 80px;
+    min-width: 80px;
+    aspect-ratio: 2 / 3;
+    height: auto;
+    border-radius: var(--radius-m);
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+    background-color: var(--background-dark);
+}
+
+.history-card-cover a {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.history-card-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--motion-duration-medium) var(--motion-ease-fluid);
+}
+
+.history-card:hover .history-card-cover img {
+    transform: scale(1.06);
+}
+
+.history-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.history-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Chips & Badges per DESIGN.md (Radius 8px) */
+.history-tag {
+    font-size: 0.74rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.22rem 0.65rem;
+    border-radius: var(--radius-s);
+    line-height: 1.2;
+}
+
+.history-type-tag {
+    background: var(--background-dark);
+    color: var(--secondary-text);
+    border: 1px solid var(--border-color);
+}
+
+.history-card-time {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    color: var(--secondary-text);
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.history-icon-mini {
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.history-card-title {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 600;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.history-card-title a {
+    color: var(--text-light);
+    text-decoration: none;
+    transition: color 200ms ease;
+}
+
+.history-card-title a:hover {
+    color: var(--accent-color);
+}
+
+.history-card-chapter-info {
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    flex-wrap: wrap;
+    margin-top: 0.1rem;
+}
+
+.history-chapter-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    background: var(--background-dark);
+    border: 1px solid var(--border-color);
+    color: var(--accent-color);
+    font-size: 0.82rem;
+    font-weight: 700;
+    padding: 0.28rem 0.8rem;
+    border-radius: var(--radius-full);
+    white-space: nowrap;
+}
+
+.history-chapter-title-text {
+    font-size: 0.82rem;
+    color: var(--secondary-text);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 280px;
+}
+
+.history-card-progress {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: 0.4rem;
+    max-width: 100%;
+}
+
+.history-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--secondary-text);
+    font-weight: 600;
+}
+
+.history-progress-val {
+    color: var(--accent-color);
+    font-weight: 700;
+}
+
+.history-progress-track {
+    height: 6px;
+    background: var(--background-dark);
+    border-radius: var(--radius-full);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.history-progress-fill {
+    height: 100%;
+    background: var(--accent-color);
+    border-radius: var(--radius-full);
+    box-shadow: 0 0 10px var(--glow-color);
+    transition: width 400ms var(--motion-ease-fluid);
+}
+
+.history-card-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-shrink: 0;
+}
+
+/* Primary Pill Button per DESIGN.md */
+.history-btn-resume {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.65rem 1.4rem;
+    background: var(--accent-color);
+    color: var(--on-accent-color, #141218);
+    font-weight: 700;
+    font-size: 0.88rem;
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    border: none;
+    box-shadow: 0 4px 15px var(--glow-color);
+    box-sizing: border-box;
+    transition: transform var(--motion-duration-micro) var(--motion-ease-spring),
+                box-shadow var(--motion-duration-micro) ease;
+    white-space: nowrap;
+}
+
+html[data-theme="light"] .history-btn-resume {
+    color: #ffffff;
+}
+
+.history-btn-resume:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px var(--glow-color);
+}
+
+.history-btn-resume:active {
+    transform: scale(0.96);
+    transition: transform 180ms var(--motion-ease-spring);
+}
+
+.history-btn-resume svg, .history-btn-resume i {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* Icon Button (44x44px touch target) per DESIGN.md */
+.history-btn-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    border-radius: var(--radius-full);
+    border: 1px solid var(--border-color);
+    background: transparent;
+    color: var(--secondary-text);
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: transform var(--motion-duration-micro) var(--motion-ease-spring),
+                border-color var(--motion-duration-micro) ease,
+                color var(--motion-duration-micro) ease,
+                background-color var(--motion-duration-micro) ease;
+    flex-shrink: 0;
+}
+
+.history-btn-remove:hover {
+    background: rgba(255, 107, 107, 0.08);
+    border-color: #ff6b6b;
+    color: #ff6b6b;
+    transform: translateY(-2px) scale(1.05);
+}
+
+.history-btn-remove:active {
+    transform: scale(0.92);
+    transition: transform 180ms var(--motion-ease-spring);
+}
+
+.history-btn-remove svg, .history-btn-remove i {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+
+/* Empty State per DESIGN.md (Radius 24px, zero ambient motion) */
+.empty-history-message {
+    text-align: center;
+    padding: 4rem 2rem;
+    background-color: var(--card-background);
+    border-radius: var(--radius-l);
+    border: 1px dashed var(--border-color);
+    margin-top: 1rem;
+}
+
+.empty-history-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: var(--radius-full);
+    background: var(--background-dark);
+    border: 1px solid var(--border-color);
+    color: var(--accent-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.25rem;
+    box-shadow: 0 0 25px var(--glow-color);
+}
+
+.empty-history-icon svg, .empty-history-icon i {
+    width: 28px;
+    height: 28px;
+}
+
+.empty-history-message h3 {
+    margin: 0 0 0.5rem;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--text-light);
+}
+
+.empty-history-message p {
+    margin: 0 0 1.5rem;
+    color: var(--secondary-text);
+    font-size: 0.95rem;
+    max-width: 480px;
+    margin-inline: auto;
+    line-height: 1.5;
+}
+
+.empty-history-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 44px;
+    padding: 0.75rem 1.75rem;
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    font-weight: 700;
+    box-sizing: border-box;
+}
+
+/* Mobile Ergonomics per DESIGN.md (<= 680px) */
+@media (max-width: 680px) {
+    .history-card {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 1.15rem;
+        gap: 1.1rem;
+    }
+    .history-card-left {
+        align-items: flex-start;
+        gap: 0.9rem;
+    }
+    .history-card-cover {
+        width: 72px;
+        min-width: 72px;
+    }
+    .history-card-title {
+        font-size: 1.05rem;
+    }
+    .history-card-chapter-info {
+        gap: 0.4rem;
+    }
+    .history-card-progress {
+        max-width: 100%;
+    }
+    .history-card-actions {
+        width: 100%;
+        justify-content: space-between;
+        gap: 0.75rem;
+        margin-top: 0.25rem;
+    }
+    .history-btn-resume {
+        flex: 1;
+        justify-content: center;
+    }
+}
+
+/* Accessibility: Reduced Motion per DESIGN.md */
+@media (prefers-reduced-motion: reduce) {
+    .history-card,
+    .history-card-cover img,
+    .history-btn-resume,
+    .history-btn-remove,
+    .history-clear-btn,
+    .history-progress-fill {
+        transition-duration: 0.01ms !important;
+        transform: none !important;
+    }
+}

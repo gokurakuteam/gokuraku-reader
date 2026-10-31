@@ -28,7 +28,7 @@
     font-size: 1rem;
 }
 
-.sidebar {
+.catalog-page .sidebar {
     flex-shrink: 0;
     width: 280px;
 }
@@ -334,7 +334,7 @@ manga-card.manga-card-animate {
     .catalog-page {
         flex-direction: column;
     }
-    .sidebar {
+    .catalog-page .sidebar {
         display: none;
     }
     .mobile-filter-trigger {

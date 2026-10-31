@@ -1,7 +1,7 @@
 import { MangaCard } from './js/components.js';
 import { getEffectiveCover } from './storage-manager.js';
 
-export function initCatalog(mangaData, initialGenres = []) {
+export function initCatalog(mangaData, initialGenres = [], initialSearch = '') {
     // DOM Elements
     const mangaGrid = document.querySelector('.manga-grid');
     const searchInput = document.getElementById('search-input');
@@ -30,11 +30,15 @@ export function initCatalog(mangaData, initialGenres = []) {
 
     // State
     let activeFilters = {
-        search: '',
+        search: initialSearch || '',
         genres: { include: initialGenres, exclude: [] },
         types: { include: [], exclude: [] },
         sort: 'newest'
     };
+
+    if (searchInput && initialSearch) {
+        searchInput.value = initialSearch;
+    }
 
     function getFilterState(type, value) {
         if (activeFilters[type].include.includes(value)) return 'include';
@@ -129,12 +133,19 @@ export function initCatalog(mangaData, initialGenres = []) {
             );
         }
 
+        // Precalculate timestamp if missing
+        filteredManga.forEach(m => {
+            if (m._updateTime === undefined) {
+                m._updateTime = m.latestUpdate ? new Date(m.latestUpdate).getTime() : 0;
+            }
+        });
+
         // Apply sort
         switch(activeFilters.sort) {
             case 'az': filteredManga.sort((a, b) => a.title.localeCompare(b.title)); break;
             case 'za': filteredManga.sort((a, b) => b.title.localeCompare(a.title)); break;
-            case 'oldest': filteredManga.sort((a, b) => new Date(a.latestUpdate) - new Date(b.latestUpdate)); break;
-            case 'newest': default: filteredManga.sort((a, b) => new Date(b.latestUpdate) - new Date(a.latestUpdate)); break;
+            case 'oldest': filteredManga.sort((a, b) => (a._updateTime || 0) - (b._updateTime || 0)); break;
+            case 'newest': default: filteredManga.sort((a, b) => (b._updateTime || 0) - (a._updateTime || 0)); break;
         }
 
         mangaGrid.innerHTML = '';
@@ -143,15 +154,19 @@ export function initCatalog(mangaData, initialGenres = []) {
             return;
         }
 
+        const fragment = document.createDocumentFragment();
         filteredManga.forEach((manga, index) => {
             const card = document.createElement('manga-card');
             card.setAttribute('name', manga.title);
             card.setAttribute('image', getEffectiveCover(manga));
             card.setAttribute('url', manga.pageUrl);
             card.setAttribute('type', manga.type);
-            if (manga.chapters && manga.chapters.length > 0) {
-                 const maxChapter = manga.chapters.reduce((max, ch) => Math.max(max, parseFloat(ch.chapter)), -Infinity);
-                 card.setAttribute('last-chapter', `Розділ ${maxChapter}`);
+            
+            const lastCh = manga.lastChapter !== undefined && manga.lastChapter !== null
+                ? manga.lastChapter
+                : (manga.chapters && manga.chapters.length > 0 ? manga.chapters[manga.chapters.length - 1].chapter : null);
+            if (lastCh !== null && lastCh !== undefined) {
+                card.setAttribute('last-chapter', `Розділ ${lastCh}`);
             }
             card.setAttribute('status', manga.status);
             
@@ -161,8 +176,9 @@ export function initCatalog(mangaData, initialGenres = []) {
                 card.style.animationDelay = `${index * 0.02}s`;
             }
             
-            mangaGrid.appendChild(card);
+            fragment.appendChild(card);
         });
+        mangaGrid.appendChild(fragment);
     }
 
     function updateActiveFiltersUI() {
@@ -272,11 +288,15 @@ export function initCatalog(mangaData, initialGenres = []) {
         updateActiveFiltersUI();
     }
     
-    // Event Listeners
+    // Event Listeners (з дебаунсом для швидкого введення)
+    let searchDebounceTimer = null;
     searchInput.addEventListener('input', (e) => {
-        activeFilters.search = e.target.value;
-        renderManga();
-        updateActiveFiltersUI();
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => {
+            activeFilters.search = e.target.value.trim();
+            renderManga();
+            updateActiveFiltersUI();
+        }, 150);
     });
 
     function handleDelegatedClick(e) {

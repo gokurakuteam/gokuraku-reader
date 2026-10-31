@@ -7,28 +7,25 @@
     <title>Gokuraku</title>
     <link rel="icon" type="image/x-icon" href="/icons/icon-256.ico">
     
-    <!-- DNS Prefetch для зовнішніх ресурсів -->
-    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
-    <link rel="dns-prefetch" href="https://unpkg.com">
-    <link rel="dns-prefetch" href="https://files.catbox.moe">
-    <link rel="dns-prefetch" href="https://giscus.app">
-    <link rel="dns-prefetch" href="https://api.github.com">
-
-    <!-- Попереднє підключення до зовнішніх сервісів -->
+    <!-- Попереднє підключення до активних зовнішніх сервісів -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" as="style">
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="dns-prefetch" href="https://unpkg.com">
+    <link rel="dns-prefetch" href="https://files.catbox.moe">
     
-    <!-- Попереднє завантаження стилів -->
-    <link rel="preload" href="style.css" as="style">
-    <link rel="stylesheet" href="style.css">
+    <!-- Стилі застосунку (завантажуються паралельно без каскаду @import) -->
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/catalog.css">
+    <link rel="stylesheet" href="css/title.css">
+    <link rel="stylesheet" href="css/reader.css">
+    <link rel="stylesheet" href="css/cabinet.css">
+    <link rel="stylesheet" href="css/404.css">
     
     <link rel="manifest" href="manifest.json">
     
-    <!-- Відкладене завантаження скриптів (defer), щоб вони не блокували рендеринг сторінки -->
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- Відкладене завантаження легких обов'язкових скриптів -->
     <script defer src="https://unpkg.com/lucide@latest"></script>
     <script defer src="support-zsu-block.js"></script>
 </head>
@@ -38,20 +35,39 @@
         
     </main>
     <footer class="expressive-footer">
-        <div class="footer-content">
+        <div class="footer-grid">
             <div class="footer-brand">
                 <h2 class="footer-logo">Gokuraku</h2>
-                <p class="footer-slogan">Твій портал у світ манґи та новел</p>
+                <p class="footer-slogan">Твій затишний портал у світ якісного українського перекладу манґи, манхви та новел.</p>
             </div>
-            <div class="footer-links">
-                <a href="#" class="button">На головну</a>
-                <a href="#catalog" class="button">Каталог</a>
-                <a href="#cabinet" class="button button-primary">Особистий кабінет</a>
-                <a href="tools.html" class="button">Інструменти</a>
+            <div class="footer-col">
+                <h4>Навігація</h4>
+                <ul>
+                    <li><a href="#"><i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i> Головна</a></li>
+                    <li><a href="#catalog"><i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i> Каталог</a></li>
+                    <li><a href="#cabinet"><i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i> Особистий кабінет</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Інструменти</h4>
+                <ul>
+                    <li><a href="tools.html"><i data-lucide="wrench" style="width: 14px; height: 14px;"></i> Інструменти</a></li>
+                    <li><a href="https://savelife.in.ua/" target="_blank"><i data-lucide="shield" style="width: 14px; height: 14px;"></i> Допомога ЗСУ</a></li>
+                    <li><a href="#cabinet?tab=history"><i data-lucide="history" style="width: 14px; height: 14px;"></i> Історія читання</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Спільнота</h4>
+                <ul>
+                    <li><a href="https://t.me/goku_raku" target="_blank"><i data-lucide="send" style="width: 14px; height: 14px;"></i> Telegram канал</a></li>
+                    <li><a href="https://send.monobank.ua/jar/3okYS2E56P" target="_blank"><i data-lucide="credit-card" style="width: 14px; height: 14px;"></i> Підтримати проєкт</a></li>
+                    <li><a href="https://www.tiktok.com/@gokuraku_translation/" target="_blank"><i data-lucide="video" style="width: 14px; height: 14px;"></i> TikTok</a></li>
+                </ul>
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 Gokuraku. Зроблено з <i data-lucide="heart" style="width: 16px; height: 16px; color: var(--accent-color); vertical-align: middle;"></i></p>
+            <p>&copy; 2024–2026 Gokuraku. Зроблено з любов'ю <i data-lucide="heart" class="footer-heart-icon" style="width: 15px; height: 15px; color: var(--accent-color); fill: currentColor; vertical-align: middle; display: inline-block;"></i></p>
+            <p>Всі права на тайтли належать їхнім авторам.</p>
         </div>
     </footer>
     <script src="main.js" type="module"></script>
