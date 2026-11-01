@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Концепт 2: Studio Reader — Читалка Gokuraku</title>
+    <link rel="icon" type="image/x-icon" href="/icons/icon-256.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --surface-canvas: #141218;
+            --surface-card: #2B2930;
+            --surface-elevated: #36343B;
+            --surface-overlay: rgba(20, 18, 24, 0.92);
+            --border-subtle: #49454F;
+            --text-primary: #E6E0E9;
+            --text-secondary: #CAC4D0;
+            --accent-primary: #D0BCFF;
+            --accent-glow: rgba(208, 188, 255, 0.25);
+            --motion-ease-fluid: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+            --motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1.0);
+            --radius-s: 8px;
+            --radius-m: 16px;
+            --radius-l: 24px;
+            --radius-xl: 32px;
+            --radius-pill: 100px;
+            --reader-brightness: 1;
+        }
+
+        html[data-theme="light"] {
+            --surface-canvas: #FEF7FF;
+            --surface-card: #F3EDF7;
+            --surface-elevated: #EDE7F0;
+            --surface-overlay: rgba(254, 247, 255, 0.92);
+            --border-subtle: #CAC4D0;
+            --text-primary: #1D1B20;
+            --text-secondary: #49454F;
+            --accent-primary: #6750A4;
+            --accent-glow: rgba(103, 80, 164, 0.2);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background-color: var(--surface-canvas);
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            position: relative;
+        }
+
+        /* Reading Area */
+        .reader-stage {
+            flex: 1;
+            height: 100%;
+            position: relative;
+            background: #09080c;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .scroll-canvas {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Horizontal Layouts */
+        .scroll-canvas.layout-single-ltr {
+            flex-direction: row;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            align-items: stretch;
+        }
+        .scroll-canvas.layout-single-rtl {
+            flex-direction: row-reverse;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            align-items: stretch;
+        }
+
+        /* Double Spread Layout (for Wide Screens / Laptop) */
+        .scroll-canvas.layout-spread {
+            flex-direction: row;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            align-items: center;
+        }
+
+        .page-item {
+            flex-shrink: 0;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #09080c;
+            scroll-snap-align: center;
+            scroll-snap-stop: always; /* Prevent double skipping */
+        }
+
+        .layout-vertical .page-item {
+            width: 100%;
+            max-width: 820px;
+        }
+
+        .layout-single-ltr .page-item,
+        .layout-single-rtl .page-item {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .layout-spread .page-item {
+            width: 50vw;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .page-item img {
+            display: block;
+            max-height: 100vh;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
+            filter: brightness(var(--reader-brightness));
+            transition: filter 0.2s ease;
+            pointer-events: none;
+        }
+
+        .layout-vertical .page-item img {
+            width: 100%;
+            height: auto;
+            max-height: none;
+        }
+
+        /* Tap Navigation Overlay */
+        .tap-grid {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: 25% 50% 25%;
+            z-index: 10;
+        }
+        .tap-col { cursor: pointer; }
+        .tap-left { cursor: w-resize; }
+        .tap-right { cursor: e-resize; }
+
+        /* Minimal Header Top Bar */
+        .studio-top-bar {
+            position: absolute;
+            top: 1.25rem;
+            left: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            z-index: 40;
+            background: rgba(43, 41, 48, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            padding: 0.4rem 0.9rem;
+            border-radius: var(--radius-pill);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s var(--motion-ease-fluid), opacity 0.3s;
+        }
+        .studio-top-bar.hidden {
+            transform: translateY(-150%);
+            opacity: 0;
+            pointer-events: none;
+        }
+        .studio-back-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+        .studio-back-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent-primary);
+        }
+        .studio-title-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.82rem;
+            font-weight: 700;
+        }
+        .studio-chapter-chip {
+            background: rgba(208, 188, 255, 0.12);
+            color: var(--accent-primary);
+            padding: 0.15rem 0.6rem;
+            border-radius: var(--radius-s);
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        /* Desktop Floating Side Dock */
+        .studio-side-dock {
+            position: absolute;
+            top: 50%;
+            right: 1.5rem;
+            transform: translateY(-50%);
+            background: rgba(43, 41, 48, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-pill);
+            padding: 0.45rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            z-index: 50;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s var(--motion-ease-fluid), opacity 0.3s;
+        }
+        .studio-side-dock.hidden {
+            transform: translateY(-50%) translateX(150%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .dock-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            position: relative;
+        }
+        .dock-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text-primary);
+        }
+        .dock-btn.active {
+            background: var(--accent-primary);
+            color: #141218;
+            box-shadow: 0 2px 10px var(--accent-glow);
+        }
+        html[data-theme="light"] .dock-btn.active {
+            color: #ffffff;
+        }
+
+        /* Desktop Expandable Drawer Attached to Dock */
+        .dock-drawer {
+            position: absolute;
+            top: 50%;
+            right: 5rem;
+            transform: translateY(-50%) translateX(20px);
+            width: 330px;
+            background: rgba(43, 41, 48, 0.96);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-l);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            padding: 1.25rem;
+            z-index: 45;
+            display: none;
+            flex-direction: column;
+            gap: 1rem;
+            opacity: 0;
+            transition: all 0.25s var(--motion-ease-fluid);
+        }
+        .dock-drawer.open {
+            display: flex;
+            opacity: 1;
+            transform: translateY(-50%) translateX(0);
+        }
+
+        .drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 0.6rem;
+        }
+        .drawer-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.45rem;
+        }
+
+        /* Chapter items list in drawer */
+        .chapter-quick-list {
+            max-height: 250px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+        .chapter-quick-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.55rem 0.85rem;
+            background: var(--surface-canvas);
+            border-radius: var(--radius-m);
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.15s;
+        }
+        .chapter-quick-item:hover {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+        }
+        .chapter-quick-item.active {
+            border-color: var(--accent-primary);
+            background: rgba(208, 188, 255, 0.1);
+            color: var(--accent-primary);
+        }
+
+        /* Settings layout pills */
+        .layout-grid-picker {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.4rem;
+        }
+        .picker-card {
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-m);
+            padding: 0.75rem 0.5rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+        .picker-card:hover {
+            color: var(--text-primary);
+            border-color: var(--accent-primary);
+        }
+        .picker-card.active {
+            border-color: var(--accent-primary);
+            color: var(--accent-primary);
+            background: rgba(208, 188, 255, 0.08);
+            box-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        /* Bottom Floating Bar on Mobile */
+        .studio-mobile-bar {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 2rem);
+            max-width: 420px;
+            background: rgba(43, 41, 48, 0.94);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-pill);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.35rem 0.65rem;
+            z-index: 50;
+            transition: transform 0.3s var(--motion-ease-fluid), opacity 0.3s;
+        }
+        .studio-mobile-bar.hidden {
+            transform: translateX(-50%) translateY(150%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .studio-mob-action {
+            min-height: 44px;
+            padding: 0 0.85rem;
+            border-radius: var(--radius-pill);
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .studio-mob-action:active {
+            transform: scale(0.94);
+        }
+
+        .studio-mob-page-indicator {
+            background: rgba(20, 18, 24, 0.6);
+            border: 1px solid var(--border-subtle);
+            padding: 0.35rem 0.85rem;
+            border-radius: var(--radius-pill);
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        /* Mobile Bottom Sheet */
+        .studio-sheet-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(6px);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .studio-sheet-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .studio-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface-card);
+            border-top: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+            z-index: 101;
+            padding: 0.75rem 1.25rem 2.2rem;
+            transform: translateY(100%);
+            transition: transform 0.35s var(--motion-ease-fluid);
+            max-height: 80vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .studio-sheet.open {
+            transform: translateY(0);
+        }
+        .studio-drag-bar {
+            width: 36px;
+            height: 4px;
+            background: var(--border-subtle);
+            border-radius: var(--radius-pill);
+            align-self: center;
+            margin-bottom: 0.3rem;
+        }
+
+        @media (max-width: 768px) {
+            .studio-side-dock { display: none !important; }
+            .dock-drawer { display: none !important; }
+            .studio-mobile-bar { display: flex; }
+            .studio-top-bar {
+                left: 1rem;
+                top: 0.75rem;
+                padding: 0.3rem 0.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Reader Canvas -->
+    <main class="reader-stage">
+        <!-- Tap zone overlay -->
+        <div class="tap-grid">
+            <div class="tap-col tap-left" onclick="studioNav('prev')" title="Попередня сторінка"></div>
+            <div class="tap-col tap-center" onclick="toggleStudioHUD()" title="Меню"></div>
+            <div class="tap-col tap-right" onclick="studioNav('next')" title="Наступна сторінка"></div>
+        </div>
+
+        <div class="scroll-canvas layout-single-ltr" id="studio-canvas">
+            <!-- 10 Manga Pages -->
+            <div class="page-item" data-index="0">
+                <img src="https://files.catbox.moe/ihrdhc.jpg" alt="1">
+            </div>
+            <div class="page-item" data-index="1">
+                <img src="https://files.catbox.moe/mg5b3w.jpg" alt="2">
+            </div>
+            <div class="page-item" data-index="2">
+                <img src="https://files.catbox.moe/md3skw.jpg" alt="3">
+            </div>
+            <div class="page-item" data-index="3">
+                <img src="https://files.catbox.moe/m7r22e.jpg" alt="4">
+            </div>
+            <div class="page-item" data-index="4">
+                <img src="https://files.catbox.moe/s4gfdp.jpg" alt="5">
+            </div>
+            <div class="page-item" data-index="5">
+                <img src="https://files.catbox.moe/44hmym.jpg" alt="6">
+            </div>
+            <div class="page-item" data-index="6">
+                <img src="https://files.catbox.moe/5dx0u5.jpg" alt="7">
+            </div>
+            <div class="page-item" data-index="7">
+                <img src="https://files.catbox.moe/c8heke.jpg" alt="8">
+            </div>
+            <div class="page-item" data-index="8">
+                <img src="https://files.catbox.moe/12xjjl.jpg" alt="9">
+            </div>
+            <div class="page-item" data-index="9">
+                <img src="https://files.catbox.moe/s2vpfu.jpg" alt="10">
+            </div>
+        </div>
+    </main>
+
+    <!-- Top Status Bar -->
+    <header class="studio-top-bar" id="studio-top">
+        <button class="studio-back-btn" onclick="history.back()" title="Назад">
+            <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i>
+        </button>
+        <div class="studio-title-badge">
+            <span>Кохання — це ілюзія</span>
+            <span class="studio-chapter-chip">Глава 1</span>
+        </div>
+    </header>
+
+    <!-- Desktop Floating Side Dock -->
+    <aside class="studio-side-dock" id="studio-dock">
+        <button class="dock-btn" onclick="toggleDrawer('chapters')" id="btn-dock-chapters" title="Швидкі розділи">
+            <i data-lucide="layers" style="width: 20px; height: 20px;"></i>
+        </button>
+        <button class="dock-btn" onclick="toggleDrawer('layout')" id="btn-dock-layout" title="Режими та розворот">
+            <i data-lucide="columns-2" style="width: 20px; height: 20px;"></i>
+        </button>
+        <button class="dock-btn" onclick="toggleDrawer('adjust')" id="btn-dock-adjust" title="Яскравість та кольори">
+            <i data-lucide="sliders" style="width: 20px; height: 20px;"></i>
+        </button>
+        <div style="width: 24px; height: 1px; background: var(--border-subtle); align-self: center;"></div>
+        <button class="dock-btn" onclick="toggleStudioFullscreen()" title="Повний екран">
+            <i data-lucide="maximize" style="width: 18px; height: 18px;"></i>
+        </button>
+    </aside>
+
+    <!-- Attached Side Drawer -->
+    <div class="dock-drawer" id="dock-drawer">
+        <!-- Content dynamically populated -->
+        <div class="drawer-header">
+            <span class="drawer-title" id="drawer-title">Налаштування</span>
+            <button class="studio-back-btn" style="width: 26px; height: 26px;" onclick="closeDrawer()">
+                <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+            </button>
+        </div>
+        <div id="drawer-body"></div>
+    </div>
+
+    <!-- Mobile Floating Bottom Pill Dock -->
+    <div class="studio-mobile-bar" id="studio-mob-bar">
+        <button class="studio-mob-action" onclick="openStudioSheet('chapters')">
+            <i data-lucide="list" style="width: 18px; height: 18px;"></i> Глави
+        </button>
+
+        <div class="studio-mob-page-indicator" id="mob-page-text">
+            1 / 10
+        </div>
+
+        <button class="studio-mob-action" onclick="openStudioSheet('settings')">
+            <i data-lucide="sliders" style="width: 18px; height: 18px;"></i> Опції
+        </button>
+    </div>
+
+    <!-- Mobile Bottom Sheet -->
+    <div class="studio-sheet-backdrop" id="studio-sheet-backdrop" onclick="closeStudioSheet()"></div>
+    <div class="studio-sheet" id="studio-sheet">
+        <div class="studio-drag-bar"></div>
+        <div class="drawer-header">
+            <span class="drawer-title" id="sheet-title">Опції</span>
+            <button class="studio-back-btn" onclick="closeStudioSheet()">
+                <i data-lucide="x" style="width: 18px; height: 18px;"></i>
+            </button>
+        </div>
+        <div id="sheet-body"></div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        let curPage = 0;
+        const total = 10;
+        let layoutMode = 'single-ltr'; // 'vertical', 'single-ltr', 'single-rtl', 'spread'
+        let isNavigating = false;
+        let hudOn = true;
+        let activeDrawer = null;
+
+        const canvas = document.getElementById('studio-canvas');
+        const mobPageText = document.getElementById('mob-page-text');
+        const topBar = document.getElementById('studio-top');
+        const sideDock = document.getElementById('studio-dock');
+        const mobBar = document.getElementById('studio-mob-bar');
+        const drawer = document.getElementById('dock-drawer');
+
+        // Deterministic Navigation without page double-skips
+        function studioGoTo(index, smooth = true) {
+            if (index < 0 || index >= total) return;
+            if (isNavigating) return;
+
+            isNavigating = true;
+            curPage = index;
+            mobPageText.textContent = `${curPage + 1} / ${total}`;
+
+            const pages = canvas.querySelectorAll('.page-item');
+            if (pages[curPage]) {
+                pages[curPage].scrollIntoView({
+                    behavior: smooth ? 'smooth' : 'auto',
+                    inline: 'start',
+                    block: 'nearest'
+                });
+            }
+
+            setTimeout(() => {
+                isNavigating = false;
+            }, 200);
+        }
+
+        function studioNav(dir) {
+            let step = dir === 'next' ? 1 : -1;
+            if (layoutMode === 'single-rtl') step = -step;
+            if (layoutMode === 'spread') step *= 2; // Jump 2 pages in spread mode!
+            studioGoTo(curPage + step);
+        }
+
+        function toggleStudioHUD() {
+            hudOn = !hudOn;
+            topBar.classList.toggle('hidden', !hudOn);
+            sideDock.classList.toggle('hidden', !hudOn);
+            mobBar.classList.toggle('hidden', !hudOn);
+            if (!hudOn) closeDrawer();
+        }
+
+        // Side Drawer for Desktop
+        function toggleDrawer(tab) {
+            if (activeDrawer === tab) {
+                closeDrawer();
+                return;
+            }
+            activeDrawer = tab;
+            document.querySelectorAll('.dock-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(`btn-dock-${tab}`)?.classList.add('active');
+
+            const title = document.getElementById('drawer-title');
+            const body = document.getElementById('drawer-body');
+
+            if (tab === 'chapters') {
+                title.innerHTML = `<i data-lucide="layers" style="width:16px;"></i> Розділи тайтла`;
+                body.innerHTML = `
+                    <div class="chapter-quick-list">
+                        <div class="chapter-quick-item active">Розділ 1.0 (Том 1) <span>Поточний</span></div>
+                        <div class="chapter-quick-item" onclick="alert('Розділ 2')">Розділ 2.0 (Том 1)</div>
+                        <div class="chapter-quick-item" onclick="alert('Розділ 3')">Розділ 3.0 (Том 1)</div>
+                        <div class="chapter-quick-item" onclick="alert('Розділ 4')">Розділ 4.0 (Том 1)</div>
+                    </div>
+                `;
+            } else if (tab === 'layout') {
+                title.innerHTML = `<i data-lucide="columns-2" style="width:16px;"></i> Макет та розворот`;
+                body.innerHTML = `
+                    <div class="layout-grid-picker">
+                        <div class="picker-card ${layoutMode === 'single-ltr' ? 'active' : ''}" onclick="setLayout('single-ltr')">
+                            <i data-lucide="file" style="width:20px;"></i>
+                            1 сторінка (LTR)
+                        </div>
+                        <div class="picker-card ${layoutMode === 'single-rtl' ? 'active' : ''}" onclick="setLayout('single-rtl')">
+                            <i data-lucide="book-open" style="width:20px;"></i>
+                            Манґа (RTL)
+                        </div>
+                        <div class="picker-card ${layoutMode === 'spread' ? 'active' : ''}" onclick="setLayout('spread')">
+                            <i data-lucide="book" style="width:20px;"></i>
+                            Розворот (2 стор)
+                        </div>
+                        <div class="picker-card ${layoutMode === 'vertical' ? 'active' : ''}" onclick="setLayout('vertical')">
+                            <i data-lucide="scroll" style="width:20px;"></i>
+                            Вебтун стрічка
+                        </div>
+                    </div>
+                `;
+            } else if (tab === 'adjust') {
+                title.innerHTML = `<i data-lucide="sliders" style="width:16px;"></i> Яскравість та вигляд`;
+                body.innerHTML = `
+                    <div style="display:flex; flex-direction:column; gap:0.75rem;">
+                        <label style="font-size:0.78rem; font-weight:600; color:var(--text-secondary);">ЯСКРАВІСТЬ</label>
+                        <input type="range" min="20" max="100" value="100" style="width:100%;" oninput="document.documentElement.style.setProperty('--reader-brightness', this.value/100)">
+                    </div>
+                `;
+            }
+
+            drawer.classList.add('open');
+            lucide.createIcons();
+        }
+
+        function closeDrawer() {
+            drawer.classList.remove('open');
+            document.querySelectorAll('.dock-btn').forEach(b => b.classList.remove('active'));
+            activeDrawer = null;
+        }
+
+        function setLayout(mode) {
+            layoutMode = mode;
+            canvas.className = `scroll-canvas layout-${mode}`;
+            toggleDrawer('layout'); // Refresh UI
+            setTimeout(() => studioGoTo(curPage, false), 50);
+        }
+
+        function toggleStudioFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
+        }
+
+        // Mobile Sheet
+        function openStudioSheet(type) {
+            const sheet = document.getElementById('studio-sheet');
+            const backdrop = document.getElementById('studio-sheet-backdrop');
+            const title = document.getElementById('sheet-title');
+            const body = document.getElementById('sheet-body');
+
+            if (type === 'chapters') {
+                title.innerHTML = `<i data-lucide="layers" style="width:18px;"></i> Вибір розділу`;
+                body.innerHTML = `
+                    <div class="chapter-quick-list" style="max-height: 50vh;">
+                        <div class="chapter-quick-item active" style="min-height:48px;">Розділ 1.0 (Поточний)</div>
+                        <div class="chapter-quick-item" style="min-height:48px;" onclick="closeStudioSheet()">Розділ 2.0</div>
+                        <div class="chapter-quick-item" style="min-height:48px;" onclick="closeStudioSheet()">Розділ 3.0</div>
+                    </div>
+                `;
+            } else {
+                title.innerHTML = `<i data-lucide="sliders" style="width:18px;"></i> Налаштування читалки`;
+                body.innerHTML = `
+                    <div style="display:flex; flex-direction:column; gap:1.25rem;">
+                        <div>
+                            <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Режим</span>
+                            <div class="layout-grid-picker" style="margin-top:0.5rem;">
+                                <div class="picker-card ${layoutMode === 'single-ltr' ? 'active' : ''}" onclick="setLayout('single-ltr'); closeStudioSheet();">Посторінково LTR</div>
+                                <div class="picker-card ${layoutMode === 'single-rtl' ? 'active' : ''}" onclick="setLayout('single-rtl'); closeStudioSheet();">Манґа RTL</div>
+                                <div class="picker-card ${layoutMode === 'vertical' ? 'active' : ''}" onclick="setLayout('vertical'); closeStudioSheet();">Вебтун стрічка</div>
+                            </div>
+                        </div>
+                        <div>
+                            <span style="font-size:0.78rem; font-weight:700; color:var(--text-secondary); text-transform:uppercase;">Яскравість</span>
+                            <input type="range" min="20" max="100" value="100" style="width:100%; margin-top:0.6rem;" oninput="document.documentElement.style.setProperty('--reader-brightness', this.value/100)">
+                        </div>
+                    </div>
+                `;
+            }
+
+            sheet.classList.add('open');
+            backdrop.classList.add('open');
+            lucide.createIcons();
+        }
+
+        function closeStudioSheet() {
+            document.getElementById('studio-sheet').classList.remove('open');
+            document.getElementById('studio-sheet-backdrop').classList.remove('open');
+        }
+
+        // Keys
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') studioNav('next');
+            else if (e.key === 'ArrowLeft') studioNav('prev');
+            else if (e.key === 'f' || e.key === 'F') toggleStudioFullscreen();
+            else if (e.key === 'm' || e.key === 'M') toggleStudioHUD();
+            else if (e.key === 'Escape') closeDrawer();
+        });
+    </script>
+</body>
+</html>

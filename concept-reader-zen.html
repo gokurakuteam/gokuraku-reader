@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="uk" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Концепт 1: Zen Flow — Читалка Gokuraku</title>
+    <link rel="icon" type="image/x-icon" href="/icons/icon-256.ico">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        :root {
+            --surface-canvas: #141218;
+            --surface-card: #2B2930;
+            --surface-elevated: #36343B;
+            --surface-overlay: rgba(20, 18, 24, 0.92);
+            --border-subtle: #49454F;
+            --text-primary: #E6E0E9;
+            --text-secondary: #CAC4D0;
+            --accent-primary: #D0BCFF;
+            --accent-glow: rgba(208, 188, 255, 0.25);
+            --motion-ease-fluid: cubic-bezier(0.05, 0.7, 0.1, 1.0);
+            --motion-ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1.0);
+            --radius-s: 8px;
+            --radius-m: 16px;
+            --radius-l: 24px;
+            --radius-xl: 32px;
+            --radius-pill: 100px;
+            --reader-brightness: 1;
+        }
+
+        html[data-theme="light"] {
+            --surface-canvas: #FEF7FF;
+            --surface-card: #F3EDF7;
+            --surface-elevated: #EDE7F0;
+            --surface-overlay: rgba(254, 247, 255, 0.92);
+            --border-subtle: #CAC4D0;
+            --text-primary: #1D1B20;
+            --text-secondary: #49454F;
+            --accent-primary: #6750A4;
+            --accent-glow: rgba(103, 80, 164, 0.18);
+        }
+
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        body {
+            background-color: var(--surface-canvas);
+            color: var(--text-primary);
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Reading Stage */
+        .reader-viewport {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background-color: #0d0b10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .reader-content-scroll {
+            width: 100%;
+            height: 100%;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            scroll-behavior: smooth;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* Horizontal Page Flip Mode */
+        .reader-content-scroll.mode-horizontal-ltr {
+            flex-direction: row;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            align-items: stretch;
+            scroll-behavior: auto;
+        }
+
+        .reader-content-scroll.mode-horizontal-rtl {
+            flex-direction: row-reverse;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            align-items: stretch;
+            scroll-behavior: auto;
+        }
+
+        /* Pages */
+        .page-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+            background: #0d0b10;
+            scroll-snap-align: center;
+            scroll-snap-stop: always; /* KEY FIX: prevents browser from skipping multiple pages */
+        }
+
+        .mode-vertical .page-wrapper {
+            width: 100%;
+            max-width: 820px;
+            margin: 0 auto;
+        }
+
+        .mode-horizontal-ltr .page-wrapper,
+        .mode-horizontal-rtl .page-wrapper {
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .page-wrapper img {
+            display: block;
+            filter: brightness(var(--reader-brightness));
+            transition: filter 0.2s ease;
+            pointer-events: none;
+        }
+
+        /* Fit options */
+        .fit-width img {
+            width: 100%;
+            height: auto;
+            max-width: 880px;
+        }
+
+        .mode-horizontal-ltr.fit-height img,
+        .mode-horizontal-rtl.fit-height img {
+            height: 100vh;
+            width: auto;
+            max-width: 100vw;
+            object-fit: contain;
+        }
+
+        .mode-horizontal-ltr.fit-width img,
+        .mode-horizontal-rtl.fit-width img {
+            width: 100%;
+            max-width: 900px;
+            height: auto;
+            max-height: 100vh;
+            object-fit: contain;
+        }
+
+        .fit-original img {
+            max-width: none;
+            max-height: none;
+        }
+
+        /* Tap Navigation Zones */
+        .tap-layer {
+            position: absolute;
+            inset: 0;
+            display: grid;
+            grid-template-columns: 28% 44% 28%;
+            z-index: 10;
+            pointer-events: auto;
+        }
+
+        .tap-zone {
+            height: 100%;
+            cursor: pointer;
+            transition: background 0.15s ease;
+        }
+        .tap-zone:active {
+            background: rgba(208, 188, 255, 0.04);
+        }
+        .tap-prev { cursor: w-resize; }
+        .tap-next { cursor: e-resize; }
+        .tap-menu { cursor: pointer; }
+
+        /* Floating Pill HUD Header */
+        .hud-header {
+            position: absolute;
+            top: 1.25rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 50;
+            background: rgba(43, 41, 48, 0.88);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            padding: 0.35rem 0.6rem;
+            border-radius: var(--radius-pill);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 15px rgba(208, 188, 255, 0.08);
+            transition: transform 0.3s var(--motion-ease-fluid), opacity 0.3s var(--motion-ease-fluid);
+            max-width: 92vw;
+        }
+
+        .hud-header.hidden {
+            transform: translateX(-50%) translateY(-150%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .hud-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+        .hud-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--accent-primary);
+        }
+        .hud-btn:active {
+            transform: scale(0.92);
+        }
+
+        .hud-title-wrap {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 0.85rem;
+            max-width: 380px;
+            overflow: hidden;
+            text-align: center;
+        }
+        .hud-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            width: 100%;
+        }
+        .hud-subtitle {
+            font-size: 0.72rem;
+            color: var(--accent-primary);
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        /* Floating Pill HUD Footer (Desktop & Tablet) */
+        .hud-footer {
+            position: absolute;
+            bottom: 1.5rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(0);
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            z-index: 50;
+            background: rgba(43, 41, 48, 0.9);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            padding: 0.4rem 0.9rem;
+            border-radius: var(--radius-pill);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s var(--motion-ease-fluid), opacity 0.3s var(--motion-ease-fluid);
+        }
+
+        .hud-footer.hidden {
+            transform: translateX(-50%) translateY(150%);
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .page-badge-pill {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            background: rgba(20, 18, 24, 0.6);
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--radius-pill);
+            border: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Mobile Thumb Bottom Bar */
+        .mobile-thumb-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            background: rgba(34, 32, 40, 0.96);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border-subtle);
+            padding: 0.75rem 1rem 1rem;
+            display: none;
+            flex-direction: column;
+            gap: 0.65rem;
+            transition: transform 0.3s var(--motion-ease-fluid);
+        }
+
+        .mobile-thumb-bar.hidden {
+            transform: translateY(100%);
+            pointer-events: none;
+        }
+
+        .scrubber-row {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+            width: 100%;
+        }
+
+        .scrubber-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 6px;
+            background: var(--surface-canvas);
+            border-radius: var(--radius-pill);
+            outline: none;
+            position: relative;
+        }
+        .scrubber-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            box-shadow: 0 0 10px var(--accent-glow);
+            cursor: pointer;
+            border: 2px solid #141218;
+            transition: transform 0.15s ease;
+        }
+        .scrubber-slider::-webkit-slider-thumb:active {
+            transform: scale(1.2);
+        }
+
+        .mobile-actions-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mobile-btn {
+            min-height: 44px;
+            padding: 0 1rem;
+            border-radius: var(--radius-pill);
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.45rem;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .mobile-btn:active {
+            transform: scale(0.96);
+        }
+
+        /* Desktop Quick Settings Popover */
+        .settings-popover {
+            position: absolute;
+            top: 4.8rem;
+            right: 2rem;
+            width: 340px;
+            background: rgba(43, 41, 48, 0.95);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-l);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 20px rgba(208, 188, 255, 0.12);
+            padding: 1.25rem;
+            z-index: 60;
+            display: none;
+            flex-direction: column;
+            gap: 1.15rem;
+            animation: popIn 0.25s var(--motion-ease-fluid);
+        }
+
+        .settings-popover.open {
+            display: flex;
+        }
+
+        @keyframes popIn {
+            from { opacity: 0; transform: translateY(-10px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        .popover-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-subtle);
+            padding-bottom: 0.65rem;
+        }
+        .popover-title {
+            font-size: 0.92rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--accent-primary);
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        .control-label {
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Segmented buttons */
+        .segmented-box {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-m);
+            padding: 3px;
+            gap: 3px;
+        }
+        .seg-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.55rem 0.35rem;
+            border-radius: calc(var(--radius-m) - 3px);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all 0.2s ease;
+            font-family: inherit;
+        }
+        .seg-btn:hover {
+            color: var(--text-primary);
+            background: rgba(255, 255, 255, 0.05);
+        }
+        .seg-btn.active {
+            background: var(--accent-primary);
+            color: #141218;
+            font-weight: 700;
+            box-shadow: 0 2px 8px var(--accent-glow);
+        }
+        html[data-theme="light"] .seg-btn.active {
+            color: #ffffff;
+        }
+
+        /* Brightness Range */
+        .range-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--surface-canvas);
+            border: 1px solid var(--border-subtle);
+            padding: 0.5rem 0.85rem;
+            border-radius: var(--radius-m);
+        }
+        .range-input {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 5px;
+            background: var(--surface-card);
+            border-radius: var(--radius-pill);
+            outline: none;
+        }
+        .range-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            cursor: pointer;
+            box-shadow: 0 0 8px var(--accent-glow);
+        }
+
+        /* Mobile Bottom Sheet for Settings */
+        .bottom-sheet-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(6px);
+            -webkit-backdrop-filter: blur(6px);
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .bottom-sheet-backdrop.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .bottom-sheet {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--surface-card);
+            border-top: 1px solid var(--border-subtle);
+            border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+            box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.6);
+            z-index: 101;
+            padding: 0.75rem 1.25rem 2rem;
+            transform: translateY(100%);
+            transition: transform 0.35s var(--motion-ease-fluid);
+            max-height: 85vh;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+        .bottom-sheet.open {
+            transform: translateY(0);
+        }
+
+        .drag-handle {
+            width: 36px;
+            height: 4px;
+            background: var(--border-subtle);
+            border-radius: var(--radius-pill);
+            align-self: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .sheet-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .sheet-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Touch target guarantee for mobile */
+        .bottom-sheet .seg-btn {
+            min-height: 48px;
+            font-size: 0.85rem;
+        }
+
+        /* Tap Hints Toast */
+        .tap-hint-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            display: flex;
+            z-index: 15;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .tap-hint-overlay.show {
+            opacity: 1;
+        }
+        .tap-hint-left, .tap-hint-right {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            background: rgba(208, 188, 255, 0.03);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+        }
+        .tap-hint-center {
+            width: 140px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            border-left: 1px dashed rgba(255,255,255,0.06);
+            border-right: 1px dashed rgba(255,255,255,0.06);
+        }
+
+        @media (max-width: 768px) {
+            .hud-footer { display: none; }
+            .mobile-thumb-bar { display: flex; }
+            .settings-popover { display: none !important; }
+            .hud-header {
+                top: 0.75rem;
+                padding: 0.3rem 0.5rem;
+                width: 95%;
+                justify-content: space-between;
+            }
+            .hud-title-wrap { max-width: 200px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Reader Stage -->
+    <main class="reader-viewport" id="viewport">
+
+        <!-- Tap zones for ergonomic page turning -->
+        <div class="tap-layer">
+            <div class="tap-zone tap-prev" onclick="handleTapNav('prev')" title="Попередня сторінка"></div>
+            <div class="tap-zone tap-menu" onclick="toggleHUD()" title="Меню керування"></div>
+            <div class="tap-zone tap-next" onclick="handleTapNav('next')" title="Наступна сторінка"></div>
+        </div>
+
+        <!-- Visual Tap Zones Hint (Disappears quickly) -->
+        <div class="tap-hint-overlay" id="tap-hint">
+            <div class="tap-hint-left">
+                <i data-lucide="chevron-left"></i> Назад
+            </div>
+            <div class="tap-hint-center">
+                Меню
+            </div>
+            <div class="tap-hint-right">
+                Вперед <i data-lucide="chevron-right"></i>
+            </div>
+        </div>
+
+        <!-- Scrolling Manga Canvas -->
+        <div class="reader-content-scroll mode-horizontal-ltr fit-height" id="reader-content">
+            <!-- 10 actual pages from manga-data.json -->
+            <div class="page-wrapper" data-index="0">
+                <img src="https://files.catbox.moe/ihrdhc.jpg" alt="Сторінка 1">
+            </div>
+            <div class="page-wrapper" data-index="1">
+                <img src="https://files.catbox.moe/mg5b3w.jpg" alt="Сторінка 2">
+            </div>
+            <div class="page-wrapper" data-index="2">
+                <img src="https://files.catbox.moe/md3skw.jpg" alt="Сторінка 3">
+            </div>
+            <div class="page-wrapper" data-index="3">
+                <img src="https://files.catbox.moe/m7r22e.jpg" alt="Сторінка 4">
+            </div>
+            <div class="page-wrapper" data-index="4">
+                <img src="https://files.catbox.moe/s4gfdp.jpg" alt="Сторінка 5">
+            </div>
+            <div class="page-wrapper" data-index="5">
+                <img src="https://files.catbox.moe/44hmym.jpg" alt="Сторінка 6">
+            </div>
+            <div class="page-wrapper" data-index="6">
+                <img src="https://files.catbox.moe/5dx0u5.jpg" alt="Сторінка 7">
+            </div>
+            <div class="page-wrapper" data-index="7">
+                <img src="https://files.catbox.moe/c8heke.jpg" alt="Сторінка 8">
+            </div>
+            <div class="page-wrapper" data-index="8">
+                <img src="https://files.catbox.moe/12xjjl.jpg" alt="Сторінка 9">
+            </div>
+            <div class="page-wrapper" data-index="9">
+                <img src="https://files.catbox.moe/s2vpfu.jpg" alt="Сторінка 10">
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Floating Pill HUD Header -->
+    <header class="hud-header" id="hud-header">
+        <button class="hud-btn" onclick="history.back()" title="Назад до тайтла">
+            <i data-lucide="arrow-left" style="width: 20px; height: 20px;"></i>
+        </button>
+        <div class="hud-title-wrap">
+            <div class="hud-title">Кохання — це ілюзія</div>
+            <div class="hud-subtitle">Розділ 1.0 (Том 1)</div>
+        </div>
+        <button class="hud-btn" id="open-settings-btn" onclick="openSettings()" title="Налаштування читалки">
+            <i data-lucide="sliders" style="width: 20px; height: 20px;"></i>
+        </button>
+    </header>
+
+    <!-- Floating Pill HUD Footer (Desktop/Tablet) -->
+    <footer class="hud-footer" id="hud-footer">
+        <button class="hud-btn" onclick="handleTapNav('prev')" title="Попередня сторінка (←)">
+            <i data-lucide="chevron-left" style="width: 20px; height: 20px;"></i>
+        </button>
+
+        <div class="page-badge-pill" id="desktop-page-badge">
+            <i data-lucide="book-open" style="width: 14px; height: 14px; color: var(--accent-primary);"></i>
+            <span id="page-indicator">1</span> / 10
+        </div>
+
+        <button class="hud-btn" onclick="handleTapNav('next')" title="Наступна сторінка (→)">
+            <i data-lucide="chevron-right" style="width: 20px; height: 20px;"></i>
+        </button>
+
+        <div style="width: 1px; height: 22px; background: var(--border-subtle); margin: 0 0.2rem;"></div>
+
+        <button class="hud-btn" onclick="toggleFullscreen()" title="Повноекранний режим (F)">
+            <i data-lucide="maximize" id="fullscreen-icon" style="width: 18px; height: 18px;"></i>
+        </button>
+    </footer>
+
+    <!-- Mobile Thumb Scrubber Bar -->
+    <div class="mobile-thumb-bar" id="mobile-bar">
+        <div class="scrubber-row">
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--accent-primary); min-width: 45px;" id="mob-page-indicator">1 / 10</span>
+            <input type="range" class="scrubber-slider" id="mob-scrubber" min="1" max="10" value="1" oninput="onScrubberInput(this.value)">
+        </div>
+        <div class="mobile-actions-row">
+            <button class="mobile-btn" onclick="alert('Список розділів')">
+                <i data-lucide="list" style="width: 16px; height: 16px;"></i> Розділи
+            </button>
+            <button class="mobile-btn" onclick="openSettings()">
+                <i data-lucide="settings" style="width: 16px; height: 16px;"></i> Налаштування
+            </button>
+        </div>
+    </div>
+
+    <!-- Desktop Quick Settings Popover (Anchored, non-blocking) -->
+    <div class="settings-popover" id="settings-popover">
+        <div class="popover-header">
+            <span class="popover-title">
+                <i data-lucide="sliders" style="width: 16px; height: 16px;"></i> Налаштування читалки
+            </span>
+            <button class="hud-btn" style="width: 28px; height: 28px;" onclick="closeSettings()">
+                <i data-lucide="x" style="width: 16px; height: 16px;"></i>
+            </button>
+        </div>
+
+        <!-- Reading Mode -->
+        <div class="control-group">
+            <span class="control-label">Режим читання</span>
+            <div class="segmented-box">
+                <button class="seg-btn" data-mode="vertical" onclick="setReadingMode('vertical')">
+                    <i data-lucide="scroll" style="width: 16px; height: 16px;"></i>
+                    Стрічка
+                </button>
+                <button class="seg-btn active" data-mode="horizontal-ltr" onclick="setReadingMode('horizontal-ltr')">
+                    <i data-lucide="arrow-right-left" style="width: 16px; height: 16px;"></i>
+                    Зліва-направо
+                </button>
+                <button class="seg-btn" data-mode="horizontal-rtl" onclick="setReadingMode('horizontal-rtl')">
+                    <i data-lucide="book-open" style="width: 16px; height: 16px;"></i>
+                    Справа-наліво
+                </button>
+            </div>
+        </div>
+
+        <!-- Image Fit -->
+        <div class="control-group">
+            <span class="control-label">Масштабування</span>
+            <div class="segmented-box">
+                <button class="seg-btn" data-fit="fit-width" onclick="setImageFit('fit-width')">
+                    По ширині
+                </button>
+                <button class="seg-btn active" data-fit="fit-height" onclick="setImageFit('fit-height')">
+                    По висоті
+                </button>
+                <button class="seg-btn" data-fit="fit-original" onclick="setImageFit('fit-original')">
+                    Оригінал
+                </button>
+            </div>
+        </div>
+
+        <!-- Brightness -->
+        <div class="control-group">
+            <div class="control-label">
+                <span>Яскравість</span>
+                <span id="brightness-text" style="color: var(--accent-primary);">100%</span>
+            </div>
+            <div class="range-wrapper">
+                <i data-lucide="moon" style="width: 16px; height: 16px; color: var(--text-secondary);"></i>
+                <input type="range" class="range-input" min="20" max="100" value="100" step="5" id="brightness-slider" oninput="setBrightness(this.value)">
+                <i data-lucide="sun" style="width: 16px; height: 16px; color: var(--accent-primary);"></i>
+            </div>
+        </div>
+
+        <!-- Tap hints toggle -->
+        <div class="control-group">
+            <button class="mobile-btn" style="justify-content: center; width: 100%;" onclick="showTapHintsTemporarily()">
+                <i data-lucide="info" style="width: 16px; height: 16px;"></i> Показати тап-зони
+            </button>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Sheet (Modal for Phone) -->
+    <div class="bottom-sheet-backdrop" id="sheet-backdrop" onclick="closeSettings()"></div>
+    <div class="bottom-sheet" id="bottom-sheet">
+        <div class="drag-handle"></div>
+        <div class="sheet-header">
+            <span class="sheet-title">
+                <i data-lucide="sliders" style="width: 18px; height: 18px; color: var(--accent-primary);"></i> Налаштування
+            </span>
+            <button class="hud-btn" onclick="closeSettings()">
+                <i data-lucide="x" style="width: 20px; height: 20px;"></i>
+            </button>
+        </div>
+
+        <!-- Mode -->
+        <div class="control-group">
+            <span class="control-label">Режим показу</span>
+            <div class="segmented-box">
+                <button class="seg-btn mob-mode-btn" data-mode="vertical" onclick="setReadingMode('vertical')">
+                    <i data-lucide="scroll" style="width: 18px; height: 18px;"></i>
+                    Стрічка (Манхва)
+                </button>
+                <button class="seg-btn mob-mode-btn active" data-mode="horizontal-ltr" onclick="setReadingMode('horizontal-ltr')">
+                    <i data-lucide="arrow-right" style="width: 18px; height: 18px;"></i>
+                    Посторінково LTR
+                </button>
+                <button class="seg-btn mob-mode-btn" data-mode="horizontal-rtl" onclick="setReadingMode('horizontal-rtl')">
+                    <i data-lucide="arrow-left" style="width: 18px; height: 18px;"></i>
+                    Манґа RTL
+                </button>
+            </div>
+        </div>
+
+        <!-- Scale -->
+        <div class="control-group">
+            <span class="control-label">Підгонка</span>
+            <div class="segmented-box">
+                <button class="seg-btn mob-fit-btn" data-fit="fit-width" onclick="setImageFit('fit-width')">По ширині</button>
+                <button class="seg-btn mob-fit-btn active" data-fit="fit-height" onclick="setImageFit('fit-height')">По висоті</button>
+                <button class="seg-btn mob-fit-btn" data-fit="fit-original" onclick="setImageFit('fit-original')">Оригінал</button>
+            </div>
+        </div>
+
+        <!-- Brightness -->
+        <div class="control-group">
+            <div class="control-label">
+                <span>Яскравість</span>
+                <span id="mob-brightness-text" style="color: var(--accent-primary);">100%</span>
+            </div>
+            <div class="range-wrapper">
+                <i data-lucide="moon" style="width: 18px; height: 18px;"></i>
+                <input type="range" class="range-input" min="20" max="100" value="100" step="5" id="mob-brightness-slider" oninput="setBrightness(this.value)">
+                <i data-lucide="sun" style="width: 18px; height: 18px; color: var(--accent-primary);"></i>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        // State Management
+        let currentPage = 0;
+        const totalPages = 10;
+        let readingMode = 'horizontal-ltr'; // 'vertical', 'horizontal-ltr', 'horizontal-rtl'
+        let imageFit = 'fit-height';
+        let isNavigating = false; // KEY FIX: Lock against double skipping
+        let hudVisible = true;
+
+        const readerContent = document.getElementById('reader-content');
+        const pageIndicator = document.getElementById('page-indicator');
+        const mobPageIndicator = document.getElementById('mob-page-indicator');
+        const mobScrubber = document.getElementById('mob-scrubber');
+        const hudHeader = document.getElementById('hud-header');
+        const hudFooter = document.getElementById('hud-footer');
+        const mobileBar = document.getElementById('mobile-bar');
+
+        // KEY FIX: Deterministic, Single-Page Step Navigation
+        function goToPage(targetIndex, smooth = true) {
+            if (targetIndex < 0 || targetIndex >= totalPages) return;
+            if (isNavigating) return; // Prevent double trigger
+            
+            isNavigating = true;
+            currentPage = targetIndex;
+            updateIndicators();
+
+            if (readingMode.startsWith('horizontal')) {
+                const wrappers = readerContent.querySelectorAll('.page-wrapper');
+                const targetWrapper = wrappers[currentPage];
+                if (targetWrapper) {
+                    targetWrapper.scrollIntoView({
+                        behavior: smooth ? 'smooth' : 'auto',
+                        inline: 'center',
+                        block: 'nearest'
+                    });
+                }
+            } else {
+                // Vertical scrolling
+                const wrappers = readerContent.querySelectorAll('.page-wrapper');
+                const targetWrapper = wrappers[currentPage];
+                if (targetWrapper) {
+                    targetWrapper.scrollIntoView({ behavior: smooth ? 'smooth' : 'auto' });
+                }
+            }
+
+            setTimeout(() => {
+                isNavigating = false;
+            }, 220); // Debounce lock
+        }
+
+        function handleTapNav(direction) {
+            let step = direction === 'next' ? 1 : -1;
+            if (readingMode === 'horizontal-rtl') {
+                step = -step; // Reverse for RTL manga
+            }
+            goToPage(currentPage + step);
+        }
+
+        function updateIndicators() {
+            const displayPage = currentPage + 1;
+            pageIndicator.textContent = displayPage;
+            mobPageIndicator.textContent = `${displayPage} / ${totalPages}`;
+            mobScrubber.value = displayPage;
+        }
+
+        function onScrubberInput(val) {
+            const target = parseInt(val) - 1;
+            goToPage(target, false);
+        }
+
+        // Tap HUD Visibility Toggle
+        function toggleHUD() {
+            hudVisible = !hudVisible;
+            hudHeader.classList.toggle('hidden', !hudVisible);
+            hudFooter.classList.toggle('hidden', !hudVisible);
+            mobileBar.classList.toggle('hidden', !hudVisible);
+            if (!hudVisible) {
+                closeSettings();
+            }
+        }
+
+        // Settings Dialog & Popover
+        function openSettings() {
+            if (window.innerWidth > 768) {
+                document.getElementById('settings-popover').classList.add('open');
+            } else {
+                document.getElementById('sheet-backdrop').classList.add('open');
+                document.getElementById('bottom-sheet').classList.add('open');
+            }
+        }
+
+        function closeSettings() {
+            document.getElementById('settings-popover').classList.remove('open');
+            document.getElementById('sheet-backdrop').classList.remove('open');
+            document.getElementById('bottom-sheet').classList.remove('open');
+        }
+
+        // Mode Switching
+        function setReadingMode(mode) {
+            readingMode = mode;
+            readerContent.className = `reader-content-scroll mode-${mode} ${imageFit}`;
+            
+            // Sync active state in buttons
+            document.querySelectorAll('.seg-btn[data-mode]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.mode === mode);
+            });
+
+            // Re-align on current page immediately
+            setTimeout(() => goToPage(currentPage, false), 50);
+        }
+
+        // Fit Switching
+        function setImageFit(fit) {
+            imageFit = fit;
+            readerContent.className = `reader-content-scroll mode-${readingMode} ${fit}`;
+
+            document.querySelectorAll('.seg-btn[data-fit]').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.fit === fit);
+            });
+        }
+
+        // Brightness
+        function setBrightness(val) {
+            document.documentElement.style.setProperty('--reader-brightness', val / 100);
+            document.getElementById('brightness-text').textContent = val + '%';
+            document.getElementById('mob-brightness-text').textContent = val + '%';
+            document.getElementById('brightness-slider').value = val;
+            document.getElementById('mob-brightness-slider').value = val;
+        }
+
+        // Fullscreen
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(() => {});
+            } else {
+                document.exitFullscreen().catch(() => {});
+            }
+        }
+
+        // Keyboard Controls
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') handleTapNav('next');
+            else if (e.key === 'ArrowLeft') handleTapNav('prev');
+            else if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+            else if (e.key === 'm' || e.key === 'M') toggleHUD();
+            else if (e.key === 'Escape') closeSettings();
+        });
+
+        // Intersection Observer to keep track of page during manual swipe
+        const observer = new IntersectionObserver((entries) => {
+            if (isNavigating) return;
+            entries.forEach(entry => {
+                if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                    const idx = parseInt(entry.target.dataset.index);
+                    if (!isNaN(idx) && idx !== currentPage) {
+                        currentPage = idx;
+                        updateIndicators();
+                    }
+                }
+            });
+        }, { root: readerContent, threshold: 0.6 });
+
+        document.querySelectorAll('.page-wrapper').forEach(p => observer.observe(p));
+
+        // Hint flash
+        function showTapHintsTemporarily() {
+            const hint = document.getElementById('tap-hint');
+            hint.classList.add('show');
+            setTimeout(() => hint.classList.remove('show'), 1500);
+        }
+
+        // Initial hint on mobile
+        if (window.innerWidth <= 768) {
+            setTimeout(showTapHintsTemporarily, 600);
+        }
+    </script>
+</body>
+</html>

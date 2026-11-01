@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Лабораторія концептів каталогу — Gokuraku Design Labs</title>
+    <title>Лабораторія концептів читалки — Gokuraku Design Labs</title>
     <link rel="icon" type="image/x-icon" href="/icons/icon-256.ico">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -22,6 +22,7 @@
             --radius-s: 8px;
             --radius-m: 16px;
             --radius-l: 24px;
+            --radius-xl: 32px;
             --radius-pill: 100px;
         }
 
@@ -218,7 +219,7 @@
             gap: 0.45rem;
             flex-wrap: wrap;
             flex-shrink: 0;
-            max-width: 380px;
+            max-width: 440px;
             justify-content: flex-end;
         }
         .tag {
@@ -291,22 +292,16 @@
     <header class="hub-header">
         <div class="hub-title">
             <h1>Gokuraku Design Labs</h1>
-            <span>4 КОНЦЕПТИ КАТАЛОГУ</span>
+            <span>КОНЦЕПТИ ЧИТАЛКИ 2.0</span>
         </div>
 
         <!-- Concept Switcher -->
         <div class="concept-selector">
             <button class="concept-tab active" onclick="loadConcept(0)">
-                <i data-lucide="sparkles" style="width: 15px; height: 15px;"></i> ⚡ 4. Hybrid Showcase
+                <i data-lucide="sparkles" style="width: 15px; height: 15px;"></i> 1. Zen Flow (Фокус)
             </button>
             <button class="concept-tab" onclick="loadConcept(1)">
-                <i data-lucide="zap" style="width: 15px; height: 15px;"></i> 1. Modern Stream
-            </button>
-            <button class="concept-tab" onclick="loadConcept(2)">
-                <i data-lucide="layout-grid" style="width: 15px; height: 15px;"></i> 2. Bento & Quick-View
-            </button>
-            <button class="concept-tab" onclick="loadConcept(3)">
-                <i data-lucide="library" style="width: 15px; height: 15px;"></i> 3. Editorial Library
+                <i data-lucide="sliders-horizontal" style="width: 15px; height: 15px;"></i> 2. Studio Reader (Док & Розворот)
             </button>
         </div>
 
@@ -321,7 +316,7 @@
             <button class="vp-btn" onclick="setViewport('mobile', this)">
                 <i data-lucide="smartphone" style="width: 14px; height: 14px;"></i> Телефон
             </button>
-            <a id="fullscreen-link" href="concept-catalog-hybrid.html" target="_blank" class="open-fullscreen-btn">
+            <a id="fullscreen-link" href="concept-reader-zen.html" target="_blank" class="open-fullscreen-btn">
                 <i data-lucide="external-link" style="width: 14px; height: 14px;"></i> На весь екран
             </a>
             <button class="hub-theme-toggle" onclick="toggleHubTheme()" title="Тема хабу">
@@ -333,26 +328,25 @@
     <!-- Concept Description Banner -->
     <div class="concept-info-banner">
         <div class="cib-text">
-            <h2 id="concept-name">Концепт 4: Hybrid Showcase & Flow (За вашим запитом)</h2>
+            <h2 id="concept-name">Концепт 1: Zen Flow (Мінімалістичний фокус & Floating Pill HUD)</h2>
             <p id="concept-desc">
-                Повний гібрид найкращих рішень: зверху інтерактивний Random Showcase банер із кнопкою «🎲 Інший випадковий» та швидким переглядом; швидкі Bento-кнопки фільтрів для формату (Манхва, Манґа, Маньхва, Роман), статусу та нового фільтра «Обсяг» (&lt;10, 10–50, 50+ глав); перемикач відображення тайтлів сіткою постерів 2:3 або детальним списком із кнопками швидкого читання; класичний сайдбар із 3-позиційними жанрами (Включити/Виключити/Нейтрально); оптимізований мобільний док та шторка.
+                Чистий імерсивний досвід: нуль візуального шуму під час читання. Плаваючі пігулки керування випливають лише за потреби. На ноутбуці налаштування зроблені як неблокуючий плаваючий Popover (видно манґу наживо!). На телефоні — ергономічна шторка Bottom Sheet за стандартом DESIGN.md з тач-кнопками 44px+ та горизонтальний повзунок сторінок під великий палець. Баг з перегортанням двох сторін повністю усунуто!
             </p>
         </div>
         <div class="cib-tags" id="concept-tags">
-            <span class="tag">🎲 Random Title Showcase</span>
-            <span class="tag">Bento формати & статус</span>
-            <span class="tag">Фільтр обсягу (глави)</span>
-            <span class="tag">Сітка 2:3 + Список</span>
-            <span class="tag">3-State Genres</span>
-            <span class="tag">Live Quick-View</span>
-            <span class="tag">Mobile Floating Dock</span>
+            <span class="tag">Плаваючий Pill HUD</span>
+            <span class="tag">Live Popover налаштувань</span>
+            <span class="tag">Mobile Bottom Sheet 44px+</span>
+            <span class="tag">Фікс подвійного скролу</span>
+            <span class="tag">Thumb Page Scrubber</span>
+            <span class="tag">DESIGN.md токени</span>
         </div>
     </div>
 
     <!-- Live Preview Area -->
     <div class="preview-area">
         <div id="iframe-wrap" class="iframe-wrapper">
-            <iframe id="concept-frame" src="concept-catalog-hybrid.html"></iframe>
+            <iframe id="concept-frame" src="concept-reader-zen.html"></iframe>
         </div>
     </div>
 
@@ -361,28 +355,16 @@
 
         const CONCEPTS = [
             {
-                url: "concept-catalog-hybrid.html",
-                name: "Концепт 4: Hybrid Showcase & Flow (За вашим запитом)",
-                desc: "Повний гібрид найкращих рішень: зверху інтерактивний Random Showcase банер із кнопкою «🎲 Інший випадковий» та швидким переглядом; швидкі Bento-кнопки фільтрів для формату (Манхва, Манґа, Маньхва, Роман), статусу та нового фільтра «Обсяг» (<10, 10–50, 50+ глав); перемикач відображення тайтлів сіткою постерів 2:3 або детальним списком із кнопками швидкого читання; класичний сайдбар із 3-позиційними жанрами (Включити/Виключити/Нейтрально); оптимізований мобільний док та шторка.",
-                tags: ["🎲 Random Title Showcase", "Bento формати & статус", "Фільтр обсягу (глави)", "Сітка 2:3 + Список", "3-State Genres", "Live Quick-View", "Mobile Floating Dock"]
+                url: "concept-reader-zen.html",
+                name: "Концепт 1: Zen Flow (Мінімалістичний фокус & Floating Pill HUD)",
+                desc: "Чистий імерсивний досвід: нуль візуального шуму під час читання. Плаваючі пігулки керування випливають лише за потреби. На ноутбуці налаштування зроблені як неблокуючий плаваючий Popover (видно манґу наживо!). На телефоні — ергономічна шторка Bottom Sheet за стандартом DESIGN.md з тач-кнопками 44px+ та горизонтальний повзунок сторінок під великий палець. Баг з перегортанням двох сторінок повністю усунуто через точний детермінований крок та scroll-snap-stop: always.",
+                tags: ["Плаваючий Pill HUD", "Live Popover налаштувань", "Mobile Bottom Sheet 44px+", "Фікс подвійного скролу", "Thumb Page Scrubber", "DESIGN.md токени"]
             },
             {
-                url: "concept-catalog-stream.html",
-                name: "Концепт 1: Modern Stream & Quick Presets",
-                desc: "Стримінговий хаб із миттєвими фільтрами-пігулками у шапці («Гарячі оновлення», «Завершено», «Манхва», «Манґа», «Мені пощастить»). Перемикання між сіткою постерів та детальним списком із кнопками читання, розширений сайдбар із пошуком всередині жанрів та плаваючий мобільний фільтр-док під великий палець.",
-                tags: ["Quick Presets", "Сітка / Список", "Пошук жанрів", "3-State Chips", "Mobile Floating Dock", "Thumb Bottom Sheet"]
-            },
-            {
-                url: "concept-catalog-bento.html",
-                name: "Концепт 2: Visual Bento Showcase & Live Quick-View",
-                desc: "Візуальний журнал із банером тренду каталогу та модульним Bento-центром управління (окремі інтерактивні плитки для форматів із прапорцями, статусів та сортування). Головна фішка: Live Quick-View модальне вікно без переходу зі сторінки каталогу!",
-                tags: ["Showcase Hero", "Bento-модулі", "Live Quick-View", "Швидкий огляд", "Щільна / Звичайна сітка", "Жанровий барабан"]
-            },
-            {
-                url: "concept-catalog-editorial.html",
-                name: "Концепт 3: Editorial Library & Power Search",
-                desc: "Витончена бібліотека для активних читачів. Верхній алфавітний покажчик (А-Я / A-Z / 1-9), швидкий мульти-вибір статусів та форматів у єдиному тулбарі, фільтрація за обсягом тайтла (< 10 чи 50+ глав) та картки з детальними метаданими.",
-                tags: ["Алфавітний покажчик", "Power Toolbar", "Фільтр обсягу (глави)", "Журнальні картки", "Статистика бібліотеки"]
+                url: "concept-reader-studio.html",
+                name: "Концепт 2: Studio Reader (Про-читалка з бічним доком & Розворотом)",
+                desc: "Студійна ергономіка для активних читачів. На ноутбуці: плаваючий бічний док з інструментами, швидким списком розділів прямо в читалці та унікальним режимом Двосторінкового розвороту (2 сторінки поруч на моніторі). На телефоні: ультра-компактний 3-кнопковий смарт-док (Розділи / Сторінки / Опції) під великий палець.",
+                tags: ["Floating Side Dock", "Розворот 2 сторінки", "Швидкі розділи в читалці", "Mobile 3-Action Dock", "Live Settings Drawer", "Фікс подвійного скролу"]
             }
         ];
 
@@ -419,14 +401,10 @@
             const next = html.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
             html.setAttribute('data-theme', next);
             
-            // Also toggle iframe theme if accessible
             try {
                 const frame = document.getElementById('concept-frame');
                 if (frame.contentDocument) {
                     frame.contentDocument.documentElement.setAttribute('data-theme', next);
-                }
-                if (frame.contentWindow) {
-                    frame.contentWindow.postMessage({ theme: next }, '*');
                 }
                 const data = CONCEPTS[currentConceptId];
                 document.getElementById('fullscreen-link').href = `${data.url}?theme=${next}`;
