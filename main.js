@@ -21,10 +21,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadMangaData(); // Починаємо завантаження даних у фоні, не блокуючи рендер 
 
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register('/sw.js')
+        const registerSW = () => {
+            navigator.serviceWorker.register('sw.js')
                 .catch(err => console.log('ServiceWorker registration failed: ', err));
-        });
+        };
+        if (document.readyState === 'complete') {
+            registerSW();
+        } else {
+            window.addEventListener('load', registerSW);
+        }
     }
 
     window.addEventListener('hashchange', handleNavigation);

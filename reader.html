@@ -31,7 +31,7 @@
             <i data-lucide="chevron-left" class="icon"></i>
             <span>Попередній</span>
         </a>
-        <a href="#" class="home-btn button">
+        <a href="#" class="home-btn button" aria-label="На головну">
             <i data-lucide="home" class="icon"></i>
         </a>
         <a href="#" class="next-chapter-btn button" style="display: none;">
@@ -46,7 +46,7 @@
     <!-- Settings Modal -->
     <div id="reader-settings-modal" class="modal">
         <div class="modal-content settings-modal-content">
-            <span class="close-modal" id="close-settings-modal">&times;</span>
+            <button type="button" class="close-modal" id="close-settings-modal" aria-label="Закрити">&times;</button>
             <h2>Налаштування читалки</h2>
             
             <div class="settings-tabs">
@@ -128,3 +128,4 @@
 
         </div>
     </div>
+</section>

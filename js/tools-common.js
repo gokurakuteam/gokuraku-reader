@@ -285,6 +285,20 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnConfirm) {
         btnConfirm.addEventListener('click', executeModalDownload);
     }
+
+    // Handle chapter stepper buttons (replaced inline onclick)
+    document.querySelectorAll('[data-chapter-step]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const step = parseInt(btn.dataset.chapterStep);
+            changeChapter(step);
+        });
+    });
+
+    // Handle cancel button (replaced inline onclick)
+    const cancelBtn = document.getElementById('modal-btn-cancel');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', closeDownloadModal);
+    }
 });
 
 // Expose stepper helper to window for inline HTML onclick

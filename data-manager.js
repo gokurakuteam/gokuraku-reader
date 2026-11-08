@@ -27,6 +27,7 @@ export function loadMangaData() {
 const detailedMangaFetched = new Set();
 
 export async function fetchMangaDetails(id) {
+    await loadMangaData(); // Ensure manga list is loaded before resolving IDs
     let identifier = id;
     if (typeof id === 'number' || (typeof id === 'string' && !isNaN(id))) {
         // Find slug if it's a numeric ID

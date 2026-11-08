@@ -1,5 +1,6 @@
 import json
 import re
+import os
 
 UKR_TO_LAT = {
     'а': 'a', 'б': 'b', 'в': 'v', 'г': 'h', 'ґ': 'g', 'д': 'd', 'е': 'e', 'є': 'ie',
@@ -22,8 +23,10 @@ def transliterate(text):
     return text
 
 def main():
-    file_path = '/home/heorhii/Проєкти/gokuraku-reader-main/manga-data.json'
-    uploader_path = '/home/heorhii/Проєкти/Для сайту завантажувач/manga-data.json'
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file_path = os.path.join(base_dir, 'manga-data.json')
+    # Uploader project path (sibling directory)
+    uploader_path = os.path.join(os.path.dirname(base_dir), 'Для сайту завантажувач', 'manga-data.json')
     
     with open(file_path, 'r', encoding='utf-8') as f:
         data = json.load(f)

@@ -85,7 +85,7 @@
             <div class="catalog-search-fullwidth-wrap">
                 <div class="ht-search-wrap">
                     <i data-lucide="search" class="ht-search-icon"></i>
-                    <input type="search" id="search-input" class="ht-search-input" placeholder="Пошук за назвою або сюжетом..." autocomplete="off">
+                    <input type="search" id="search-input" class="ht-search-input" placeholder="Пошук за назвою або сюжетом..." autocomplete="off" aria-label="Пошук тайтлів">
                     <button id="search-clear-btn" class="ht-search-clear" type="button" title="Очистити">
                         <i data-lucide="x" style="width: 15px; height: 15px;"></i>
                     </button>
@@ -99,7 +99,7 @@
                 </div>
                 <div class="ht-actions-wrap">
                     <!-- Сортування -->
-                    <select id="catalog-sort" class="ht-sort-select">
+                    <select id="catalog-sort" class="ht-sort-select" aria-label="Сортування">
                         <option value="newest">За оновленням</option>
                         <option value="chapters">За кількістю розділів</option>
                         <option value="az">За назвою (А-Я)</option>
@@ -202,7 +202,7 @@
         <div class="sheet-handle-wrap"><div class="sheet-handle"></div></div>
         <div class="sheet-head">
             <h3>Фільтри каталогу</h3>
-            <button type="button" class="sheet-close" id="sheet-close-btn">&times;</button>
+            <button type="button" class="sheet-close" id="sheet-close-btn" aria-label="Закрити фільтри">&times;</button>
         </div>
         <div class="sheet-content" id="sheet-content-body">
             <!-- Заповнюється динамічно через catalog.js -->
@@ -216,7 +216,7 @@
     <!-- 7. Модальне вікно швидкого перегляду (Quick-View) -->
     <div class="modal-overlay" id="modal-overlay">
         <div class="qv-window" id="qv-window">
-            <button type="button" class="qv-close" id="qv-close-btn">&times;</button>
+            <button type="button" class="qv-close" id="qv-close-btn" aria-label="Закрити вікно">&times;</button>
             <div id="modal-content-area" class="modal-content-area"></div>
         </div>
     </div>

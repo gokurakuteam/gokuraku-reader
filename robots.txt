@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gokurakuteam.github.io/gokuraku-reader/sitemap.xml

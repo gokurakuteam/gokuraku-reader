@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Інструменти — Gokuraku</title>
-    <link rel="icon" type="image/x-icon" href="/icons/icon-256.ico">
+    <link rel="icon" type="image/x-icon" href="icons/icon-256.ico">
 
     <!-- Preconnect & Google Fonts (Montserrat) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,12 +12,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
     <!-- Gokuraku Master Stylesheets & Tools Styles -->
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/tools.css">
 
     <!-- External Utilities -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script defer src="https://unpkg.com/lucide@0.460.0"></script>
 
     <!-- Modular Scripts -->
     <script type="module" src="js/tools-common.js"></script>
@@ -486,9 +486,9 @@
             <div class="form-group">
                 <label class="form-label" for="modal-chapter">Номер розділу (опціонально)</label>
                 <div class="chapter-stepper">
-                    <button type="button" onclick="changeChapter(-1)" class="stepper-btn" aria-label="Зменшити розділ">-</button>
+                    <button type="button" data-chapter-step="-1" class="stepper-btn" aria-label="Зменшити розділ">-</button>
                     <input type="number" id="modal-chapter" step="0.5" placeholder="Наприклад: 12" class="slicer-input" style="text-align: center;">
-                    <button type="button" onclick="changeChapter(1)" class="stepper-btn" aria-label="Збільшити розділ">+</button>
+                    <button type="button" data-chapter-step="1" class="stepper-btn" aria-label="Збільшити розділ">+</button>
                 </div>
             </div>
 
@@ -498,7 +498,7 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" onclick="closeDownloadModal()" class="button">Скасувати</button>
+                <button type="button" id="modal-btn-cancel" class="button">Скасувати</button>
                 <button type="button" id="modal-btn-confirm" class="button button-primary">
                     <i data-lucide="download" style="width: 16px; height: 16px; margin-right: 6px;"></i>
                     Завантажити
@@ -522,7 +522,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2024 Gokuraku. Зроблено з <i data-lucide="heart" style="width: 16px; height: 16px; color: var(--accent-color); vertical-align: middle;"></i></p>
+            <p>&copy; 2024–2026 Gokuraku. Зроблено з <i data-lucide="heart" style="width: 16px; height: 16px; color: var(--accent-color); vertical-align: middle;"></i></p>
         </div>
     </footer>
 

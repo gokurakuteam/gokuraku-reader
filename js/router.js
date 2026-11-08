@@ -7,6 +7,41 @@ import { loadGiscusForPage } from './giscus-loader.js';
 import { initClicker } from './clicker.js';
 import { transitionManager } from './transition-manager.js';
 
+// Sanitize novel HTML content to prevent XSS
+function sanitizeNovelHTML(dirty) {
+    const ALLOWED_TAGS = new Set(['P', 'BR', 'EM', 'STRONG', 'B', 'I', 'U', 'A', 'SPAN', 'DIV',
+        'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'UL', 'OL', 'LI', 'BLOCKQUOTE', 'HR', 'SUP', 'SUB']);
+    const ALLOWED_ATTRS = new Set(['href', 'target', 'rel', 'class']);
+    try {
+        const doc = new DOMParser().parseFromString(dirty, 'text/html');
+        function clean(node) {
+            [...node.childNodes].forEach(child => {
+                if (child.nodeType === Node.ELEMENT_NODE) {
+                    if (!ALLOWED_TAGS.has(child.tagName)) {
+                        child.replaceWith(...child.childNodes);
+                        return;
+                    }
+                    [...child.attributes].forEach(attr => {
+                        if (!ALLOWED_ATTRS.has(attr.name)) {
+                            child.removeAttribute(attr.name);
+                        }
+                    });
+                    if (child.tagName === 'A') {
+                        child.setAttribute('rel', 'noopener noreferrer');
+                        child.setAttribute('target', '_blank');
+                    }
+                    clean(child);
+                }
+            });
+        }
+        clean(doc.body);
+        return doc.body.innerHTML;
+    } catch (e) {
+        // Fallback: strip ALL HTML tags if DOMParser fails
+        return dirty.replace(/<[^>]*>/g, '');
+    }
+}
+
 const routes = {
     'home': 'home.html',
     'catalog': 'catalog.html',
@@ -515,7 +550,7 @@ async function loadPage(page, params, routeId, skipAnimation = false) {
 
             if (chapter.content) {
                 // Novel content
-                readerContent.innerHTML = `<div class="novel-content">${chapter.content}</div>`;
+                readerContent.innerHTML = `<div class="novel-content">${sanitizeNovelHTML(chapter.content)}</div>`;
                 readerContent.classList.add('novel-view');
             } else if (chapter.pages) {
                 // Manga content
@@ -988,6 +1023,33 @@ export async function handleNavigation() {
         }
 
         previousPageName = pageName;
+
+        // Dynamic page title for SEO and browser tabs
+        switch (pageName) {
+            case 'home':
+                document.title = 'Gokuraku — Святиня перекладу манґи';
+                break;
+            case 'catalog':
+                document.title = 'Каталог — Gokuraku';
+                break;
+            case 'cabinet':
+                document.title = 'Кабінет — Gokuraku';
+                break;
+            case 'title': {
+                const titleEl = document.querySelector('.title-page h1');
+                const titleText = titleEl?.textContent?.trim();
+                document.title = titleText ? `${titleText} — Gokuraku` : 'Gokuraku';
+                break;
+            }
+            case 'reader': {
+                const chapterTitleEl = document.querySelector('.chapter-title');
+                const chText = chapterTitleEl?.textContent?.trim();
+                document.title = chText ? `${chText} — Gokuraku` : 'Читалка — Gokuraku';
+                break;
+            }
+            default:
+                document.title = 'Gokuraku';
+        }
 
         if (routeId !== currentRouteId) return;
 
