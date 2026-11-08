@@ -1,4 +1,4 @@
-const CACHE_NAME = 'gokuraku-cache-v9';
+const CACHE_NAME = 'gokuraku-cache-v10';
 
 // Тільки критичний мінімум для миттєвого старту App Shell (без мережевого шторму)
 const ESSENTIAL_ASSETS = [
