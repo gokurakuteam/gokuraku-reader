@@ -1,3 +1,5 @@
+import DOMPurify from './vendor/purify.es.mjs';
+import { initBackup } from './backup.js';
 import { loadMangaData, fetchMangaDetails, getAllManga, getMangaById, getLatestUpdates, getChapterById } from '../data-manager.js';
 import { getBookmarks, isBookmarked, addBookmark, removeBookmark, getHistory, addChapterToHistory, removeAllChaptersFromHistory, clearAllHistory, addCategory, deleteCategory, getMangaCategory, getSelectedCover, saveSelectedCover, getEffectiveCover, getAutoCover, isChapterRead } from '../storage-manager.js';
 import { initCatalog } from '../catalog.js';
@@ -7,39 +9,12 @@ import { loadGiscusForPage } from './giscus-loader.js';
 import { initClicker } from './clicker.js';
 import { transitionManager } from './transition-manager.js';
 
-// Sanitize novel HTML content to prevent XSS
+// Локальна копія DOMPurify працює і без доступу до CDN.
 function sanitizeNovelHTML(dirty) {
-    const ALLOWED_TAGS = new Set(['P', 'BR', 'EM', 'STRONG', 'B', 'I', 'U', 'A', 'SPAN', 'DIV',
-        'H1', 'H2', 'H3', 'H4', 'H5', 'H6', 'UL', 'OL', 'LI', 'BLOCKQUOTE', 'HR', 'SUP', 'SUB']);
-    const ALLOWED_ATTRS = new Set(['href', 'target', 'rel', 'class']);
-    try {
-        const doc = new DOMParser().parseFromString(dirty, 'text/html');
-        function clean(node) {
-            [...node.childNodes].forEach(child => {
-                if (child.nodeType === Node.ELEMENT_NODE) {
-                    if (!ALLOWED_TAGS.has(child.tagName)) {
-                        child.replaceWith(...child.childNodes);
-                        return;
-                    }
-                    [...child.attributes].forEach(attr => {
-                        if (!ALLOWED_ATTRS.has(attr.name)) {
-                            child.removeAttribute(attr.name);
-                        }
-                    });
-                    if (child.tagName === 'A') {
-                        child.setAttribute('rel', 'noopener noreferrer');
-                        child.setAttribute('target', '_blank');
-                    }
-                    clean(child);
-                }
-            });
-        }
-        clean(doc.body);
-        return doc.body.innerHTML;
-    } catch (e) {
-        // Fallback: strip ALL HTML tags if DOMParser fails
-        return dirty.replace(/<[^>]*>/g, '');
-    }
+    return DOMPurify.sanitize(dirty, {
+        ALLOWED_TAGS: ['p', 'br', 'em', 'strong', 'b', 'i', 'u', 'a', 'span', 'div', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'hr', 'sup', 'sub'],
+        ALLOWED_ATTR: ['href', 'class']
+    });
 }
 
 const routes = {
@@ -72,6 +47,7 @@ async function loadPage(page, params, routeId, skipAnimation = false) {
         if (page === 'title') {
             // Для тайтлу рендеримо розмітку миттєво без спінера, щоб запустити анімацію розширення картки
             const content = await fetchPageContent('title');
+            await loadMangaData();
             if (routeId !== currentRouteId) return;
             main.innerHTML = content;
             main.classList.remove('fade-out');
@@ -101,8 +77,11 @@ async function loadPage(page, params, routeId, skipAnimation = false) {
         }
     } catch (e) {
         console.error(e);
-        main.innerHTML = 'Error loading page';
+        if (routeId !== currentRouteId) return;
+        main.innerHTML = '<div class="empty-category-message" role="alert"><p>Не вдалося завантажити сторінку або каталог. Перевірте з’єднання та спробуйте ще раз.</p><button class="button button-primary" id="retry-loading">Спробувати ще раз</button></div>';
+        main.querySelector('#retry-loading').addEventListener('click', handleNavigation);
         main.classList.remove('fade-out');
+        return;
     }
 
     if (page === 'home') {
@@ -470,6 +449,7 @@ async function loadPage(page, params, routeId, skipAnimation = false) {
             await showNotFoundPage();
         }
     } else if (page === 'cabinet') {
+        initBackup();
         setupTabs((tab) => {
             if (tab === 'history') {
                 renderCabinetHistory(main);

@@ -2,7 +2,7 @@ import { loadMangaData } from './data-manager.js';
 import { AppHeader, MangaCard } from './js/components.js';
 import { handleNavigation } from './js/router.js';
 import { getSavedThemeId, getThemeMode } from './storage-manager.js';
-import { SHOP_ITEMS, applyTheme, applyThemeMode } from './js/clicker.js'; 
+import { SHOP_ITEMS, applyTheme, applyThemeMode } from './js/clicker.js';
 
 customElements.define('app-header', AppHeader);
 customElements.define('manga-card', MangaCard);
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (theme) applyTheme(theme);
     else applyTheme(SHOP_ITEMS.themes[0]);
 
-    loadMangaData(); // Починаємо завантаження даних у фоні, не блокуючи рендер 
+    loadMangaData().catch(() => {}); // Помилку відобразить маршрутизатор
 
     if ('serviceWorker' in navigator) {
         const registerSW = () => {
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     window.addEventListener('hashchange', handleNavigation);
     await handleNavigation();
-    
+
     if (window.lucide) {
         lucide.createIcons();
     } else {

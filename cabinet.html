@@ -45,6 +45,13 @@
 </div>
 
 <div id="clicker" class="tab-content">
+    <div class="cabinet-tools-card backup-card">
+        <div class="cabinet-tools-info"><h3>Резервна копія</h3><p>Збережіть закладки, історію, налаштування та прогрес, щоб перенести їх на інший пристрій.</p></div>
+        <button class="button button-primary" id="backup-export" type="button">Зберегти копію</button>
+        <button class="button" id="backup-import" type="button">Відновити з копії</button>
+        <input id="backup-file" type="file" accept="application/json,.json" hidden>
+        <p id="backup-message" role="status"></p>
+    </div>
     <!-- Перемикач Теми -->
     <div class="theme-mode-container">
         <h3>Режим відображення</h3>

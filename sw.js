@@ -1,82 +1,35 @@
-const CACHE_NAME = 'gokuraku-cache-v10';
+const CACHE_NAME = 'gokuraku-cache-v11';
+const SCOPE = new URL(self.registration.scope);
+const ESSENTIAL_ASSETS = ['./', './index.html', './404.html'].map(path => new URL(path, SCOPE).href);
 
-// Тільки критичний мінімум для миттєвого старту App Shell (без мережевого шторму)
-const ESSENTIAL_ASSETS = [
-  '/',
-  '/index.html',
-  '/404.html'
-];
-
-// Встановлення Service Worker: кешуємо тільки базовий каркас
 self.addEventListener('install', event => {
-  self.skipWaiting();
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(ESSENTIAL_ASSETS).catch(err => console.log('SW install cache error:', err));
-    })
-  );
+  event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(ESSENTIAL_ASSETS)).then(() => self.skipWaiting()));
 });
 
-// Активація Service Worker та швидке очищення старого кешу
 self.addEventListener('activate', event => {
-  event.waitUntil(
-    Promise.all([
-      self.clients.claim(),
-      caches.keys().then(cacheNames => {
-        return Promise.all(
-          cacheNames.map(cacheName => {
-            if (cacheName !== CACHE_NAME) {
-              return caches.delete(cacheName);
-            }
-          })
-        );
-      })
-    ])
-  );
+  event.waitUntil(Promise.all([
+    self.clients.claim(),
+    caches.keys().then(names => Promise.all(names.filter(name => name.startsWith('gokuraku-cache-') && name !== CACHE_NAME).map(name => caches.delete(name))))
+  ]));
 });
 
-// Перехоплення запитів
+// Network first ensures deployments are picked up without manually changing a cache version.
 self.addEventListener('fetch', event => {
-  const url = new URL(event.request.url);
-
-  // Не перехоплюємо сторонні важкі ресурси (Catbox, Giscus тощо), дозволяємо браузеру працювати нативно
-  if (url.origin !== self.location.origin && !url.href.includes('fonts.googleapis.com') && !url.href.includes('fonts.gstatic.com')) {
-    return;
-  }
-
-  // --- СТРАТЕГІЯ ДЛЯ ДАНИХ (Network First з fallback на кеш) ---
-  if (url.pathname.includes('/api/') || url.pathname.endsWith('/site-data.json')) {
-    event.respondWith(
-      fetch(event.request)
-        .then(networkResponse => {
-          if (networkResponse && networkResponse.status === 200) {
-            const responseClone = networkResponse.clone();
-            caches.open(CACHE_NAME).then(cache => {
-              cache.put(event.request, responseClone);
-            });
-          }
-          return networkResponse;
-        })
-        .catch(() => caches.match(event.request))
-    );
-    return;
-  }
-
-  // --- СТРАТЕГІЯ ДЛЯ СТАТИКИ (Cache First з ледачим наповненням кешу) ---
-  event.respondWith(
-    caches.match(event.request).then(cachedResponse => {
-      if (cachedResponse) {
-        return cachedResponse;
+  const request = event.request;
+  const url = new URL(request.url);
+  if (request.method !== 'GET' || url.origin !== SCOPE.origin || !url.pathname.startsWith(SCOPE.pathname)) return;
+  event.respondWith((async () => {
+    try {
+      const response = await fetch(request);
+      if (response.ok) {
+        const cache = await caches.open(CACHE_NAME);
+        await cache.put(request, response.clone()).catch(() => {});
       }
-      return fetch(event.request).then(networkResponse => {
-        if (networkResponse && networkResponse.status === 200 && (networkResponse.type === 'basic' || networkResponse.type === 'cors')) {
-          const responseClone = networkResponse.clone();
-          caches.open(CACHE_NAME).then(cache => {
-            cache.put(event.request, responseClone);
-          });
-        }
-        return networkResponse;
-      });
-    })
-  );
+      return response;
+    } catch (error) {
+      const cached = await caches.match(request);
+      if (cached) return cached;
+      throw error;
+    }
+  })());
 });

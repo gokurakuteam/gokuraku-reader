@@ -1111,3 +1111,8 @@ html[data-theme="light"] .history-btn-resume {
         transform: none !important;
     }
 }
+
+.backup-card { flex-wrap: wrap; }
+.backup-card .cabinet-tools-info { flex: 1 1 100%; }
+.backup-card #backup-message:empty { display: none; }
+.backup-card #backup-message { flex-basis: 100%; margin: 0; }

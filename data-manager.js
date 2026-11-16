@@ -17,9 +17,9 @@ export function loadMangaData() {
                 console.log('Manga list loaded successfully!');
             } catch (error) {
                 console.error("Could not load manga list:", error);
-                loadPromise = null; // Дозволяємо спробувати ще раз при помилці
+                throw error;
             }
-        })();
+        })().catch(error => { loadPromise = null; throw error; });
     }
     return loadPromise;
 }
