@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Web Autotyper — Material 3 Expressive</title>
+  <script defer src="js/vendor/lucide.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ВЕРХНЯ ПАНЕЛЬ (MATERIAL 3 TOP BAR) -->
+  <header class="topbar">
+    <details class="toolbar-menu"><summary class="m3-btn"><i data-lucide="plus"></i> Додати</summary><div class="toolbar-menu-content">
+      <label class="m3-btn" title="Завантажити очищені скани (Клін)">
+        <i data-lucide="folder-open"></i> Додати клін
+        <input type="file" id="input-clean-files" multiple accept="image/*" hidden>
+      </label>
+      <label class="m3-btn" title="Почати новий розділ, замінивши поточні сторінки та об’єкти">
+        <i data-lucide="folder-plus"></i> Новий розділ
+        <input type="file" id="input-new-chapter" multiple accept="image/*" hidden>
+      </label>
+      <label class="m3-btn" title="Завантажити оригінали (для порівняння)">
+        <i data-lucide="images"></i> Оригінал
+        <input type="file" id="input-orig-files" multiple accept="image/*" hidden>
+      </label>
+      <label class="m3-btn" title="Вставити пропущену сторінку після поточної">
+        <i data-lucide="file-plus-2"></i> Вставити стор.
+        <input type="file" id="input-insert-page" accept="image/*" hidden>
+      </label>
+      <label class="m3-btn" title="Додати PNG-логотип або назву манхви як окремий шар">
+        <i data-lucide="image-plus"></i> Додати PNG
+        <input type="file" id="input-png-layer" accept="image/*" hidden>
+      </label>
+    </div></details>
+
+    <div class="toolbar-divider"></div>
+
+    <!-- ІНСТРУМЕНТИ ПОЛОТНА -->
+    <div class="toolbar-group segmented-tools" id="tool-buttons">
+      <button class="m3-btn tool-btn active" data-tool="pointer" title="Вказівник / Переміщення (V)">
+        <i data-lucide="mouse-pointer-2"></i> Вказівник <kbd>V</kbd>
+      </button>
+      <button class="m3-btn tool-btn" data-tool="bubble" title="Малювати рамку бабла (D) — автоматично повертає на V">
+        <i data-lucide="message-circle"></i> Бабл <kbd>D</kbd>
+      </button>
+      <button class="m3-btn tool-btn" data-tool="text" title="Вставити вільний текст без бабла (T)">
+        <i data-lucide="type"></i> Текст <kbd>T</kbd>
+      </button>
+      <button class="m3-btn tool-btn" data-tool="eyedropper" title="Піпетка — взяти колір зі сторінки (I)">
+        <i data-lucide="pipette"></i> Піпетка <kbd>I</kbd>
+      </button>
+      <button class="m3-btn tool-btn" data-tool="eraser" title="Ластик — клік по об'єкту видаляє його (E)">
+        <i data-lucide="eraser"></i> Ластик <kbd>E</kbd>
+      </button>
+    </div>
+
+    <div class="toolbar-divider"></div>
+
+    <!-- ДІЇ ТА НАВІГАЦІЯ -->
+    <div class="toolbar-group">
+      <button class="m3-btn" id="btn-peek-orig" title="Затисніть Q або клікніть, щоб показати оригінал">
+        <i data-lucide="eye"></i> Оригінал <kbd>Q</kbd>
+      </button>
+      <button class="m3-btn icon-only" id="btn-undo" title="Скасувати (Ctrl+Z)">
+        <i data-lucide="undo-2"></i>
+      </button>
+      <button class="m3-btn icon-only" id="btn-redo" title="Повторити (Ctrl+Y)">
+        <i data-lucide="redo-2"></i>
+      </button>
+      <button class="m3-btn zoom-pill" id="zoom-label" title="Клікніть для скидання масштабу">100%</button>
+      <button class="m3-btn icon-only" id="btn-hotkeys" title="Налаштувати гарячі клавіші">
+        <i data-lucide="keyboard"></i>
+      </button>
+      <details class="toolbar-menu project-menu"><summary class="m3-btn m3-btn-tonal"><i data-lucide="folder"></i> Проєкт</summary><div class="toolbar-menu-content">
+      <button class="m3-btn m3-btn-tonal" id="btn-export-archive">Сторінки WebP у ZIP</button>
+      <button class="m3-btn m3-btn-tonal" id="btn-save-project" title="Зберегти файл проєкту (.json)">
+        <i data-lucide="download"></i> Проєкт
+      </button>
+      <label class="m3-btn" title="Відкрити збережений файл проєкту (.json)">
+        <i data-lucide="upload"></i> Відкрити
+        <input type="file" id="input-load-project" accept=".json" hidden>
+      </label>
+      </div></details>
+    </div>
+  </header>
+
+  <!-- ОСНОВНА РОБОЧА ЗОНА -->
+  <main class="workspace">
+    <!-- ЛІВА ПАНЕЛЬ З ВКЛАДКАМИ (MATERIAL 3 TABS) -->
+    <aside class="panel left-panel">
+      <nav class="m3-tabs">
+        <button class="m3-tab active" data-tab="tab-text">
+          <i data-lucide="type"></i> Текст
+        </button>
+        <button class="m3-tab" data-tab="tab-fonts"><i data-lucide="case-sensitive"></i> Шрифти і стилі</button>
+        <button class="m3-tab" data-tab="tab-effects">
+          <i data-lucide="palette"></i> Ефекти
+        </button>
+      </nav>
+
+      <!-- ВКЛАДКА 1: ТЕКСТ ТА ШРИФТ -->
+      <div class="tab-pane active" id="tab-text">
+        <div class="m3-card">
+          <div class="section-header">
+            <span class="card-title">Вміст бабла</span>
+            <button class="m3-btn m3-btn-primary m3-btn-sm" id="btn-autofit" title="Автоматично розбити на рядки і підібрати кегль">
+              <i data-lucide="wand-sparkles"></i> Вписати
+            </button>
+          </div>
+          <textarea id="prop-text" rows="3" placeholder="Виберіть бабл або двічі клікніть по ньому на полотні..."></textarea>
+
+          <div class="toggle-bar">
+            <button class="m3-icon-toggle" id="toggle-bold" title="Жирний"><i data-lucide="bold"></i></button>
+            <button class="m3-icon-toggle" id="toggle-italic" title="Курсив"><i data-lucide="italic"></i></button>
+            <button class="m3-icon-toggle" id="toggle-underline" title="Підкреслений"><i data-lucide="underline"></i></button>
+            <button class="m3-icon-toggle" id="toggle-strike" title="Закреслений"><i data-lucide="strikethrough"></i></button>
+            <button class="m3-icon-toggle active" id="toggle-caps" title="Всі великі літери при вставці">CAPS</button>
+            <button class="m3-icon-toggle active" id="toggle-center-snap" title="Магнітний снап до центру бабла/сторінки">
+              <i data-lucide="magnet"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="m3-card">
+          <label class="helper-text"><input type="checkbox" id="prop-auto-font-limits" checked> Автоматичні межі кегля</label>
+          <div class="typography-label">Параметри тексту <span>Тягніть назву для зміни</span></div>
+          <div class="grid-2col">
+            <div class="num-field" title="Крутіть колесико миші або тягніть назву вліво-вправо">
+              <label data-scrub="prop-fontsize" data-step="1"><i data-lucide="move-horizontal"></i> Кегль</label>
+              <input type="number" id="prop-fontsize" min="6" max="300" value="42">
+            </div>
+            <div class="num-field" title="Відступ тексту від стінок бабла">
+              <label data-scrub="prop-padding" data-step="1"><i data-lucide="move-horizontal"></i> Відступ</label>
+              <input type="number" id="prop-padding" min="0" max="150" value="14">
+            </div>
+            <div class="num-field" title="Мінімальний кегль для автопідбору">
+              <label data-scrub="prop-minfont" data-step="1"><i data-lucide="move-horizontal"></i> Мін. авто</label>
+              <input type="number" id="prop-minfont" min="1" disabled value="24">
+            </div>
+            <div class="num-field" title="Максимальний кегль для автопідбору">
+              <label data-scrub="prop-maxfont" data-step="1"><i data-lucide="move-horizontal"></i> Макс. авто</label>
+              <input type="number" id="prop-maxfont" min="1" disabled value="68">
+            </div>
+            <div class="num-field" title="Міжрядковий інтервал (множник)">
+              <label data-scrub="prop-lineheight" data-step="0.05"><i data-lucide="move-horizontal"></i> Інтервал</label>
+              <input type="number" id="prop-lineheight" min="0.6" max="3.0" step="0.05" value="1.20">
+            </div>
+            <div class="num-field" title="Кут повороту в градусах">
+              <label data-scrub="prop-angle" data-step="1"><i data-lucide="move-horizontal"></i> Поворот°</label>
+              <input type="number" id="prop-angle" min="-180" max="180" step="1" value="0">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane typography-pane" id="tab-fonts">
+        <div class="m3-card">
+          <div class="section-header">
+            <span class="card-title">Збережені стилі</span>
+            <button class="m3-btn m3-btn-tonal m3-btn-sm" id="btn-save-preset">
+              <i data-lucide="bookmark-plus"></i> Зберегти
+            </button>
+          </div>
+          <p class="helper-text">Натисніть на стиль, щоб застосувати. Клавіші 1–9 працюють для перших дев’яти стилів.</p>
+          <div class="style-folders">
+            <label for="style-folder-select">Тека стилів</label>
+            <select id="style-folder-select"></select>
+            <div class="folder-actions">
+              <button type="button" class="m3-btn m3-btn-sm" id="folder-create">Нова</button>
+              <button type="button" class="m3-btn m3-btn-sm" id="folder-rename">Назва</button>
+              <button type="button" class="m3-btn m3-btn-sm" id="folder-delete">Видалити</button>
+              <button type="button" class="m3-btn m3-btn-sm" id="folder-export">Експорт</button>
+              <label class="m3-btn m3-btn-sm">Імпорт<input type="file" id="folder-import" accept=".json,application/json" hidden></label>
+            </div>
+          </div>
+          <div class="preset-list" id="preset-list"></div>
+        </div>
+
+        <div class="m3-card">
+          <div class="section-header">
+            <span class="card-title">Гарнітура шрифту</span>
+            <label class="m3-btn m3-btn-sm" title="Додати локальні шрифти (.ttf, .otf)">
+              <i data-lucide="plus"></i> Додати шрифт
+              <input type="file" id="input-fonts" multiple accept=".ttf,.otf,.woff,.woff2" hidden>
+            </label>
+          </div>
+
+          <!-- НАОЧНИЙ СЕЛЕКТОР ШРИФТІВ -->
+          <div class="font-picker-wrapper" id="font-picker-wrapper">
+            <button type="button" class="font-picker-trigger" id="font-picker-trigger">
+              <span id="font-picker-current" style="font-family: 'Arial';">Arial — АбвгҐґ</span>
+              <i data-lucide="chevron-down"></i>
+            </button>
+            <div class="font-picker-Menu" id="font-picker-menu" hidden></div>
+          </div>
+
+
+        </div>
+      </div>
+
+      <!-- ВКЛАДКА 2: КОЛІР, ГРАДІЄНТ, ОБВОДКА ТА СВІТІННЯ -->
+      <div class="tab-pane" id="tab-effects">
+        <div class="m3-card">
+          <span class="card-title">Заливка та Градієнт</span>
+          <div class="effect-row">
+            <div class="color-control">
+              <label class="color-well" id="well-fill">
+                <input type="color" id="prop-fill-color" value="#000000">
+              </label>
+              <span>Основний</span>
+            </div>
+
+            <button type="button" class="m3-chip" id="chip-use-gradient">
+              <i data-lucide="blend"></i> Градієнт
+            </button>
+
+            <div class="color-control" id="grad2-wrap">
+              <label class="color-well" id="well-grad2">
+                <input type="color" id="prop-grad-color2" value="#ff0055">
+              </label>
+              <span>Другий</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="m3-card">
+          <span class="card-title">Обводка та Світіння</span>
+          <div class="effect-row">
+            <label data-scrub="prop-stroke-width" data-step="1" class="scrub-label">
+              <i data-lucide="move-horizontal"></i> Обводка (px)
+            </label>
+            <div class="effect-inputs">
+              <input type="number" id="prop-stroke-width" min="0" max="150" value="0">
+              <label class="color-well" id="well-stroke">
+                <input type="color" id="prop-stroke-color" value="#ffffff">
+              </label>
+            </div>
+          </div>
+
+          <div class="effect-row">
+            <label data-scrub="prop-glow-blur" data-step="1" class="scrub-label">
+              <i data-lucide="move-horizontal"></i> Світіння (px)
+            </label>
+            <div class="effect-inputs">
+              <input type="number" id="prop-glow-blur" min="0" max="150" value="0">
+              <label class="color-well" id="well-glow">
+                <input type="color" id="prop-glow-color" value="#00e5ff">
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <div class="m3-card">
+          <span class="card-title">Останні використані</span>
+          <div class="swatch-list" id="recent-swatches"></div>
+        </div>
+      </div>
+
+    </aside>
+
+    <div class="panel-resizer" data-side="left" role="separator" aria-label="Змінити ширину лівої панелі" tabindex="0"></div>
+    <!-- ЦЕНТРАЛЬНА ЗОНА: ВЕРТИКАЛЬНА СТРІЧКА СТОРІНОК -->
+    <section class="canvas-viewport" id="canvas-viewport">
+      <canvas id="main-canvas"></canvas>
+      <!-- ПЛАВАЮЧИЙ РЕДАКТОР ДЛЯ ПОДВІЙНОГО КЛІКУ ПРЯМО НА ПОЛОТНІ -->
+      <textarea id="canvas-inline-editor" class="canvas-inline-editor" hidden></textarea>
+
+      <div class="floating-hint" id="floating-hint">
+        <i data-lucide="MousePointerClick"></i> Завантажте скани («Клін»). Подвійний клік по баблу — редагування тексту прямо на полотні.
+      </div>
+    </section>
+
+    <div class="panel-resizer" data-side="right" role="separator" aria-label="Змінити ширину правої панелі" tabindex="0"></div>
+    <!-- ПРАВА ПАНЕЛЬ: ПЕРЕКЛАД ТА СТОРІНКИ -->
+    <aside class="panel right-panel">
+      <div class="panel-top-box">
+        <div class="section-header">
+          <span class="card-title">Переклад (.md / .txt)</span>
+          <label class="m3-btn m3-btn-sm">
+            <i data-lucide="file-text"></i> Завантажити
+            <input type="file" id="input-trans-file" accept=".md,.txt" hidden>
+          </label>
+        </div>
+
+        <!-- M3 FILTER CHIPS (ЗАМІСТЬ БРАУЗЕРНИХ ЧЕКБОКСІВ) -->
+        <div class="chip-group" id="filter-chips">
+          <button type="button" class="m3-chip active" data-filter="bubble"><i data-lucide="message-circle"></i> Бабли</button>
+          <button type="button" class="m3-chip active" data-filter="panel"><i data-lucide="square"></i> Панелі</button>
+          <button type="button" class="m3-chip active" data-filter="bg"><i data-lucide="cloud"></i> Фон</button>
+          <button type="button" class="m3-chip active" data-filter="thought"><i data-lucide="sparkles"></i> Думки</button>
+          <button type="button" class="m3-chip active" data-filter="sound"><i data-lucide="zap"></i> Звуки</button>
+        </div>
+
+        <button class="m3-btn m3-btn-primary m3-btn-block" id="btn-insert-line">
+          <i data-lucide="corner-down-left"></i> Вставити у бабл (<span id="lbl-insert-hotkey">Shift+K</span>)
+        </button>
+      </div>
+
+      <!-- СПИСОК ФРАЗ -->
+      <div class="translation-list" id="translation-list"></div>
+
+      <!-- РУЧНЕ ДОДАВАННЯ ТЕКСТУ -->
+      <details class="panel-bottom-box">
+        <summary>Вставити переклад вручну</summary>
+        <textarea id="manual-trans-input" rows="3" placeholder="Вставте текст сюди (Сторінка 1, 2 сторінка, # коментарі, **звук**, __панель__, /фон)..."></textarea>
+        <button class="m3-btn m3-btn-tonal m3-btn-block" id="btn-parse-manual">
+          <i data-lucide="list-plus"></i> Розібрати текст у список
+        </button>
+      </details>
+    </aside>
+  </main>
+
+  <!-- КОНТЕКСТНЕ МЕНЮ -->
+  <ul class="context-menu" id="context-menu" hidden>
+    <li data-action="autofit"><i data-lucide="wand-sparkles"></i> Вписати текст у бабл</li>
+    <li data-action="center"><i data-lucide="align-center"></i> Вирівняти по центру</li>
+    <li class="menu-sep"></li>
+    <li data-action="split-h"><i data-lucide="rows-2"></i> Розділити горизонтально</li>
+    <li data-action="split-v"><i data-lucide="columns-2"></i> Розділити вертикально</li>
+    <li data-action="link-cluster"><i data-lucide="link"></i> Зв'язати кегль із попереднім</li>
+    <li data-action="unlink-cluster"><i data-lucide="unlink"></i> Відв'язати від групи кеглю</li>
+    <li class="menu-sep"></li>
+    <li data-action="duplicate"><i data-lucide="copy"></i> Дублювати (Ctrl+D)</li>
+    <li data-action="delete" class="danger"><i data-lucide="trash-2"></i> Видалити (Del)</li>
+  </ul>
+
+  <!-- МОДАЛЬНЕ ВІКНО НАЛАШТУВАННЯ ХОТКЕЇВ -->
+  <div class="modal-backdrop" id="hotkey-modal" hidden>
+    <div class="modal">
+      <div class="section-header">
+        <span class="card-title">Гарячі клавіші (УКР та ENG розкладки)</span>
+        <button class="m3-btn icon-only" id="btn-close-hotkeys"><i data-lucide="x"></i></button>
+      </div>
+      <p class="helper-text">Клікніть на кнопку навпроти дії та натисніть нову комбінацію.</p>
+      <div id="hotkey-list" class="hotkey-list"></div>
+    </div>
+  </div>
+
+  <script src="js/vendor/hyphen.js"></script>
+  <script src="js/vendor/hyphen-uk.js"></script>
+  <script src="js/textEngine.js"></script>
+  <script src="js/bubbleDetector.js"></script>
+  <script src="js/state.js"></script>
+  <script src="js/canvasStrip.js"></script>
+  <script src="js/canvasProject.js"></script>
+  <script src="js/canvasRender.js"></script>
+  <script src="js/canvasEvents.js"></script>
+  <script src="js/dialogs.js"></script>
+  <script src="js/canvasUI.js"></script>
+  <script src="js/canvasContent.js"></script>
+  <script src="js/canvasKeyboard.js"></script>
+  <script src="js/library.js"></script>
+  <script src="js/resources.js"></script>
+  <script src="js/archive.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/layout.js"></script>
+</body>
+</html>
