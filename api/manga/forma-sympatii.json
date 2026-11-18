@@ -13,7 +13,7 @@
     "Шьонен-ай",
     "Школа"
   ],
-  "latestUpdate": "2026-10-22T19:38:59.310442Z",
+  "latestUpdate": "2026-11-18T19:51:22.170116Z",
   "chapters": [
     {
       "id": 859,
@@ -2563,6 +2563,50 @@
         "https://files.catbox.moe/yne5ei.webp",
         "https://files.catbox.moe/2cme9c.webp"
       ]
+    },
+    {
+      "id": 933,
+      "title": "",
+      "volume": 3,
+      "chapter": 75.7,
+      "date": "2026-11-18",
+      "pages": [
+        "https://files.catbox.moe/50h9qz.webp",
+        "https://files.catbox.moe/jul6o5.webp",
+        "https://files.catbox.moe/2zl7p1.webp",
+        "https://files.catbox.moe/hs4h3b.webp",
+        "https://files.catbox.moe/wdse63.webp",
+        "https://files.catbox.moe/9nna1h.webp",
+        "https://files.catbox.moe/vzew4c.webp",
+        "https://files.catbox.moe/25k27f.webp",
+        "https://files.catbox.moe/oo7h4g.webp",
+        "https://files.catbox.moe/v14c17.webp",
+        "https://files.catbox.moe/41zzer.webp",
+        "https://files.catbox.moe/4hfhj8.webp",
+        "https://files.catbox.moe/3ysjf1.webp",
+        "https://files.catbox.moe/0tl5na.webp",
+        "https://files.catbox.moe/y2hoo0.webp",
+        "https://files.catbox.moe/0o91ez.webp",
+        "https://files.catbox.moe/pohqh9.webp",
+        "https://files.catbox.moe/970hig.webp",
+        "https://files.catbox.moe/d6aei1.webp",
+        "https://files.catbox.moe/zvrcz3.webp",
+        "https://files.catbox.moe/kc3cw4.webp",
+        "https://files.catbox.moe/jl7yu4.webp",
+        "https://files.catbox.moe/flq0wo.webp",
+        "https://files.catbox.moe/hc6cgh.webp",
+        "https://files.catbox.moe/dbibua.webp",
+        "https://files.catbox.moe/0zaq4e.webp",
+        "https://files.catbox.moe/2ooqly.webp",
+        "https://files.catbox.moe/n7r0fu.webp",
+        "https://files.catbox.moe/k687at.webp",
+        "https://files.catbox.moe/31bu67.webp",
+        "https://files.catbox.moe/vk5v40.webp",
+        "https://files.catbox.moe/2dhaj0.webp",
+        "https://files.catbox.moe/8i2s0d.webp",
+        "https://files.catbox.moe/x7ek1q.webp"
+      ],
+      "teams": []
     }
   ],
   "slug": "forma-sympatii",

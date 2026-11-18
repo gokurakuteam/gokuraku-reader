@@ -17,7 +17,7 @@
     "Привиди",
     "Надприродне"
   ],
-  "latestUpdate": "2026-10-22T19:36:32.617681Z",
+  "latestUpdate": "2026-11-18T19:54:25.875984Z",
   "chapters": [
     {
       "id": 207,
@@ -409,6 +409,37 @@
         "https://files.catbox.moe/qzovi3.webp",
         "https://files.catbox.moe/v0xl0u.webp"
       ]
+    },
+    {
+      "id": 934,
+      "title": "",
+      "volume": 1,
+      "chapter": 13.0,
+      "date": "2026-11-18",
+      "pages": [
+        "https://files.catbox.moe/fqvgiu.webp",
+        "https://files.catbox.moe/mqumgj.webp",
+        "https://files.catbox.moe/8uior5.webp",
+        "https://files.catbox.moe/a8jvy8.webp",
+        "https://files.catbox.moe/r7sww9.webp",
+        "https://files.catbox.moe/jl3huc.webp",
+        "https://files.catbox.moe/cxrluj.webp",
+        "https://files.catbox.moe/d9hetg.webp",
+        "https://files.catbox.moe/jwcl7x.webp",
+        "https://files.catbox.moe/raz3eo.webp",
+        "https://files.catbox.moe/xhcmyj.webp",
+        "https://files.catbox.moe/9hqo1n.webp",
+        "https://files.catbox.moe/0ep1vf.webp",
+        "https://files.catbox.moe/geekb6.webp",
+        "https://files.catbox.moe/5xl4te.webp",
+        "https://files.catbox.moe/2zt7rx.webp",
+        "https://files.catbox.moe/tuizm7.webp",
+        "https://files.catbox.moe/mdxcu7.webp",
+        "https://files.catbox.moe/o9nloi.webp",
+        "https://files.catbox.moe/rv5aku.webp",
+        "https://files.catbox.moe/jra5nh.webp"
+      ],
+      "teams": []
     }
   ],
   "slug": "dusha-zahublena-gou",
