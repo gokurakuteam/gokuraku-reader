@@ -13,6 +13,8 @@ window.CanvasStrip = {
   init() {
     this.canvas = document.getElementById('main-canvas');
     this.ctx = this.canvas.getContext('2d');
+    this.scanCanvas = document.getElementById('scan-canvas');
+    this.scanCtx = this.scanCanvas.getContext('2d');
     this.viewport = document.getElementById('canvas-viewport');
     this.inlineEditor = document.getElementById('canvas-inline-editor');
 
@@ -31,8 +33,15 @@ window.CanvasStrip = {
     this.renderPresets();
     this.updateHotkeyLabels();
     this.refreshIcons();
-    this.restoreDraft();
+    this.scanImport = this.restoreDraft();
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) this.saveDraft();
+    });
     this.requestRender();
+    document.fonts.ready.then(() => {
+      this.invalidateScanLayer();
+      this.requestRender();
+    });
   },
 
   refreshIcons() {
@@ -42,22 +51,32 @@ window.CanvasStrip = {
   },
 
   resizeCanvas() {
-    const rect = this.viewport.getBoundingClientRect();
-    const dpr = Math.min(window.devicePixelRatio || 1, 2);
-    this.canvas.width = rect.width * dpr;
-    this.canvas.height = rect.height * dpr;
-    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this.canvasSizeDirty = true;
     this.requestRender();
   },
 
+  syncCanvasSize() {
+    this.canvasSizeDirty = false;
+    const rect = this.viewport.getBoundingClientRect();
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const width = Math.round(rect.width * dpr);
+    const height = Math.round(rect.height * dpr);
+    if (this.canvas.width === width && this.canvas.height === height && this.canvasDpr === dpr) return;
+    if (this.canvas.width !== width) this.canvas.width = width;
+    if (this.canvas.height !== height) this.canvas.height = height;
+    if (this.scanCanvas.width !== width) this.scanCanvas.width = width;
+    if (this.scanCanvas.height !== height) this.scanCanvas.height = height;
+    this.canvasDpr = dpr;
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this.scanCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this.invalidateScanLayer();
+  },
+
   requestRender() {
-    if (this.draftReady) {
-      clearTimeout(this.draftTimer);
-      this.draftTimer = setTimeout(() => this.saveDraft(), 700);
-    }
     if (this.rafId) return;
     this.rafId = requestAnimationFrame(() => {
       this.rafId = null;
+      if (this.canvasSizeDirty) this.syncCanvasSize();
       this.render();
     });
   },

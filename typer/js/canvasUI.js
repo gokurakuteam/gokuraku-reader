@@ -25,11 +25,21 @@ Object.assign(window.CanvasStrip, {
   renderFontPicker() {
     const menu = document.getElementById('font-picker-menu');
     const currSpan = document.getElementById('font-picker-current');
-    menu.innerHTML = '';
+    const font = AppState.currentFont;
+    currSpan.style.fontFamily = `"${font}"`;
+    currSpan.textContent = `${font} — АбвгҐґ`;
 
-    currSpan.style.fontFamily = `"${AppState.currentFont}"`;
-    currSpan.textContent = `${AppState.currentFont} — АбвгҐґ`;
-
+    const fontsKey = JSON.stringify(AppState.fonts);
+    if (this.fontPickerFonts === fontsKey) {
+      this.selectedFontOption?.classList.remove('active');
+      this.selectedFontOption = this.fontPickerOptions.get(font);
+      this.selectedFontOption?.classList.add('active');
+      return;
+    }
+    this.fontPickerFonts = fontsKey;
+    this.fontPickerOptions = new Map();
+    this.selectedFontOption = null;
+    menu.replaceChildren();
     const search = document.createElement('input');
     search.type = 'search';
     search.className = 'font-search';
@@ -37,16 +47,22 @@ Object.assign(window.CanvasStrip, {
     search.setAttribute('aria-label', 'Пошук шрифту');
     search.addEventListener('click', e => e.stopPropagation());
     search.addEventListener('input', () => {
-      menu.querySelectorAll('.font-option').forEach(option => {
-        option.hidden = !option.dataset.font.toLocaleLowerCase().includes(search.value.toLocaleLowerCase().trim());
-      });
+      const query = search.value.toLocaleLowerCase().trim();
+      for (const [fontName, option] of this.fontPickerOptions) {
+        option.hidden = !fontName.toLocaleLowerCase().includes(query);
+      }
     });
     menu.appendChild(search);
     AppState.fonts.forEach(fontName => {
       const opt = document.createElement('button');
       opt.type = 'button';
       opt.dataset.font = fontName;
-      opt.className = `font-option ${fontName === AppState.currentFont ? 'active' : ''}`;
+      this.fontPickerOptions.set(fontName, opt);
+      opt.className = 'font-option';
+      if (fontName === font) {
+        this.selectedFontOption = opt;
+        opt.classList.add('active');
+      }
       opt.style.fontFamily = `"${fontName}"`;
       opt.textContent = `${fontName} — АбвгҐґ`;
       opt.addEventListener('click', () => {
@@ -60,6 +76,7 @@ Object.assign(window.CanvasStrip, {
 
   updateColorWells() {
     document.getElementById('well-fill').style.background = document.getElementById('prop-fill-color').value;
+    document.getElementById('quick-text-color').value = document.getElementById('prop-fill-color').value;
     document.getElementById('well-grad2').style.background = document.getElementById('prop-grad-color2').value;
     document.getElementById('well-stroke').style.background = document.getElementById('prop-stroke-color').value;
     document.getElementById('well-glow').style.background = document.getElementById('prop-glow-color').value;
@@ -91,11 +108,14 @@ Object.assign(window.CanvasStrip, {
     return {
       fontFamily: AppState.currentFont || 'Arial',
       fontSize: Number(document.getElementById('prop-fontsize').value) || 42,
+      uppercase: document.getElementById('toggle-caps').classList.contains('active'),
+      textAlign: document.getElementById('prop-text-align').value,
       lineHeight: Number(document.getElementById('prop-lineheight').value) || 1.2,
       fillColor: document.getElementById('prop-fill-color').value || '#000000',
       useGradient: AppState.useGradient,
       gradColor2: document.getElementById('prop-grad-color2').value || '#ff0055',
       strokeWidth: Number(document.getElementById('prop-stroke-width').value) || 0,
+      strokeRelative: document.getElementById('prop-stroke-relative').checked,
       strokeColor: document.getElementById('prop-stroke-color').value || '#ffffff',
       glowBlur: Number(document.getElementById('prop-glow-blur').value) || 0,
       glowColor: document.getElementById('prop-glow-color').value || '#00e5ff',
@@ -106,17 +126,28 @@ Object.assign(window.CanvasStrip, {
     };
   },
 
+  showLayoutStatus(item) {
+    const textInput = document.getElementById('prop-text');
+    const status = document.getElementById('text-layout-status');
+    const message = item?.layoutError || '';
+    textInput.title = message;
+    textInput.setCustomValidity(message);
+    if (status.textContent !== message) status.textContent = message;
+    status.hidden = !message;
+  },
+
   syncUIFromSelection() {
     const item = AppState.getSelectedItem();
     const txtArea = document.getElementById('prop-text');
     if (!item) {
       txtArea.value = '';
+      this.showLayoutStatus();
+      this.setCapsButton(AppState.capsLockOnInsert);
       return;
     }
     this.syncFontLimits(item);
     txtArea.value = item.rawText || '';
-    txtArea.title = item.layoutError || '';
-    txtArea.setCustomValidity(item.layoutError || '');
+    this.showLayoutStatus(item);
     document.getElementById('prop-padding').value = item.padding ?? 14;
     document.getElementById('prop-angle').value = item.angle ?? 0;
 
@@ -127,10 +158,15 @@ Object.assign(window.CanvasStrip, {
       this.renderFontPicker();
 
       document.getElementById('prop-fontsize').value = s.fontSize || 42;
+      document.getElementById('prop-fontsize').title = item.fixedFontSize ? 'Ручний кегль. «Вписати» відновлює автопідбір.' : '';
+      this.setCapsButton(!!s.uppercase);
+      document.getElementById('prop-text-align').value = s.textAlign || 'center';
+      this.syncAlignButtons?.();
       document.getElementById('prop-lineheight').value = s.lineHeight || 1.2;
       document.getElementById('prop-fill-color').value = s.fillColor || '#000000';
       document.getElementById('prop-grad-color2').value = s.gradColor2 || '#ff0055';
       document.getElementById('prop-stroke-width').value = s.strokeWidth || 0;
+      document.getElementById('prop-stroke-relative').checked = !!s.strokeRelative;
       document.getElementById('prop-stroke-color').value = s.strokeColor || '#ffffff';
       document.getElementById('prop-glow-blur').value = s.glowBlur || 0;
       document.getElementById('prop-glow-color').value = s.glowColor || '#00e5ff';
@@ -141,6 +177,12 @@ Object.assign(window.CanvasStrip, {
       document.getElementById('toggle-strike').classList.toggle('active', !!s.strike);
       this.updateColorWells();
     }
+  },
+
+  setCapsButton(active) {
+    const button = document.getElementById('toggle-caps');
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', active);
   },
 
   syncFontLimits(item) {
@@ -159,20 +201,39 @@ Object.assign(window.CanvasStrip, {
     if (saveToRecents) AppState.addRecentStyle(st);
     if (!item) return;
 
-    item.style = st;
+    if (requestedSize !== null && (!Number.isFinite(requestedSize) || requestedSize < 0.25)) return;
+    if (requestedSize !== null) {
+      if (item.fixedFontSize !== requestedSize) {
+        item.fixedFontSize = requestedSize;
+        item.fixedFontOrder = Date.now();
+      }
+      document.getElementById('prop-fontsize').title = 'Ручний кегль. «Вписати» відновлює автопідбір.';
+    }
+    item.style = {...item.style, ...st, fontSize: requestedSize ?? item.style.fontSize ?? st.fontSize};
     item.padding = Number(document.getElementById('prop-padding').value) || 0;
     item.angle = Number(document.getElementById('prop-angle').value) || 0;
-    if (item.type === 'bubble' && item.rawText) {
-      if(requestedSize && !item.manualTextLayout) TextEngine.autoFitText(item,{minFont:requestedSize,maxFont:requestedSize});
-      else AppState.autoFitItemText(item);
-      document.getElementById('prop-fontsize').value=item.style.fontSize;
-    }
+    if (item.type === 'bubble' || item.fixedFontSize) AppState.autoFitItemText(item);
+    const fontInput = document.getElementById('prop-fontsize');
+    if (requestedSize === null || Number(fontInput.value) !== item.style.fontSize) fontInput.value = item.style.fontSize;
+    this.showLayoutStatus(item);
+    this.markProjectChanged();
     this.requestRender();
   },
 
   pickColorFromCanvas(sx, sy) {
-    const dpr = window.devicePixelRatio || 1;
-    const pixel = this.ctx.getImageData(sx * dpr, sy * dpr, 1, 1).data;
+    const dpr = this.canvasDpr || 1;
+    const x = Math.floor(sx * dpr), y = Math.floor(sy * dpr);
+    if (x < 0 || y < 0 || x >= this.canvas.width || y >= this.canvas.height) return;
+    if (!this.colorSampleCtx) {
+      const sample = document.createElement('canvas');
+      sample.width = sample.height = 1;
+      this.colorSampleCtx = sample.getContext('2d', { willReadFrequently: true });
+    }
+    const sample = this.colorSampleCtx;
+    sample.clearRect(0, 0, 1, 1);
+    sample.drawImage(this.scanCanvas, x, y, 1, 1, 0, 0, 1, 1);
+    sample.drawImage(this.canvas, x, y, 1, 1, 0, 0, 1, 1);
+    const pixel = sample.getImageData(0, 0, 1, 1).data;
     const hex = '#' + [pixel[0], pixel[1], pixel[2]].map(x => x.toString(16).padStart(2, '0')).join('');
     document.getElementById('prop-fill-color').value = hex;
     this.applyUIStyleToSelected(true);
@@ -195,13 +256,13 @@ Object.assign(window.CanvasStrip, {
         const limits=TextEngine.fontLimits(item);item.manualMinFont=limits.minFont;item.manualMaxFont=limits.maxFont;
       }
       item.autoFontLimits=e.target.checked;
-      AppState.autoFitItemText(item);this.syncUIFromSelection();this.requestRender();
+      AppState.autoFitItemText(item);this.syncUIFromSelection();this.markProjectChanged();this.requestRender();
     });
     for(const [id,key] of [['prop-minfont','manualMinFont'],['prop-maxfont','manualMaxFont']]) {
       document.getElementById(id).addEventListener('change',e=>{
         const item=AppState.getSelectedItem();if(!item || item.autoFontLimits!==false)return;
         AppState.saveSnapshot();item[key]=Math.max(1,Number(e.target.value)||1);
-        AppState.autoFitItemText(item);this.syncUIFromSelection();this.requestRender();
+        AppState.autoFitItemText(item);this.syncUIFromSelection();this.markProjectChanged();this.requestRender();
       });
     }
 
@@ -209,26 +270,23 @@ Object.assign(window.CanvasStrip, {
       btn.addEventListener('click', () => this.setTool(btn.dataset.tool));
     });
 
-    document.getElementById('input-clean-files').addEventListener('change', (e) => {
-      this.loadPageFiles(Array.from(e.target.files), false);
-      e.target.value = '';
-    });
+    const bindScanInput = (id, load) => {
+      document.getElementById(id).addEventListener('change', e => {
+        const files = Array.from(e.target.files);
+        e.target.value = '';
+        if (!files.length) return;
 
-    document.getElementById('input-new-chapter').addEventListener('change', async (e) => {
-      const files = Array.from(e.target.files);
-      e.target.value = '';
-      if (!files.length) return;
+        this.scanImport = (this.scanImport || Promise.resolve()).then(() => load(files)).catch(error =>
+          AppDialogs.alert('Імпорт сканів не завершено: ' + error.message));
+      });
+    };
+    bindScanInput('input-clean-files', files => this.loadPageFiles(files));
+    bindScanInput('input-new-chapter', async files => {
       if ((AppState.pages.length || AppState.items.length) && !await AppDialogs.confirm('Почати новий розділ? Поточні сторінки, об’єкти та переклад буде замінено. Збережіть проєкт, якщо хочете повернутися до нього.')) return;
-      this.loadPageFiles(files, false, true);
+      await this.loadPageFiles(files, false, true);
     });
-
-    document.getElementById('input-orig-files').addEventListener('change', (e) => {
-      this.loadOrigFiles(Array.from(e.target.files));
-    });
-
-    document.getElementById('input-insert-page').addEventListener('change', (e) => {
-      if (e.target.files.length) this.loadPageFiles([e.target.files[0]], true);
-    });
+    bindScanInput('input-orig-files', files => this.loadOrigFiles(files));
+    bindScanInput('input-insert-page', files => this.loadPageFiles(files, true));
 
     document.getElementById('input-png-layer').addEventListener('change', (e) => {
       const file = e.target.files[0];
@@ -259,6 +317,7 @@ Object.assign(window.CanvasStrip, {
           AppState.items.push(pngItem);
           AppState.selectedId = pngItem.id;
           this.setTool('pointer');
+          this.markProjectChanged();
           this.requestRender();
         };
         img.src = reader.result;
@@ -282,7 +341,10 @@ Object.assign(window.CanvasStrip, {
       if (!item) return;
       item.rawText = e.target.value;
       item.lines = e.target.value.split('\n');
-      if (item.type === 'bubble') AppState.autoFitItemText(item);
+      if (item.type === 'bubble' || item.fixedFontSize) AppState.autoFitItemText(item);
+      document.getElementById('prop-fontsize').value = item.style.fontSize;
+      this.showLayoutStatus(item);
+      this.markProjectChanged();
       this.requestRender();
     });
 
@@ -290,7 +352,8 @@ Object.assign(window.CanvasStrip, {
       const item = AppState.getSelectedItem();
       if (!item) return;
       AppState.saveSnapshot();
-      AppState.autoFitItemText(item);
+      AppState.resetItemTextLayout(item);
+      this.markProjectChanged();
       this.syncUIFromSelection();
       this.requestRender();
     });
@@ -303,8 +366,24 @@ Object.assign(window.CanvasStrip, {
     });
 
     document.getElementById('toggle-caps').addEventListener('click', (e) => {
-      e.currentTarget.classList.toggle('active');
-      AppState.capsLockOnInsert = e.currentTarget.classList.contains('active');
+      const active = !e.currentTarget.classList.contains('active');
+      this.setCapsButton(active);
+      if (AppState.getSelectedItem()) {
+        AppState.saveSnapshot();
+        this.applyUIStyleToSelected();
+      } else AppState.capsLockOnInsert = active;
+    });
+
+    const alignSelect = document.getElementById('prop-text-align');
+    const syncAlign = () => document.querySelectorAll('[data-align]').forEach(b => { const active = b.dataset.align === alignSelect.value; b.classList.toggle('active', active); b.setAttribute('aria-pressed', active); });
+    document.querySelectorAll('[data-align]').forEach(b => b.addEventListener('click', () => { alignSelect.value = b.dataset.align; alignSelect.dispatchEvent(new Event('change')); }));
+    new MutationObserver(syncAlign).observe(alignSelect, { attributes: true });
+    this.syncAlignButtons = syncAlign; syncAlign();
+    document.getElementById('prop-stroke-relative').addEventListener('change', () => { if (AppState.getSelectedItem()) AppState.saveSnapshot(); this.applyUIStyleToSelected(); });
+    document.getElementById('prop-text-align').addEventListener('change', () => {
+      syncAlign();
+      if (AppState.getSelectedItem()) AppState.saveSnapshot();
+      this.applyUIStyleToSelected();
     });
 
     document.getElementById('toggle-center-snap').addEventListener('click', (e) => {
@@ -315,6 +394,15 @@ Object.assign(window.CanvasStrip, {
     document.getElementById('chip-use-gradient').addEventListener('click', () => {
       AppState.useGradient = !AppState.useGradient;
       this.applyUIStyleToSelected(true);
+    });
+
+    const fontSize = document.getElementById('prop-fontsize');
+    fontSize.addEventListener('focus', () => {
+      if (AppState.getSelectedItem()) AppState.saveSnapshot();
+    });
+    fontSize.addEventListener('blur', () => {
+      const item = AppState.getSelectedItem();
+      if (item) fontSize.value = item.style.fontSize;
     });
 
     ['prop-fontsize', 'prop-padding', 'prop-lineheight', 'prop-angle'].forEach(id => {
@@ -333,8 +421,7 @@ Object.assign(window.CanvasStrip, {
     const peekBtn = document.getElementById('btn-peek-orig');
     peekBtn.addEventListener('click', () => {
       AppState.peekOriginal = !AppState.peekOriginal;
-      peekBtn.classList.toggle('active', AppState.peekOriginal);
-      this.requestRender();
+      this.updateOriginalView();
     });
 
     document.getElementById('btn-undo').addEventListener('click', () => AppState.undo());
@@ -351,9 +438,9 @@ Object.assign(window.CanvasStrip, {
         name: `Мій стиль ${AppState.presets.length + 1}`, autoTypes: [],
         font: s.fontFamily,
         fill: s.fillColor, useGrad: s.useGradient, grad2: s.gradColor2,
-        strokeWidth: s.strokeWidth, strokeColor: s.strokeColor,
+        strokeWidth: s.strokeWidth, strokeRelative: s.strokeRelative, strokeColor: s.strokeColor,
         glowBlur: s.glowBlur, glowColor: s.glowColor, bold: s.bold,
-        italic: s.italic, underline: s.underline, strike: s.strike
+        italic: s.italic, underline: s.underline, strike: s.strike, uppercase: s.uppercase
       });
       if (!preset) return;
       AppState.presets.forEach(other => {
@@ -370,6 +457,7 @@ Object.assign(window.CanvasStrip, {
       const raw = document.getElementById('manual-trans-input').value;
       if (!raw.trim()) return;
       AppState.parseTranslationText(raw);
+      this.markProjectChanged();
       this.renderTranslationList();
       this.requestRender();
     });
@@ -377,8 +465,10 @@ Object.assign(window.CanvasStrip, {
     document.getElementById('input-trans-file').addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file) return;
+      e.target.value = '';
       const text = await file.text();
       AppState.parseTranslationText(text);
+      this.markProjectChanged();
       this.renderTranslationList();
       this.requestRender();
     });
@@ -388,10 +478,15 @@ Object.assign(window.CanvasStrip, {
       chip.addEventListener('click', () => {
         chip.classList.toggle('active');
         const type = chip.dataset.filter;
+        const hadInsertable = AppState.translations.some(item => AppState.isInsertableTranslation(item));
         AppState.activeFilters[type] = chip.classList.contains('active');
         const active = AppState.translations[AppState.activeTransIndex];
-        if (active && !AppState.activeFilters[active.type]) AppState.activeTransIndex = AppState.findNextInsertableIndex(AppState.activeTransIndex);
-        if (AppState.activeTransIndex < 0) AppState.activeTransIndex = AppState.findNextInsertableIndex(-1);
+        if (active && !AppState.isInsertableTranslation(active)) {
+          const next = AppState.findNextInsertableIndex(AppState.activeTransIndex);
+          if (next >= 0) AppState.activeTransIndex = next;
+        }
+        if (!hadInsertable && AppState.activeTransIndex < 0) AppState.activeTransIndex = AppState.findNextInsertableIndex(-1);
+        this.markProjectChanged();
         this.renderTranslationList();
         this.requestRender();
       });
@@ -411,26 +506,41 @@ Object.assign(window.CanvasStrip, {
       this.recordingHotkeyKey = null;
     });
 
-    document.getElementById('btn-save-project').addEventListener('click', () => {
-      const data = JSON.stringify(this.projectData(), null, 2);
-      const blob = new Blob([data], { type: 'application/json' });
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = 'project.typer.json';
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+    document.getElementById('btn-save-project').addEventListener('click', async (event) => {
+      const button = event.currentTarget;
+      button.disabled = true;
+      try {
+        const data = JSON.stringify(await this.exportProjectData());
+        this.downloadBlob(new Blob([data], { type: 'application/json' }), 'project.typer.json');
+      } catch (error) {
+        await AppDialogs.alert('Не вдалося зберегти проєкт: ' + error.message);
+      } finally {
+        button.disabled = false;
+      }
     });
 
     document.getElementById('input-load-project').addEventListener('change', async (e) => {
       const file = e.target.files[0];
       if (!file) return;
-      try {
-        await this.loadProject(JSON.parse(await file.text()));
-        this.requestRender();
-      } catch (error) { AppDialogs.alert('Не вдалося відкрити проєкт: ' + error.message); }
       e.target.value = '';
+      this.scanImport = (this.scanImport || Promise.resolve())
+        .then(async () => this.loadProject(JSON.parse(await file.text())))
+        .catch(error => AppDialogs.alert('Не вдалося відкрити проєкт: ' + error.message));
+    });
+
+    document.getElementById('btn-restore-project').addEventListener('click', () => {
+      this.scanImport = (this.scanImport || Promise.resolve()).then(async () => {
+        const previous = await this.readDraft('previous');
+        if (!previous) return AppDialogs.alert('Резервної копії ще немає.');
+        await this.loadProject(previous, true);
+      }).catch(error => AppDialogs.alert('Не вдалося відновити проєкт: ' + error.message));
     });
   },
 
 
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('project-name').addEventListener('input', () => CanvasStrip.markProjectChanged());
+  document.getElementById('quick-text-color').addEventListener('input', e => { const input = document.getElementById('prop-fill-color'); input.value = e.target.value; input.dispatchEvent(new Event('input', { bubbles: true })); });
 });

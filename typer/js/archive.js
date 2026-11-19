@@ -50,6 +50,26 @@ TyperZip.table=Uint32Array.from({length:256},(_,i)=>{
   return i>>>0;
 });
 
+async function drawExportImage(ctx, source, rect, label) {
+  const image = new Image();
+  const blobUrl = source instanceof Blob ? URL.createObjectURL(source) : null;
+  try {
+    if (!source) throw new Error('Файл зображення відсутній');
+    await new Promise((resolve, reject) => {
+      image.onload = resolve;
+      image.onerror = () => reject(new Error('Браузер не зміг відкрити зображення'));
+      image.src = blobUrl ?? source;
+    });
+    ctx.drawImage(image, ...rect);
+  } catch (error) {
+    throw new Error(`${label}. ${error.message}`, { cause: error });
+  } finally {
+    image.onload = image.onerror = null;
+    image.removeAttribute('src');
+    if (blobUrl) URL.revokeObjectURL(blobUrl);
+  }
+}
+
 Object.assign(CanvasStrip, {
   async renderPageWebp(page, items) {
     // WebP's dimension limit is 16383. Refuse oversized allocations before decoding.
@@ -58,23 +78,21 @@ Object.assign(CanvasStrip, {
        page.width*page.height>32*1024*1024) {
       throw new Error('Сторінка «'+page.name+'» завелика для безпечного WebP-експорту (максимум 32 Мп і 16383 px на сторону). Зменште її розмір.');
     }
-    const canvas=document.createElement('canvas'), scan=new Image();
+    const canvas=document.createElement('canvas');
     canvas.width=page.width; canvas.height=page.height;
     try {
       const ctx=canvas.getContext('2d');
       if(!ctx) throw new Error('Недостатньо пам’яті для полотна');
-      scan.src=page.cleanDataUrl; await scan.decode();
-      ctx.drawImage(scan,0,0,page.width,page.height);
-      scan.src='';
+      await drawExportImage(ctx, page.cleanBlob ?? page.cleanDataUrl,
+        [0, 0, page.width, page.height], `Клін сторінки «${page.name}»`);
       for(const item of items) {
         ctx.save();
         try {
           ctx.translate(item.x+item.w/2,item.y+item.h/2);
           ctx.rotate((item.angle||0)*Math.PI/180);
           if(item.type==='png' && item.pngDataUrl) {
-            const img=new Image();
-            try { img.src=item.pngDataUrl; await img.decode(); ctx.drawImage(img,-item.w/2,-item.h/2,item.w,item.h); }
-            finally { img.src=''; }
+            await drawExportImage(ctx, item.pngDataUrl, [-item.w / 2, -item.h / 2, item.w, item.h],
+              `Шар зображення на сторінці «${page.name}» (x: ${Math.round(item.x)}, y: ${Math.round(item.y)})`);
           }
           if(item.lines?.length) this.renderStyledText(ctx,item);
         } finally { ctx.restore(); }
@@ -83,7 +101,9 @@ Object.assign(CanvasStrip, {
         b=>b?resolve(b):reject(new Error('Не вдалося закодувати WebP')),'image/webp',0.95));
       if(blob.type!=='image/webp') throw new Error('Цей браузер не підтримує експорт WebP');
       return blob;
-    } finally { scan.src=''; canvas.width=canvas.height=1; }
+    } finally {
+      canvas.width=canvas.height=1;
+    }
   }
 });
 window.addEventListener('DOMContentLoaded',()=>{
@@ -94,12 +114,15 @@ window.addEventListener('DOMContentLoaded',()=>{
     let sink;
     try {
       if(!AppState.pages.length) throw new Error('Спочатку додайте сторінки');
+      const projectName = document.getElementById('project-name').value.trim();
+      if (!projectName && !await AppDialogs.confirm('Проєкт не має назви. Завантажити архів як pages.zip?')) return;
+      const archiveName = (projectName.replace(/[\\/:*?"<>|\x00-\x1f]/g, '_').replace(/\.+$/, '') || 'pages') + '.zip';
       if(CanvasStrip.editingItem) CanvasStrip.closeInlineEditor();
       // Freeze page order, coordinates, lines and styles across asynchronous encoding.
       const data=CanvasStrip.projectData();
       const pages=data.pages, items=JSON.parse(JSON.stringify(data.items));
       if(window.showSaveFilePicker) {
-        const handle=await showSaveFilePicker({suggestedName:'pages.zip',types:[{description:'ZIP зі сторінками WebP',accept:{'application/zip':['.zip']}}]});
+        const handle=await showSaveFilePicker({suggestedName:archiveName,types:[{description:'ZIP зі сторінками WebP',accept:{'application/zip':['.zip']}}]});
         sink=await handle.createWritable();
       }
       await document.fonts.ready;
@@ -119,12 +142,13 @@ window.addEventListener('DOMContentLoaded',()=>{
       }
       await zip.close();
       if(sink) { await sink.close(); sink=null; }
-      else CanvasStrip.downloadBlob(new Blob(parts,{type:'application/zip'}),'pages.zip');
+      else CanvasStrip.downloadBlob(new Blob(parts,{type:'application/zip'}),archiveName);
     } catch(error) {
       if(sink) await sink.abort().catch(()=>{});
       if(error.name!=='AbortError') await AppDialogs.alert('Експорт не завершено: '+error.message);
     } finally {
       CanvasStrip.exporting=false; button.disabled=false;
+      CanvasStrip.invalidateScanLayer();
       button.textContent='Сторінки WebP у ZIP';
       CanvasStrip.requestRender();
     }

@@ -28,29 +28,30 @@ Object.assign(window.CanvasStrip, {
     };
   },
 
-  // --- РЕНДЕР СТРІЧКИ З НАЗВАМИ СТОРІНОК ЗЛІВА ЗА МЕЖАМИ СТОРІНКИ ---
-  render() {
-    const ctx = this.ctx;
-    const vw = this.canvas.clientWidth;
-    const vh = this.canvas.clientHeight;
-    const cam = AppState.camera;
+  invalidateScanLayer() {
+    this.scanLayerView = null;
+  },
 
+  renderScanLayer(vw, vh, cam, viewTop, viewBottom) {
+    const view = this.scanLayerView;
+    const original = AppState.showingOriginal;
+    if (view && view.x === cam.x && view.y === cam.y && view.scale === cam.scale &&
+        view.original === original) return;
+
+    this.updatePageImages(viewTop, viewBottom);
+    this.scanLayerView = { x: cam.x, y: cam.y, scale: cam.scale, original };
+    const ctx = this.scanCtx;
     ctx.clearRect(0, 0, vw, vh);
     ctx.save();
     ctx.translate(cam.x, cam.y);
     ctx.scale(cam.scale, cam.scale);
-
-    const viewTop = -cam.y / cam.scale - 600;
-    const viewBottom = (vh - cam.y) / cam.scale + 600;
-
-    this.updatePageImages(viewTop, viewBottom);
 
     // 1. Малюємо сторінки та бічні плашки ЗА МЕЖАМИ сторінки біля її початку
     for (let i = 0; i < AppState.pages.length; i++) {
       const p = AppState.pages[i];
       if (p.yOffset + p.height < viewTop || p.yOffset > viewBottom) continue;
 
-      const imgToDraw = (AppState.peekOriginal && p.origImg) ? p.origImg : p.cleanImg;
+      const imgToDraw = (AppState.showingOriginal && p.origImg?.complete && p.origImg.naturalWidth) ? p.origImg : p.cleanImg;
       if (imgToDraw?.complete && imgToDraw.naturalWidth) {
         ctx.drawImage(imgToDraw, 0, p.yOffset, p.width, p.height);
       } else {
@@ -91,8 +92,25 @@ Object.assign(window.CanvasStrip, {
       ctx.restore();
     }
 
+    ctx.restore();
+  },
+
+  render() {
+    const ctx = this.ctx;
+    const vw = this.canvas.clientWidth;
+    const vh = this.canvas.clientHeight;
+    const cam = AppState.camera;
+    const viewTop = -cam.y / cam.scale - 600;
+    const viewBottom = (vh - cam.y) / cam.scale + 600;
+    this.renderScanLayer(vw, vh, cam, viewTop, viewBottom);
+
+    ctx.clearRect(0, 0, vw, vh);
+    ctx.save();
+    ctx.translate(cam.x, cam.y);
+    ctx.scale(cam.scale, cam.scale);
+
     // 2. Малюємо об'єкти
-    for (const item of AppState.items) {
+    for (const item of AppState.showingOriginal ? [] : AppState.items) {
       const g = this.getItemGlobalRect(item);
       if (g.y + g.h < viewTop || g.y > viewBottom) continue;
 
@@ -134,7 +152,7 @@ Object.assign(window.CanvasStrip, {
     }
 
     // 3. Лінія магнітного снапу по центру
-    if (this.snapGuideX !== null) {
+    if (!AppState.showingOriginal && this.snapGuideX !== null) {
       ctx.strokeStyle = '#b4c5ff';
       ctx.lineWidth = 1.5 / cam.scale;
       ctx.setLineDash([6 / cam.scale, 4 / cam.scale]);
@@ -152,15 +170,22 @@ Object.assign(window.CanvasStrip, {
     const st = item.style || {};
     const fontSize = st.fontSize || 42;
     const lh = fontSize * Math.max(1.1, st.lineHeight || 1.2);
-    const fontStr = `${st.italic ? 'italic ' : ''}${st.bold ? 'bold ' : ''}${fontSize}px "${st.fontFamily || 'Arial'}"`;
-    ctx.font = fontStr;
+    ctx.font = TextEngine.font(item, fontSize);
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
 
     const lines = item.lines;
-    const placements = TextEngine.placements(ctx,item);
+    const cache = this.textPlacementCache ||= new WeakMap();
+    const key = [fontSize, lh, st.fontFamily, st.bold, st.italic, st.uppercase, st.textAlign,
+      st.strokeWidth, st.strokeRelative, st.glowBlur, item.w, item.h, item.effectivePadding].join('|');
+    let layout = cache.get(item);
+    if (layout?.key !== key || layout.lines !== lines || layout.contour !== item.contour) {
+      layout = { key, lines, contour: item.contour, rows: TextEngine.placements(ctx, item, lines, fontSize) };
+      cache.set(item, layout);
+    }
+    const placements = layout.rows;
     const totalH = lines.length * lh;
     const offsetX = item.textOffsetX || 0;
 
@@ -181,13 +206,13 @@ Object.assign(window.CanvasStrip, {
     }
 
     for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
+      const line = placements[i].text;
       const y = placements[i].y + (item.textOffsetY || 0);
       const lineX = offsetX + placements[i].x;
 
       if (st.strokeWidth > 0) {
         ctx.strokeStyle = st.strokeColor || '#ffffff';
-        ctx.lineWidth = st.strokeWidth;
+        ctx.lineWidth = st.strokeRelative ? st.strokeWidth * fontSize / 100 : st.strokeWidth;
         ctx.strokeText(line, lineX, y);
       }
 

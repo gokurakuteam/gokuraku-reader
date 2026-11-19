@@ -7,7 +7,7 @@
   }
   if (!state.folders.some(f => f.id === state.active)) state.active = state.folders[0].id;
   const current = () => state.folders.find(f => f.id === state.active);
-  const save = () => { current().presets = AppState.presets; localStorage.setItem(key, JSON.stringify(state)); };
+  const save = () => { current().presets = AppState.presets; localStorage.setItem(key, JSON.stringify(state)); window.CanvasStrip?.markProjectChanged(); };
   const refresh = () => {
     const select = document.getElementById('style-folder-select');
     select.replaceChildren();
@@ -17,7 +17,13 @@
   };
   const selectFolder = id => { state.active = id; AppState.presets = current().presets; save(); refresh(); };
   AppState.presets = current().presets;
-  window.StyleLibrary = { save, refresh, replacePresets(presets) { AppState.presets = presets; save(); refresh(); } };
+  window.StyleLibrary = { save, refresh, replacePresets(presets) {
+    const folder = current();
+    localStorage.setItem(key, JSON.stringify({
+      ...state, folders: state.folders.map(entry => entry === folder ? { ...entry, presets } : entry)
+    }));
+    AppState.presets = folder.presets = presets;
+  } };
   window.addEventListener('DOMContentLoaded', () => {
     refresh();
     document.getElementById('style-folder-select').addEventListener('change', e => selectFolder(e.target.value));
@@ -62,7 +68,7 @@
 
 window.FontLibrary = {
   db() { return new Promise((resolve, reject) => { const req = indexedDB.open('typer-fonts', 1); req.onupgradeneeded = () => req.result.createObjectStore('fonts', {keyPath:'name'}); req.onsuccess = () => resolve(req.result); req.onerror = () => reject(req.error); }); },
-  async install(name, buffer) { const face = new FontFace(name, buffer); await face.load(); document.fonts.add(face); if (!AppState.fonts.includes(name)) AppState.fonts.unshift(name); },
+  async install(name, buffer) { const face = new FontFace(name, buffer); await face.load(); document.fonts.add(face); CanvasStrip.textPlacementCache = null; if (!AppState.fonts.includes(name)) AppState.fonts.unshift(name); },
   encode(buffer) { const bytes = new Uint8Array(buffer); let binary = ''; for (let i = 0; i < bytes.length; i += 0x8000) binary += String.fromCharCode(...bytes.subarray(i, i + 0x8000)); return btoa(binary); },
   decode(data) { const binary = atob(data); const bytes = new Uint8Array(binary.length); for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i); return bytes.buffer; },
   async list() { const db = await this.db(); try { return await new Promise((resolve, reject) => { const req = db.transaction('fonts').objectStore('fonts').getAll(); req.onsuccess = () => resolve(req.result); req.onerror = () => reject(req.error); }); } finally { db.close(); } },
@@ -79,6 +85,7 @@ window.FontLibrary = {
     }
     if (prepared.length) { const db = await this.db(); try { await new Promise((resolve, reject) => { const tx = db.transaction('fonts', 'readwrite'); prepared.forEach(font => tx.objectStore('fonts').put({ name: font.name, buffer: font.buffer })); tx.oncomplete = resolve; tx.onerror = () => reject(tx.error); tx.onabort = () => reject(tx.error); }); } finally { db.close(); } }
     prepared.forEach(font => { document.fonts.add(font.face); AppState.fonts.unshift(font.name); });
+    if (prepared.length) CanvasStrip.textPlacementCache = null;
     return mapping;
   },
   async add(file) { const name = file.name.replace(/\.[^.]+$/, ''); const buffer = await file.arrayBuffer(); await this.install(name, buffer); const db = await this.db(); try { await new Promise((resolve, reject) => { const tx = db.transaction('fonts', 'readwrite'); tx.objectStore('fonts').put({name, buffer}); tx.oncomplete = resolve; tx.onerror = () => reject(tx.error); }); } finally { db.close(); } },

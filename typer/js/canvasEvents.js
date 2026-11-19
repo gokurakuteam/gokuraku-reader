@@ -27,6 +27,8 @@ Object.assign(window.CanvasStrip, {
     ed.style.fontFamily = `"${st.fontFamily || 'Arial'}"`;
     ed.style.fontSize = `${fontSize}px`;
     ed.style.lineHeight = lineHeight;
+    ed.style.textAlign = st.textAlign || 'center';
+    ed.style.textTransform = st.uppercase ? 'uppercase' : 'none';
     ed.style.fontWeight = st.bold ? 'bold' : 'normal';
     ed.style.fontStyle = st.italic ? 'italic' : 'normal';
     ed.style.color = st.fillColor || '#000000';
@@ -44,7 +46,11 @@ Object.assign(window.CanvasStrip, {
     const changed = !cancel && this.inlineEditor.value !== this.inlineInitialValue;
     item.rawText = changed ? this.inlineEditor.value : this.inlineOriginalText;
     item.lines = changed ? (item.rawText ? item.rawText.split('\n') : []) : this.inlineOriginalLines;
-    if (changed) item.manualTextLayout = true;
+    if (changed) {
+      item.manualTextLayout = true;
+      item.layoutError = null;
+    }
+    if (this.inlineEditor.value !== this.inlineInitialValue) this.markProjectChanged();
     this.editingItem = null;
     this.inlineEditor.hidden = true;
     this.syncUIFromSelection();
@@ -55,6 +61,7 @@ Object.assign(window.CanvasStrip, {
   bindCanvasEvents() {
     // Подвійний клік на полотні відкриває пряме редагування тексту в баблі
     this.canvas.addEventListener('dblclick', (e) => {
+      if (AppState.showingOriginal) return;
       const rect = this.canvas.getBoundingClientRect();
       const world = this.screenToWorld(e.clientX - rect.left, e.clientY - rect.top);
       const hit = this.hitTest(world.x, world.y, false);
@@ -71,6 +78,7 @@ Object.assign(window.CanvasStrip, {
       ed.style.paddingTop = `${Math.max(0, (ed.clientHeight - ed.value.split('\n').length * parseFloat(ed.style.fontSize) * parseFloat(ed.style.lineHeight)) / 2)}px`;
       this.requestRender();
       document.getElementById('prop-text').value = this.inlineEditor.value;
+      this.markProjectChanged();
     });
 
     this.inlineEditor.addEventListener('keydown', (e) => {
@@ -169,7 +177,7 @@ Object.assign(window.CanvasStrip, {
       const sy = e.clientY - rect.top;
       const world = this.screenToWorld(sx, sy);
 
-      if (e.button === 1 || this.spacePressed) {
+      if (e.button === 1 || this.spacePressed || AppState.showingOriginal) {
         this.dragState = { mode: 'pan', startSX: sx, startSY: sy, camX: AppState.camera.x, camY: AppState.camera.y };
         return;
       }
@@ -188,6 +196,7 @@ Object.assign(window.CanvasStrip, {
           AppState.items = AppState.items.filter(i => i.id !== hit.item.id);
           AppState.selectedId = null;
           this.syncUIFromSelection();
+          this.markProjectChanged?.();
           this.requestRender();
         }
         return;
@@ -225,6 +234,7 @@ Object.assign(window.CanvasStrip, {
         AppState.selectedId = newText.id;
         this.setTool('pointer');
         this.syncUIFromSelection();
+        this.markProjectChanged?.();
         this.openInlineEditor(newText);
         return;
       }
@@ -255,6 +265,7 @@ Object.assign(window.CanvasStrip, {
             item: hit.item,
             startWX: world.x,
             startWY: world.y,
+            origContour: hit.item.contour,
             origRect: { x: hit.item.x, y: hit.item.y, w: hit.item.w, h: hit.item.h }
           };
         }
@@ -333,16 +344,36 @@ Object.assign(window.CanvasStrip, {
           r.y += r.h - nh;
           r.h = nh;
         }
+        if (e.shiftKey && st.handle.length === 2) {
+          const { w, h, x, y } = st.origRect;
+          const scaleX = r.w / w;
+          const scaleY = r.h / h;
+          const scale = Math.max(20 / w, 20 / h,
+            Math.abs(scaleX - 1) >= Math.abs(scaleY - 1) ? scaleX : scaleY);
+          r.w = w * scale;
+          r.h = h * scale;
+          if (st.handle.includes('w')) r.x = x + w - r.w;
+          if (st.handle.includes('n')) r.y = y + h - r.h;
+        }
         st.item.x = r.x;
         st.item.y = r.y;
         st.item.w = r.w;
         st.item.h = r.h;
+        if (st.origContour) {
+          const scaleX = r.w / st.origRect.w;
+          st.item.contour = {
+            step: st.origContour.step * r.h / st.origRect.h,
+            rows: st.origContour.rows.map(([left, right]) => [left * scaleX, right * scaleX])
+          };
+        }
       }
       this.requestRender();
     });
 
     window.addEventListener('mouseup', (e) => {
       const st = this.dragState;
+      if (!st) return;
+      let detected = false;
       const rect = this.canvas.getBoundingClientRect();
       const world = st?.clickWorld || (st?.mode === 'draw' ? {x:st.startWX,y:st.startWY} : null);
       const moved = st?.mode === 'draw'
@@ -362,10 +393,19 @@ Object.assign(window.CanvasStrip, {
             Math.hypot(i.x+i.w/2-item.x-item.w/2,i.y+i.h/2-item.y-item.h/2)<(Math.max(i.w,i.h)+Math.max(item.w,item.h))*.6);
           if(sibling){sibling.clusterId ||= AppState.uid();item.clusterId=sibling.clusterId;}
           AppState.items.push(item);AppState.selectedId=item.id;
+          detected = true;
         } else if(st.mode==='draw') AppState.selectedId=null;
         this.syncUIFromSelection();
       }
-      if (st?.mode === 'resize') {delete st.item.contour; st.item.detected=false; AppState.autoFitItemText(st.item);}
+      if (st?.mode === 'resize' && (st.item.w !== st.origRect.w || st.item.h !== st.origRect.h)) {
+        if (st.item.manualTextLayout && !st.item.fixedFontSize) {
+          const scale = Math.min(st.item.w / st.origRect.w, st.item.h / st.origRect.h);
+          st.item.style.fontSize = Math.max(0.25, (st.item.style.fontSize || 42) * scale);
+        }
+        AppState.autoFitItemText(st.item);
+        this.syncUIFromSelection();
+      }
+      if (st.mode !== 'pan' || detected) this.markProjectChanged?.();
 
       if (this.dragState?.mode === 'draw') {
         // АВТОМАТИЧНО ПЕРЕМИКАЄМО З "D" (БАБЛ) НА "V" (ВКАЗІВНИК) ПІСЛЯ СТВОРЕННЯ БАБЛА!

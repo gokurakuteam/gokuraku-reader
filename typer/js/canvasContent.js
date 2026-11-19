@@ -1,20 +1,78 @@
 Object.assign(window.CanvasStrip, {
+  async expandScanFiles(files) {
+    const images = [];
+    const errors = [];
+    const imageType = /\.(avif|bmp|gif|ico|jpe?g|jxl|png|svg|webp)$/i;
+    for (const file of files) {
+      if (!/\.zip$/i.test(file.name)) {
+        images.push(file);
+        continue;
+      }
+      try {
+        const bytes = new Uint8Array(await file.arrayBuffer());
+        const content = await new Promise((resolve, reject) => {
+          fflate.unzip(bytes, {
+            filter: ({name}) => {
+              const parts = name.split('/');
+              return imageType.test(name) && !parts.some(part => part.startsWith('.') || part === '__MACOSX');
+            }
+          }, (error, entries) => error ? reject(error) : resolve(entries));
+        });
+        const entries = Object.entries(content);
+        if (!entries.length) throw new Error('в архіві немає зображень');
+        for (const [path, bytes] of entries) {
+          const name = path.split('/').pop();
+          const ext = name.match(imageType)[1].toLowerCase();
+          const type = {jpg:'jpeg', svg:'svg+xml', ico:'x-icon'}[ext] || ext;
+          images.push(new File([bytes], name, {type: 'image/' + type}));
+        }
+      } catch (error) {
+        errors.push(`${file.name} — ${error.message}`);
+      }
+    }
+    images.sort((a, b) => a.name.localeCompare(b.name, undefined, {numeric: true, sensitivity: 'base'}));
+    return {images, errors};
+  },
+
   async loadPageFiles(files, insertAtCurrentPosition = false, replaceChapter = false) {
-    files.sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true }));
-    const results = [];
-    for (const file of files) { try {
-      const data = await this.readFileData(file);
-      const img = new Image();
-      await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = reject; img.src = data; });
-      results.push({ status: 'fulfilled', value: { id: 'page_' + AppState.uid(), name: file.name, width: img.width, height: img.height,
-        cleanImg: img, cleanDataUrl: data, origImg: null, origDataUrl: null, yOffset: 0 } });
-      img.src = '';
-      results[results.length - 1].value.cleanImg = null;
-      await new Promise(resolve => setTimeout(resolve, 0));
-    } catch (reason) { results.push({status:'rejected', reason}); } }
-    const pages = results.filter(r => r.status === 'fulfilled').map(r => r.value);
+    const {images, errors} = await this.expandScanFiles(files);
+    const pages = [];
+    let failed = 0;
+    for (const file of images) {
+      try {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        try {
+          img.src = url;
+          await img.decode();
+          pages.push({
+            id: 'page_' + AppState.uid(), name: file.name, width: img.naturalWidth, height: img.naturalHeight,
+            cleanImg: null, cleanBlob: file, origImg: null, origBlob: null, yOffset: 0
+          });
+        } finally {
+          img.src = '';
+          URL.revokeObjectURL(url);
+        }
+      } catch {
+        failed++;
+      }
+    }
     if (replaceChapter && pages.length) {
+      const revision = this.projectRevision;
+      await this.backupProject();
+      if (revision !== this.projectRevision || this.dragState) throw new Error('Розділ змінився під час резервного копіювання. Спробуйте ще раз.');
+      if (this.editingItem) this.closeInlineEditor();
+      this.releasePageImages();
       AppState.pages = []; AppState.items = []; AppState.selectedId = null;
+      if (this.wheelMotion?.frame) cancelAnimationFrame(this.wheelMotion.frame);
+      this.wheelMotion = null;
+      this.dragState = null;
+      this.snapGuideX = null;
+      AppState.camera.x = 150;
+      AppState.camera.y = 28;
+      AppState.peekOriginal = false;
+      AppState.holdOriginal = false;
+      this.updateOriginalView();
       AppState.translations = []; AppState.activeTransIndex = -1;
       AppState.undoStack = []; AppState.redoStack = [];
       this.syncUIFromSelection(); this.renderTranslationList();
@@ -24,57 +82,95 @@ Object.assign(window.CanvasStrip, {
       AppState.pages.splice(AppState.pages.indexOf(current) + 1, 0, ...pages);
     } else AppState.pages.push(...pages);
     AppState.recalcPageOffsets();
-    if (AppState.pages.length) document.getElementById('floating-hint').style.display = 'none';
+    if (pages.length) {
+      document.getElementById('floating-hint').style.display = 'none';
+      this.markProjectChanged();
+    }
     this.requestRender();
-    const failed = results.filter(r => r.status === 'rejected').length;
-    if (failed) AppDialogs.alert(`Не вдалося завантажити зображень: ${failed}.`);
+    if (failed) errors.push(`Не вдалося завантажити зображень: ${failed}.`);
+    if (errors.length) await AppDialogs.alert(errors.join('\n'));
   },
 
   async loadOrigFiles(files) {
-    for (const file of files) {
-      const base = file.name.replace(/\.[^.]+$/, '');
-      const page = AppState.pages.find(p => p.name.replace(/\.[^.]+$/, '') === base);
-      if (!page) continue;
-      try {
-        const data = await this.readFileData(file);
-        const img = new Image();
-        await new Promise((resolve, reject) => { img.onload = resolve; img.onerror = reject; img.src = data; });
-        img.src = ''; page.origImg = null; page.origDataUrl = data;
-        this.requestRender();
-      } catch (error) { AppDialogs.alert(`Не вдалося завантажити ${file.name}`); }
+    const pages = [...AppState.pages];
+    const {images, errors} = await this.expandScanFiles(files);
+    const stem = name => name.replace(/\.[^.]+$/, '').normalize('NFC').toLowerCase();
+    const available = new Set(pages);
+    const pairs = [];
+    const unmatched = [];
+    for (const file of images) {
+      const page = [...available].find(p => stem(p.name) === stem(file.name));
+      if (page) {
+        pairs.push([page, file]);
+        available.delete(page);
+      } else unmatched.push(file);
     }
+    if (images.length === pages.length) {
+      [...available].forEach((page, i) => pairs.push([page, unmatched[i]]));
+      unmatched.length = 0;
+    }
+    if (unmatched.length) errors.push(`Без відповідного кліну: ${unmatched.map(file => file.name).join(', ')}.`);
+
+    for (const [page, file] of pairs) {
+      try {
+        const img = new Image();
+        const url = URL.createObjectURL(file);
+        try {
+          img.src = url;
+          await img.decode();
+        } finally {
+          img.src = '';
+          URL.revokeObjectURL(url);
+        }
+        if (!AppState.pages.includes(page)) break;
+        this.clearPageImage(page, 'origImg');
+        page.origBlob = file;
+        this.invalidateScanLayer();
+        this.markProjectChanged();
+        this.requestRender();
+      } catch {
+        errors.push(`Не вдалося завантажити ${file.name}.`);
+      }
+    }
+    if (errors.length) await AppDialogs.alert(errors.join('\n'));
   },
 
-  insertCurrentTranslationLine() {
+  updateOriginalView() {
+    const button = document.getElementById('btn-peek-orig');
+    button.classList.toggle('active', AppState.showingOriginal);
+    button.setAttribute('aria-pressed', AppState.showingOriginal);
+    this.requestRender();
+  },
+
+  insertCurrentTranslationLine(index = AppState.activeTransIndex) {
+    if (AppState.showingOriginal) return;
     const item = AppState.getSelectedItem();
-    if (!item) return AppDialogs.alert('Спочатку виберіть або намалюйте бабл на сторінці!');
-    if (AppState.activeTransIndex < 0 || AppState.activeTransIndex >= AppState.translations.length) return;
+    if (!item || item.type === 'png') return AppDialogs.alert('Спочатку виберіть або намалюйте бабл на сторінці!');
+    if (index < 0 || index >= AppState.translations.length) return;
 
-    const entry = AppState.translations[AppState.activeTransIndex];
-    if (!entry || entry.type === 'comment' || entry.type === 'page_header') return;
+    const entry = AppState.translations[index];
+    if (!entry || !AppState.isInsertableTranslation(entry)) return;
 
-    AppState.saveSnapshot();
+    AppState.saveSnapshot(true);
 
     const matchedPreset = AppState.presets.find(p => (p.autoTypes || (p.autoType && p.autoType !== 'none' ? [p.autoType] : [])).includes(entry.type));
-    if (matchedPreset) {
-      this.applyPresetObject(matchedPreset, true);
-    }
-
-    let text = entry.text;
-    if (AppState.capsLockOnInsert) text = text.toUpperCase();
-
-    item.rawText = text;
+    item.rawText = entry.text;
     item.manualTextLayout = false;
-    AppState.autoFitItemText(item);
+    if (matchedPreset) this.applyPresetObject(matchedPreset, true);
+    if (!matchedPreset || (item.type !== 'bubble' && !item.fixedFontSize)) AppState.autoFitItemText(item);
 
-    AppState.activeTransIndex = AppState.findNextInsertableIndex(AppState.activeTransIndex);
-    this.renderTranslationList();
+    AppState.activeTransIndex = item.layoutError ? index : AppState.findNextInsertableIndex(index);
+    this.markProjectChanged();
+    this.updateTranslationSelection();
     this.syncUIFromSelection();
     this.requestRender();
   },
 
   renderTranslationList() {
     const container = document.getElementById('translation-list');
+    const previousScroll = container.scrollTop;
+    this.translationRows = new Map();
+    this.selectedTranslationRow = null;
     container.innerHTML = '';
     const iconMap = {
       bubble: 'message-circle',
@@ -95,28 +191,62 @@ Object.assign(window.CanvasStrip, {
         return;
       }
 
-      if (item.type !== 'comment' && !AppState.activeFilters[item.type]) return;
+      if (!AppState.activeFilters[item.type]) return;
 
       const row = document.createElement('div');
-      row.className = `trans-item type-${item.type} ${idx === AppState.activeTransIndex ? 'selected' : ''}`;
+      row.className = `trans-item type-${item.type}`;
+      this.translationRows.set(idx, row);
       row.innerHTML = `<i data-lucide="${iconMap[item.type] || 'circle'}" class="trans-badge"></i><span></span>`;
       row.querySelector('span').textContent = item.text;
 
-      if (item.type !== 'comment') {
+      if (item.type === 'comment') row.title = 'Коментар перекладача';
+      else {
         row.addEventListener('click', () => {
           AppState.activeTransIndex = idx;
-          this.renderTranslationList();
+          this.updateTranslationSelection(false);
+          this.markProjectChanged();
           this.requestRender();
         });
         row.addEventListener('dblclick', () => {
-          AppState.activeTransIndex = idx;
-          this.insertCurrentTranslationLine();
+          this.insertCurrentTranslationLine(idx);
         });
       }
       container.appendChild(row);
     });
 
     this.refreshIcons();
+    container.scrollTop = AppState.translations.length ? previousScroll : 0;
+    this.updateTranslationSelection();
+  },
+
+  updateTranslationSelection(scroll = true) {
+    const container = document.getElementById('translation-list');
+    const selected = this.translationRows?.get(AppState.activeTransIndex);
+    if (this.selectedTranslationRow !== selected) {
+      this.selectedTranslationRow?.classList.remove('selected');
+      selected?.classList.add('selected');
+      this.selectedTranslationRow = selected;
+    }
+    if (scroll && selected) {
+      const list = container.getBoundingClientRect();
+      const row = selected.getBoundingClientRect();
+      if (row.top < list.top || row.bottom > list.bottom) {
+        container.scrollTop += row.top - list.top - (list.height - row.height) / 2;
+      }
+    }
+    this.updateTranslationProgress();
+  },
+
+  updateTranslationProgress() {
+    let total = 0, remaining = 0;
+    AppState.translations.forEach((item, index) => {
+      if (!AppState.isInsertableTranslation(item)) return;
+      total++;
+      if (AppState.activeTransIndex >= 0 && index >= AppState.activeTransIndex) remaining++;
+    });
+    const percent = total ? Math.floor(100 * (total - remaining) / total) : 0;
+    document.getElementById('translation-progress').value = percent;
+    document.getElementById('translation-progress-label').textContent = `${percent}% · Попереду ${remaining}`;
   },
 
   renderRecentSwatches() {
@@ -164,7 +294,7 @@ Object.assign(window.CanvasStrip, {
       details.append(name, meta);
       const sample = document.createElement('span');
       sample.className = 'preset-sample';
-      sample.textContent = 'Аа';
+      sample.textContent = p.uppercase ? 'АА' : 'Аа';
       sample.style.fontFamily = p.font || 'Arial';
       sample.style.color = p.fill || '#000000';
       sample.style.fontWeight = p.bold ? 'bold' : 'normal';
@@ -215,6 +345,7 @@ Object.assign(window.CanvasStrip, {
     document.getElementById('prop-fill-color').value = p.fill || '#000000';
     document.getElementById('prop-grad-color2').value = p.grad2 || '#ffffff';
     document.getElementById('prop-stroke-width').value = p.strokeWidth || 0;
+    document.getElementById('prop-stroke-relative').checked = !!p.strokeRelative;
     document.getElementById('prop-stroke-color').value = p.strokeColor || '#ffffff';
     document.getElementById('prop-glow-blur').value = p.glowBlur || 0;
     document.getElementById('prop-glow-color').value = p.glowColor || '#00e5ff';
@@ -222,6 +353,7 @@ Object.assign(window.CanvasStrip, {
     document.getElementById('toggle-italic').classList.toggle('active', !!p.italic);
     document.getElementById('toggle-underline').classList.toggle('active', !!p.underline);
     document.getElementById('toggle-strike').classList.toggle('active', !!p.strike);
+    if (p.uppercase != null) this.setCapsButton(p.uppercase);
     this.updateColorWells();
     if (updateSelected) this.applyUIStyleToSelected(false);
   },

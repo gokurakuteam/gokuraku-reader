@@ -4,6 +4,8 @@ window.AppState = {
   selectedId: null,
   activeTool: 'pointer',
   peekOriginal: false,
+  holdOriginal: false,
+  get showingOriginal() { return this.peekOriginal || this.holdOriginal; },
   centerSnap: true,
   capsLockOnInsert: true,
 
@@ -48,7 +50,7 @@ window.AppState = {
 
   translations: [],
   activeTransIndex: -1,
-  activeFilters: { bubble: true, panel: true, bg: true, thought: true, sound: true },
+  activeFilters: { bubble: true, panel: true, bg: true, thought: true, sound: true, comment: true },
 
   uid() {
     return 'id_' + Math.random().toString(36).slice(2, 10) + '_' + Date.now().toString(36);
@@ -56,14 +58,18 @@ window.AppState = {
 
   recalcPageOffsets() {
     let y = 0;
+    this.pagesById = new Map();
     for (const p of this.pages) {
+      this.pagesById.set(p.id, p);
       p.yOffset = y;
       y += p.height;
     }
+    window.CanvasStrip?.invalidateScanLayer?.();
   },
 
   getPageById(pageId) {
-    return this.pages.find(p => p.id === pageId) || this.pages[0] || null;
+    return (this.pagesById ? this.pagesById.get(pageId) : this.pages.find(page => page.id === pageId)) ||
+      this.pages[0] || null;
   },
 
   getPageAtGlobalY(globalY) {
@@ -79,32 +85,45 @@ window.AppState = {
     return this.items.find(i => i.id === this.selectedId) || null;
   },
 
-  saveSnapshot() {
-    const snap = JSON.stringify(this.items.map(it => {
-      const copy = { ...it, style: { ...it.style }, lines: [...(it.lines || [])] };
-      delete copy.pngImg;
-      return copy;
-    }));
-    if (this.undoStack.length && this.undoStack[this.undoStack.length - 1] === snap) return;
+  snapshot(includeTranslation = false) {
+    return JSON.stringify({
+      items: this.items.map(({ pngImg, ...item }) => item),
+      activeTransIndex: includeTranslation ? this.activeTransIndex : undefined,
+      translationRevision: includeTranslation ? this.translationRevision || 0 : undefined
+    });
+  },
+
+  saveSnapshot(includeTranslation = false) {
+    const snap = this.snapshot(includeTranslation);
+    if (this.undoStack.at(-1) === snap) return;
     this.undoStack.push(snap);
-    while (this.undoStack.length > 1 && (this.undoStack.length > 40 || this.undoStack.reduce((n,s)=>n+s.length*2,0) > 16*1024*1024)) this.undoStack.shift();
+    while (this.undoStack.length > 1 && (this.undoStack.length > 40 ||
+      this.undoStack.reduce((bytes, entry) => bytes + entry.length * 2, 0) > 16 * 1024 * 1024)) {
+      this.undoStack.shift();
+    }
     this.redoStack = [];
   },
 
   undo() {
-    if (!this.undoStack.length) return;
-    const current = JSON.stringify(this.items.map(it => ({ ...it, pngImg: undefined })));
-    this.redoStack.push(current);
-    const prev = JSON.parse(this.undoStack.pop());
-    this.restoreItemsFromSnapshot(prev);
+    this.restoreHistory(this.undoStack, this.redoStack);
   },
 
   redo() {
-    if (!this.redoStack.length) return;
-    const current = JSON.stringify(this.items.map(it => ({ ...it, pngImg: undefined })));
-    this.undoStack.push(current);
-    const next = JSON.parse(this.redoStack.pop());
-    this.restoreItemsFromSnapshot(next);
+    this.restoreHistory(this.redoStack, this.undoStack);
+  },
+
+  restoreHistory(source, destination) {
+    if (!source.length) return;
+    const snapshot = JSON.parse(source.pop());
+    const includesTranslation = snapshot.activeTransIndex !== undefined &&
+      snapshot.translationRevision === (this.translationRevision || 0);
+    destination.push(this.snapshot(includesTranslation));
+    if (includesTranslation) {
+      this.activeTransIndex = snapshot.activeTransIndex;
+      window.CanvasStrip?.updateTranslationSelection?.();
+    }
+    this.restoreItemsFromSnapshot(snapshot.items);
+    window.CanvasStrip?.markProjectChanged?.();
   },
 
   restoreItemsFromSnapshot(arr) {
@@ -144,15 +163,38 @@ window.AppState = {
   },
 
   autoFitItemText(item) {
-    if (item?.manualTextLayout) return;
-    TextEngine.autoFitText(item);
-    window.CanvasStrip?.syncFontLimits?.(item);
-    if (item?.clusterId) {
-      const group = this.items.filter(i => i.clusterId === item.clusterId && i.rawText && !i.manualTextLayout);
-      group.forEach(i => TextEngine.autoFitText(i));
-      const size = Math.min(...group.map(i => i.style.fontSize));
-      group.forEach(i => TextEngine.autoFitText(i, {minFont:size, maxFont:size}));
+    if (!item || item.type === 'png') return;
+    if (!item.manualTextLayout) TextEngine.autoFitText(item);
+    if (item.clusterId) {
+      const group = this.items.filter(i => i.clusterId === item.clusterId);
+      const automatic = group.filter(i => i.rawText && !i.manualTextLayout && !i.fixedFontSize);
+      const locked = group.filter(i => i.fixedFontSize);
+      const anchor = locked.reduce((latest, current) =>
+        !latest || (current.fixedFontOrder || 0) > (latest.fixedFontOrder || 0) ? current : latest, null);
+      if (anchor) {
+        automatic.forEach(i => TextEngine.autoFitText(i, {fixedSize: anchor.fixedFontSize}));
+      } else if (automatic.length) {
+        automatic.forEach(i => { if (i !== item) TextEngine.autoFitText(i); });
+        if (automatic.length > 1) {
+          const size = Math.min(...automatic.map(i => i.style.fontSize));
+          automatic.forEach(i => TextEngine.autoFitText(i, {minFont: size, maxFont: size}));
+        }
+      }
     }
+    window.CanvasStrip?.syncFontLimits?.(this.getSelectedItem());
+  },
+
+  resetItemTextLayout(item) {
+    delete item.fixedFontSize;
+    delete item.fixedFontOrder;
+    item.manualTextLayout = false;
+    item.textOffsetX = 0;
+    item.textOffsetY = 0;
+    this.autoFitItemText(item);
+  },
+
+  isInsertableTranslation(item) {
+    return item.type !== 'page_header' && item.type !== 'comment' && !!this.activeFilters[item.type];
   },
 
   // --- УНІВЕРСАЛЬНИЙ ПАРСЕР СТОРІНОК ("34 сторінка", "сторінка 34", "Сторінка 34", "Стор. 34") ---
@@ -164,7 +206,8 @@ window.AppState = {
     // Ловить: "34 сторінка", "сторінка 34", "Сторінка: 34", "стор. 34", "# Сторінка 34" тощо
     const pageRegex = /^#*\s*[-—=~*]*\s*(?:(\d+)\s*(?:сторінка|стор\.?|page)|(?:сторінка|стор\.?|page)\s*[:№#-]*\s*(\d+))\s*[-—=~*:]*$/i;
 
-    for (let rawLine of lines) {
+    const unescape = text => text.replace(/\\([!-/:-@\[\\\]\^_`{|}~])/g, '$1');
+    for (const rawLine of lines) {
       let line = rawLine.trim();
       if (!line) continue;
 
@@ -179,7 +222,7 @@ window.AppState = {
         parsed.push({
           type: 'comment',
           page: currentPage,
-          text: line.slice(1).trim()
+          text: unescape(line.replace(/^#+\s*/, ''))
         });
         continue;
       }
@@ -188,22 +231,23 @@ window.AppState = {
       if (line.startsWith('/')) {
         tType = 'bg';
         line = line.slice(1).trim();
-      } else if (line.includes('**')) {
+      } else if (/(?<!\\)(?:\\\\)*\*\*/.test(line)) {
         tType = 'sound';
-        line = line.replace(/\*\*/g, '').trim();
-      } else if (line.includes('__')) {
+        line = line.replace(/(?<!\\)((?:\\\\)*)\*\*/g, '$1').trim();
+      } else if (/(?<!\\)(?:\\\\)*__/.test(line)) {
         tType = 'panel';
-        line = line.replace(/__/g, '').trim();
-      } else if (line.startsWith('*') && line.endsWith('*')) {
+        line = line.replace(/(?<!\\)((?:\\\\)*)__/g, '$1').trim();
+      } else if (/^\*.*(?<!\\)(?:\\\\)*\*$/.test(line)) {
         tType = 'thought';
-        line = line.replace(/\*/g, '').trim();
+        line = line.replace(/(?<!\\)((?:\\\\)*)\*/g, '$1').trim();
       }
 
       if (line) {
-        parsed.push({ type: tType, page: currentPage, text: line });
+        parsed.push({ type: tType, page: currentPage, text: unescape(line) });
       }
     }
 
+    this.translationRevision = (this.translationRevision || 0) + 1;
     this.translations = parsed;
     this.activeTransIndex = this.findNextInsertableIndex(-1);
   },
@@ -211,9 +255,7 @@ window.AppState = {
   findNextInsertableIndex(fromIndex) {
     for (let i = fromIndex + 1; i < this.translations.length; i++) {
       const item = this.translations[i];
-      if (item.type === 'page_header' || item.type === 'comment') continue;
-      if (!this.activeFilters[item.type]) continue;
-      return i;
+      if (this.isInsertableTranslation(item)) return i;
     }
     return -1;
   }

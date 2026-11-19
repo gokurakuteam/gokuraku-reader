@@ -5,13 +5,17 @@ Object.assign(window.CanvasStrip, {
         const target = document.getElementById(lbl.dataset.scrub);
         if (!target) return;
         const step = Number(lbl.dataset.step) || 1;
+        if (target.disabled) return;
+        if (target.id === 'prop-fontsize' && AppState.getSelectedItem()) AppState.saveSnapshot();
         const startX = e.clientX;
         const startVal = Number(target.value) || 0;
 
         const onMove = (me) => {
           const delta = Math.round((me.clientX - startX) / 3) * step;
           const val = Number((startVal + delta).toFixed(2));
-          target.value = Math.min(Number(target.max || 999), Math.max(Number(target.min || -999), val));
+          const value = Math.min(Number(target.max || Infinity), Math.max(Number(target.min || -999), val));
+          if (Number(target.value) === value) return;
+          target.value = value;
           target.dispatchEvent(new Event('input'));
         };
         const onUp = () => {
@@ -41,24 +45,32 @@ Object.assign(window.CanvasStrip, {
     AppState.saveSnapshot();
 
     if (action === 'autofit') {
-      AppState.autoFitItemText(item);
+      AppState.resetItemTextLayout(item);
     } else if (action === 'center') {
       item.textOffsetX = 0;
       item.textOffsetY = 0;
     } else if (action === 'split-h') {
       const h = item.h / 2;
       item.h = h;
+      delete item.contour;
+      item.detected = false;
       const clone = JSON.parse(JSON.stringify(item));
       clone.id = AppState.uid();
       clone.y = item.y + h;
       AppState.items.push(clone);
+      AppState.autoFitItemText(item);
+      AppState.autoFitItemText(clone);
     } else if (action === 'split-v') {
       const w = item.w / 2;
       item.w = w;
+      delete item.contour;
+      item.detected = false;
       const clone = JSON.parse(JSON.stringify(item));
       clone.id = AppState.uid();
       clone.x = item.x + w;
       AppState.items.push(clone);
+      AppState.autoFitItemText(item);
+      AppState.autoFitItemText(clone);
     } else if (action === 'link-cluster') {
       const idx = AppState.items.indexOf(item);
       if (idx > 0) {
@@ -83,11 +95,13 @@ Object.assign(window.CanvasStrip, {
       AppState.selectedId = null;
     }
     this.syncUIFromSelection();
+    this.markProjectChanged();
     this.requestRender();
   },
 
   bindKeyboardEvents() {
     window.addEventListener('keydown', (e) => {
+      if (e.defaultPrevented || document.querySelector('.app-dialog')) return;
       if (this.recordingHotkeyKey) {
         e.preventDefault();
         if (['ShiftLeft', 'ShiftRight', 'ControlLeft', 'ControlRight', 'AltLeft', 'AltRight'].includes(e.code)) return;
@@ -114,6 +128,19 @@ Object.assign(window.CanvasStrip, {
 
       if (inInput) return;
 
+      const delta = {ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1]}[e.code];
+      const item = AppState.getSelectedItem();
+      if (delta && item && !this.dragState && !AppState.showingOriginal && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        if (!e.repeat) AppState.saveSnapshot();
+        const step = e.shiftKey ? 10 : 1;
+        item.x += delta[0] * step;
+        item.y += delta[1] * step;
+        this.markProjectChanged();
+        this.requestRender();
+        return;
+      }
+
       if (e.code === 'Space') this.spacePressed = true;
 
       if (e.code.startsWith('Digit')) {
@@ -131,9 +158,8 @@ Object.assign(window.CanvasStrip, {
       else if (matchHk(AppState.hotkeys.toolEyedropper)) this.setTool('eyedropper');
       else if (matchHk(AppState.hotkeys.toolEraser)) this.setTool('eraser');
       else if (matchHk(AppState.hotkeys.peekOrig)) {
-        AppState.peekOriginal = true;
-        document.getElementById('btn-peek-orig').classList.add('active');
-        this.requestRender();
+        AppState.holdOriginal = true;
+        this.updateOriginalView();
       } else if ((e.ctrlKey || e.metaKey) && e.code === 'KeyZ') {
         e.preventDefault();
         AppState.undo();
@@ -148,12 +174,19 @@ Object.assign(window.CanvasStrip, {
       }
     });
 
+    window.addEventListener('blur', () => {
+      this.spacePressed = false;
+      if (AppState.holdOriginal) {
+        AppState.holdOriginal = false;
+        this.updateOriginalView();
+      }
+    });
+
     window.addEventListener('keyup', (e) => {
       if (e.code === 'Space') this.spacePressed = false;
-      if (e.code === AppState.hotkeys.peekOrig.code) {
-        AppState.peekOriginal = false;
-        document.getElementById('btn-peek-orig').classList.remove('active');
-        this.requestRender();
+      if (e.code === AppState.hotkeys.peekOrig.code && AppState.holdOriginal) {
+        AppState.holdOriginal = false;
+        this.updateOriginalView();
       }
     });
   },

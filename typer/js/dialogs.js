@@ -48,11 +48,13 @@
         add('Колір тексту', 'fill', 'color', preset.fill || '#000000');
         add('Градієнт', 'useGrad', 'checkbox', preset.useGrad);
         add('Другий колір', 'grad2', 'color', preset.grad2 || '#ffffff');
-        add('Обводка, px', 'strokeWidth', 'number', preset.strokeWidth ?? 0, {min:0,max:150,step:1});
+        add('Обводка, px', 'strokeWidth', 'number', preset.strokeWidth ?? 0, {min:0,max:150,step:0.1});
+        add('Пропорційно до кегля (%)', 'strokeRelative', 'checkbox', preset.strokeRelative);
         add('Колір обводки', 'strokeColor', 'color', preset.strokeColor || '#ffffff');
-        add('Світіння, px', 'glowBlur', 'number', preset.glowBlur ?? 0, {min:0,max:150,step:1});
+        add('Світіння, px', 'glowBlur', 'number', preset.glowBlur ?? 0, {min:0,max:150,step:0.1});
         add('Колір світіння', 'glowColor', 'color', preset.glowColor || '#00e5ff');
         add('Жирний', 'bold', 'checkbox', preset.bold);
+        add('Всі великі літери', 'uppercase', 'checkbox', preset.uppercase ?? AppState.capsLockOnInsert);
         add('Курсив', 'italic', 'checkbox', preset.italic);
         add('Підкреслення', 'underline', 'checkbox', preset.underline);
         add('Закреслення', 'strike', 'checkbox', preset.strike);
@@ -67,3 +69,20 @@
     }
   };
 })();
+
+document.addEventListener('wheel', event => {
+  const input = event.target.closest('input[type="number"]');
+  if (!input || input.disabled || input.readOnly || !event.deltaY) return;
+  event.preventDefault();
+  const step = Number(input.step) || 1;
+  let value = (Number(input.value) || 0) + (event.deltaY < 0 ? step : -step) * (event.shiftKey ? 10 : 1);
+  if (input.min !== '') value = Math.max(Number(input.min), value);
+  if (input.max !== '') value = Math.min(Number(input.max), value);
+  input.value = Math.round(value * 10) / 10;
+  input.dispatchEvent(new Event('input', { bubbles: true }));
+  input.dispatchEvent(new Event('change', { bubbles: true }));
+}, { passive: false });
+document.addEventListener('change', event => {
+  const input = event.target;
+  if (input.matches('input[type="number"]') && input.value !== '') input.value = Math.round(Number(input.value) * 10) / 10;
+}, true);

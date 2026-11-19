@@ -7,7 +7,7 @@
     const max = Math.max(210, Math.min(520, workspace.clientWidth - widths[other] - 132));
     widths[side] = Math.max(210, Math.min(max, Number(value) || 300));
     workspace.style.setProperty(`--${side}-width`, `${widths[side]}px`);
-    if (window.CanvasStrip?.viewport && window.CanvasStrip?.ctx) window.CanvasStrip.resizeCanvas();
+    if (window.CanvasStrip?.viewport) window.CanvasStrip.resizeCanvas();
   }
   ['left', 'right'].forEach(side => setWidth(side, widths[side]));
   document.querySelectorAll('.panel-resizer').forEach(handle => {
