@@ -48,6 +48,11 @@
         add('Колір тексту', 'fill', 'color', preset.fill || '#000000');
         add('Градієнт', 'useGrad', 'checkbox', preset.useGrad);
         add('Другий колір', 'grad2', 'color', preset.grad2 || '#ffffff');
+        add('Автоматичний відступ', 'autoPadding', 'checkbox', preset.autoPadding !== false);
+        add('Відступ від країв, px', 'padding', 'number', preset.padding ?? 14, {min:0,max:150,step:1});
+        const syncPadding = () => { fields.padding.disabled = fields.autoPadding.checked; };
+        syncPadding();
+        fields.autoPadding.addEventListener('change', syncPadding);
         add('Обводка, px', 'strokeWidth', 'number', preset.strokeWidth ?? 0, {min:0,max:150,step:0.1});
         add('Пропорційно до кегля (%)', 'strokeRelative', 'checkbox', preset.strokeRelative);
         add('Колір обводки', 'strokeColor', 'color', preset.strokeColor || '#ffffff');

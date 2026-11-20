@@ -592,9 +592,11 @@ textarea:focus, input:focus, select:focus {
   resize: none;
   outline: 1px dashed rgba(80, 125, 220, .7);
   box-shadow: none;
-  overflow: auto;
+  overflow: hidden;
   white-space: pre;
   overflow-wrap: normal;
+  color: transparent;
+  caret-color: transparent;
 }
 
 
@@ -943,4 +945,19 @@ body { font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; }
 .text-layout-status { color: var(--m3-error, #ffb4ab); font-size: 12px; }
 
 #draft-status { position: absolute; left: 50%; transform: translateX(-50%); pointer-events: none; }
-#quick-text-color { width: 36px; height: 28px; padding: 2px; cursor: pointer; }
+.canvas-inline-editor::selection { background: transparent; color: transparent; }
+.text-color-field { flex-wrap: wrap; }
+.text-color-controls { display: inline-flex; align-items: center; gap: 6px; }
+.text-color-controls button, #quick-text-color {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid var(--m3-outline);
+  border-radius: 6px;
+  cursor: pointer;
+}
+.text-color-controls button[data-text-color="#000000"] { background: #000; }
+.text-color-controls button[data-text-color="#ffffff"] { background: #fff; }
+.text-color-controls button[aria-pressed="true"] { outline: 1px solid #b4c5ff; outline-offset: 2px; }
+#quick-text-color { width: 32px; padding: 3px; }
+#quick-text-hex { width: 8ch; padding: 4px 5px; font-family: monospace; }

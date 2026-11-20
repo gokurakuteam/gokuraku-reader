@@ -4,36 +4,26 @@ Object.assign(window.CanvasStrip, {
     if (!item || item.type === 'png') return;
     AppState.saveSnapshot();
     this.editingItem = item;
-    this.inlineOriginalText = item.rawText || '';
-    this.inlineOriginalLines = [...(item.lines || [])];
-    this.inlineInitialValue = this.inlineOriginalLines.length ? this.inlineOriginalLines.join('\n') : this.inlineOriginalText;
-
+    this.inlineInitialValue = item.lines?.length ? item.lines.join('\n') : item.rawText || '';
     const g = this.getItemGlobalRect(item);
-    const scrCenter = this.worldToScreen(g.cx, g.cy);
+    const angle = (item.angle || 0) * Math.PI / 180;
+    const offsetX = item.textOffsetX || 0;
+    const offsetY = item.textOffsetY || 0;
+    const scrCenter = this.worldToScreen(
+      g.cx + offsetX * Math.cos(angle) - offsetY * Math.sin(angle),
+      g.cy + offsetX * Math.sin(angle) + offsetY * Math.cos(angle)
+    );
     const scale = AppState.camera.scale;
     const w = Math.max(40, item.w * scale);
     const h = Math.max(30, item.h * scale);
     const ed = this.inlineEditor;
-    const st = item.style || {};
-    const fontSize = (st.fontSize || 42) * scale;
-    const lineHeight = Math.max(1.1, st.lineHeight || 1.2);
     ed.hidden = false;
     ed.wrap = 'off';
     ed.style.width = `${w}px`;
     ed.style.height = `${h}px`;
-    ed.style.left = `${scrCenter.x - w / 2 + (item.textOffsetX || 0) * scale}px`;
-    ed.style.top = `${scrCenter.y - h / 2 + (item.textOffsetY || 0) * scale}px`;
+    ed.style.left = `${scrCenter.x - w / 2}px`;
+    ed.style.top = `${scrCenter.y - h / 2}px`;
     ed.style.transform = `rotate(${item.angle || 0}deg)`;
-    ed.style.fontFamily = `"${st.fontFamily || 'Arial'}"`;
-    ed.style.fontSize = `${fontSize}px`;
-    ed.style.lineHeight = lineHeight;
-    ed.style.textAlign = st.textAlign || 'center';
-    ed.style.textTransform = st.uppercase ? 'uppercase' : 'none';
-    ed.style.fontWeight = st.bold ? 'bold' : 'normal';
-    ed.style.fontStyle = st.italic ? 'italic' : 'normal';
-    ed.style.color = st.fillColor || '#000000';
-    ed.style.caretColor = st.fillColor || '#000000';
-    ed.style.padding = `${Math.max(0, (h - Math.max(1, this.inlineInitialValue.split('\n').length) * fontSize * lineHeight) / 2)}px 0`;
     ed.value = this.inlineInitialValue;
     ed.focus();
     ed.setSelectionRange(ed.value.length, ed.value.length);
@@ -42,26 +32,98 @@ Object.assign(window.CanvasStrip, {
 
   closeInlineEditor(cancel = false) {
     if (!this.editingItem) return;
-    const item = this.editingItem;
-    const changed = !cancel && this.inlineEditor.value !== this.inlineInitialValue;
-    item.rawText = changed ? this.inlineEditor.value : this.inlineOriginalText;
-    item.lines = changed ? (item.rawText ? item.rawText.split('\n') : []) : this.inlineOriginalLines;
-    if (changed) {
-      item.manualTextLayout = true;
-      item.layoutError = null;
-    }
-    if (this.inlineEditor.value !== this.inlineInitialValue) this.markProjectChanged();
+    const changed = this.inlineEditor.value !== this.inlineInitialValue;
+    if (changed && !cancel) Object.assign(this.editingItem, this.inlineTextChanges());
+    this.inlineMouseAnchor = null;
     this.editingItem = null;
     this.inlineEditor.hidden = true;
+    if (changed) this.markProjectChanged();
     this.syncUIFromSelection();
+    this.requestRender();
+  },
+
+  setInlineSelection(offset) {
+    const anchor = this.inlineMouseAnchor;
+    this.inlineEditor.setSelectionRange(Math.min(anchor, offset), Math.max(anchor, offset),
+      offset < anchor ? 'backward' : 'forward');
+    this.requestRender();
+  },
+
+  inlinePointerOffset(e) {
+    const item = this.editingItem;
+    const rect = this.canvas.getBoundingClientRect();
+    const point = this.screenToWorld(e.clientX - rect.left, e.clientY - rect.top);
+    const local = this.worldToItemLocal(point.x, point.y, this.getItemGlobalRect(item), item.angle || 0);
+    const x = local.x - (item.textOffsetX || 0);
+    const y = local.y - (item.textOffsetY || 0);
+    const lines = this.inlineEditor.value.split('\n');
+    const ctx = this.ctx;
+    const rows = TextEngine.placements(ctx, item, lines, item.style.fontSize || 42);
+    const index = rows.reduce((best, row, i) => Math.abs(row.y - y) < Math.abs(rows[best].y - y) ? i : best, 0);
+    const line = lines[index];
+    const row = rows[index];
+    const left = row.x - ctx.measureText(row.text).width / 2;
+    const start = lines.slice(0, index).reduce((offset, text) => offset + text.length + 1, 0);
+    let column = 0;
+    let previousX = left;
+    for (const character of line) {
+      const next = column + character.length;
+      const nextX = left + ctx.measureText(TextEngine.displayText(item, line.slice(0, next))).width;
+      if (x < (previousX + nextX) / 2) break;
+      column = next;
+      previousX = nextX;
+    }
+    return start + column;
+  },
+
+  linkAdjacentBubbles(item) {
+    const page = AppState.getPageById(item.pageId);
+    const siblings = AppState.items.filter(other => {
+      if (other === item || other.type !== 'bubble') return false;
+      const otherPage = AppState.getPageById(other.pageId);
+      const dx = item.x + (page?.xOffset || 0) + item.w / 2 - other.x - (otherPage?.xOffset || 0) - other.w / 2;
+      const dy = item.y + (page?.yOffset || 0) + item.h / 2 - other.y - (otherPage?.yOffset || 0) - other.h / 2;
+      if (item.detected && other.detected && item.pageId === other.pageId) {
+        return Math.hypot(dx, dy) < (Math.max(item.w, item.h) + Math.max(other.w, other.h)) * .6;
+      }
+      return Math.hypot(2 * dx / (item.w + other.w), 2 * dy / (item.h + other.h)) <= 1;
+    });
+    AppState.linkBubbles(item, siblings);
+  },
+
+  detectBubbleAt(world) {
+    const page = AppState.getPageAtPoint(world.x, world.y);
+    if (!page) return;
+    const index = AppState.pages.indexOf(page);
+    const neighbors = AppState.pages.slice(Math.max(0, index - 1), index + 2).filter(scan => scan !== page);
+    const found = BubbleDetector.detect(page, world.x - (page.xOffset || 0), world.y - page.yOffset, neighbors);
+    if (found) {
+      const existing = AppState.items.find(item => {
+        if (!item.detected) return false;
+        const anchor = AppState.getPageById(item.pageId);
+        return Math.abs(item.x + (anchor.xOffset || 0) - found.x - (page.xOffset || 0)) <= 2 &&
+          Math.abs(item.y + anchor.yOffset - found.y - page.yOffset) <= 2 &&
+          Math.abs(item.w - found.w) <= 2 && Math.abs(item.h - found.h) <= 2;
+      });
+      if (existing) AppState.selectedId = existing.id;
+      else {
+        AppState.saveSnapshot();
+        const item = Object.assign(this.createDefaultItem('bubble', page.id, found.x, found.y, found.w, found.h), found);
+        AppState.items.push(item);
+        AppState.selectedId = item.id;
+        this.linkAdjacentBubbles(item);
+        this.markProjectChanged?.();
+      }
+      this.setTool('pointer');
+      this.syncUIFromSelection();
+    }
     this.requestRender();
   },
 
   // --- ПОДІЇ ПОЛОТНА ---
   bindCanvasEvents() {
-    // Подвійний клік на полотні відкриває пряме редагування тексту в баблі
     this.canvas.addEventListener('dblclick', (e) => {
-      if (AppState.showingOriginal) return;
+      if (AppState.showingOriginal || e.altKey) return;
       const rect = this.canvas.getBoundingClientRect();
       const world = this.screenToWorld(e.clientX - rect.left, e.clientY - rect.top);
       const hit = this.hitTest(world.x, world.y, false);
@@ -69,19 +131,35 @@ Object.assign(window.CanvasStrip, {
         AppState.selectedId = hit.item.id;
         this.syncUIFromSelection();
         this.openInlineEditor(hit.item);
+      } else if (['pointer', 'bubble'].includes(AppState.activeTool)) {
+        this.detectBubbleAt(world);
       }
     });
 
     this.inlineEditor.addEventListener('input', () => {
       if (!this.editingItem) return;
-      const ed = this.inlineEditor;
-      ed.style.paddingTop = `${Math.max(0, (ed.clientHeight - ed.value.split('\n').length * parseFloat(ed.style.fontSize) * parseFloat(ed.style.lineHeight)) / 2)}px`;
       this.requestRender();
       document.getElementById('prop-text').value = this.inlineEditor.value;
       this.markProjectChanged();
     });
 
+    this.inlineEditor.addEventListener('mousedown', e => {
+      if (!this.editingItem || e.button !== 0) return;
+      e.preventDefault();
+      const offset = this.inlinePointerOffset(e);
+      const ed = this.inlineEditor;
+      this.inlineMouseAnchor = e.shiftKey
+        ? (ed.selectionDirection === 'backward' ? ed.selectionEnd : ed.selectionStart)
+        : offset;
+      ed.focus();
+      this.setInlineSelection(offset);
+    });
+
+    for (const event of ['select', 'keyup', 'pointerup']) {
+      this.inlineEditor.addEventListener(event, () => this.requestRender());
+    }
     this.inlineEditor.addEventListener('keydown', (e) => {
+      if (this.handleTextShortcut?.(e)) return;
       e.stopPropagation(); // Щоб хоткеї інструментів не спрацьовували під час набору
       if (e.key === 'Escape') {
         e.preventDefault();
@@ -202,16 +280,15 @@ Object.assign(window.CanvasStrip, {
         return;
       }
 
+      if (e.altKey && (tool === 'pointer' || tool === 'bubble')) {
+        this.dragState = { mode: 'detect', startSX: sx, startSY: sy, clickWorld: world };
+        return;
+      }
+
       if (tool === 'bubble') {
-        const page = AppState.getPageAtGlobalY(world.y);
+        const page = AppState.getPageAtPoint(world.x, world.y);
         if (!page) return;
-        AppState.saveSnapshot();
-        const newBubble = this.createDefaultItem('bubble', page.id, world.x, world.y - page.yOffset, 10, 10);
-        AppState.items.push(newBubble);
-        AppState.selectedId = newBubble.id;
-        this.dragState = { mode: 'draw', item: newBubble, startWX: world.x, startWY: world.y, pageOffset: page.yOffset };
-        this.syncUIFromSelection();
-        this.requestRender();
+        this.dragState = { mode: 'draw', page, startWX: world.x, startWY: world.y, startSX: sx, startSY: sy };
         return;
       }
 
@@ -224,10 +301,10 @@ Object.assign(window.CanvasStrip, {
           this.openInlineEditor(hit.item);
           return;
         }
-        const page = AppState.getPageAtGlobalY(world.y);
+        const page = AppState.getPageAtPoint(world.x, world.y);
         if (!page) return;
         AppState.saveSnapshot();
-        const newText = this.createDefaultItem('text', page.id, world.x - 90, world.y - page.yOffset - 35, 180, 70);
+        const newText = this.createDefaultItem('text', page.id, world.x - (page.xOffset || 0) - 90, world.y - page.yOffset - 35, 180, 70);
         newText.rawText = '';
         newText.lines = [];
         AppState.items.push(newText);
@@ -272,12 +349,16 @@ Object.assign(window.CanvasStrip, {
       } else {
         AppState.selectedId = null;
         this.syncUIFromSelection();
-        this.dragState = { mode: 'pan', startSX: sx, startSY: sy, camX: AppState.camera.x, camY: AppState.camera.y, clickWorld: world };
+        this.dragState = { mode: 'pan', startSX: sx, startSY: sy, camX: AppState.camera.x, camY: AppState.camera.y };
       }
       this.requestRender();
     });
 
     window.addEventListener('mousemove', (e) => {
+      if (this.editingItem && this.inlineMouseAnchor != null) {
+        this.setInlineSelection(this.inlinePointerOffset(e));
+        return;
+      }
       if (!this.dragState) return;
       const rect = this.canvas.getBoundingClientRect();
       const sx = e.clientX - rect.left;
@@ -289,10 +370,16 @@ Object.assign(window.CanvasStrip, {
         AppState.camera.x = st.camX + (sx - st.startSX);
         AppState.camera.y = st.camY + (sy - st.startSY);
       } else if (st.mode === 'draw') {
-        const x1 = Math.min(st.startWX, world.x);
-        const y1 = Math.min(st.startWY, world.y) - st.pageOffset;
-        st.item.x = x1;
-        st.item.y = y1;
+        if (!st.item) {
+          if (Math.hypot(sx - st.startSX, sy - st.startSY) < 5) return;
+          AppState.saveSnapshot();
+          st.item = this.createDefaultItem('bubble', st.page.id, 0, 0, 24, 24);
+          AppState.items.push(st.item);
+          AppState.selectedId = st.item.id;
+          this.syncUIFromSelection();
+        }
+        st.item.x = Math.min(st.startWX, world.x) - (st.page.xOffset || 0);
+        st.item.y = Math.min(st.startWY, world.y) - st.page.yOffset;
         st.item.w = Math.max(24, Math.abs(world.x - st.startWX));
         st.item.h = Math.max(24, Math.abs(world.y - st.startWY));
       } else if (st.mode === 'move') {
@@ -315,7 +402,7 @@ Object.assign(window.CanvasStrip, {
           for (const targetX of snapTargets) {
             if (Math.abs(itemCenterX - targetX) < 12) {
               nx = targetX - st.item.w / 2;
-              this.snapGuideX = targetX;
+              this.snapGuideX = targetX + (page?.xOffset || 0);
               break;
             }
           }
@@ -371,30 +458,18 @@ Object.assign(window.CanvasStrip, {
     });
 
     window.addEventListener('mouseup', (e) => {
+      this.inlineMouseAnchor = null;
       const st = this.dragState;
       if (!st) return;
-      let detected = false;
-      const rect = this.canvas.getBoundingClientRect();
-      const world = st?.clickWorld || (st?.mode === 'draw' ? {x:st.startWX,y:st.startWY} : null);
-      const moved = st?.mode === 'draw'
-        ? Math.hypot((this.screenToWorld(e.clientX-rect.left,e.clientY-rect.top).x-st.startWX)*AppState.camera.scale,
-                     (this.screenToWorld(e.clientX-rect.left,e.clientY-rect.top).y-st.startWY)*AppState.camera.scale)
-        : Math.hypot(e.clientX-rect.left-(st?.startSX||0),e.clientY-rect.top-(st?.startSY||0));
-      if (world && moved < 5) {
-        const page = AppState.getPageAtGlobalY(world.y);
-        const found = BubbleDetector.detect(page, world.x, world.y-(page?.yOffset||0));
-        if (st.mode === 'draw') AppState.items = AppState.items.filter(i=>i!==st.item);
-        if (found) {
-          if (st.mode !== 'draw') AppState.saveSnapshot();
-          const item = this.createDefaultItem('bubble',page.id,found.x,found.y,found.w,found.h);
-          Object.assign(item,found);
-          // Adjacent lobes share typography; each retains its own contour and text.
-          const sibling = AppState.items.find(i=>i.detected && i.pageId===item.pageId &&
-            Math.hypot(i.x+i.w/2-item.x-item.w/2,i.y+i.h/2-item.y-item.h/2)<(Math.max(i.w,i.h)+Math.max(item.w,item.h))*.6);
-          if(sibling){sibling.clusterId ||= AppState.uid();item.clusterId=sibling.clusterId;}
-          AppState.items.push(item);AppState.selectedId=item.id;
-          detected = true;
-        } else if(st.mode==='draw') AppState.selectedId=null;
+      if (st.mode === 'detect') {
+        const rect = this.canvas.getBoundingClientRect();
+        const moved = Math.hypot(e.clientX - rect.left - st.startSX, e.clientY - rect.top - st.startSY);
+        const world = st.clickWorld;
+        if (moved < 5) this.detectBubbleAt(world);
+      }
+      if (st.mode === 'draw' && st.item) {
+        this.linkAdjacentBubbles(st.item);
+        this.setTool('pointer');
         this.syncUIFromSelection();
       }
       if (st?.mode === 'resize' && (st.item.w !== st.origRect.w || st.item.h !== st.origRect.h)) {
@@ -405,12 +480,10 @@ Object.assign(window.CanvasStrip, {
         AppState.autoFitItemText(st.item);
         this.syncUIFromSelection();
       }
-      if (st.mode !== 'pan' || detected) this.markProjectChanged?.();
-
-      if (this.dragState?.mode === 'draw') {
-        // АВТОМАТИЧНО ПЕРЕМИКАЄМО З "D" (БАБЛ) НА "V" (ВКАЗІВНИК) ПІСЛЯ СТВОРЕННЯ БАБЛА!
-        this.setTool('pointer');
+      if (['move', 'rotate', 'resize'].includes(st.mode) || (st.mode === 'draw' && st.item)) {
+        this.markProjectChanged?.();
       }
+
       this.dragState = null;
       this.snapGuideX = null;
       this.requestRender();

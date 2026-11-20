@@ -43,19 +43,35 @@ window.BubbleDetector = {
 
 };
 Object.assign(window.BubbleDetector, {
-  detect(page, x, y) {
+  detect(page, x, y, neighbors = []) {
     if (!page?.cleanImg || x < 0 || y < 0 || x >= page.width || y >= page.height) return null;
     const scale = 0.5;
     const radius = Math.max(1200, Math.min(3000, page.width * 2));
-    const ox = Math.max(0, Math.floor(x - radius));
-    const oy = Math.max(0, Math.floor(y - radius));
-    const w = Math.ceil(Math.min(page.width - ox, 2 * radius) * scale);
-    const h = Math.ceil(Math.min(page.height - oy, 2 * radius) * scale);
+    const scans = [page, ...neighbors.filter(scan => scan.cleanImg?.naturalWidth)];
+    const local = scans.map(scan => ({
+      scan,
+      x: (scan.xOffset || 0) - (page.xOffset || 0),
+      y: (scan.yOffset || 0) - (page.yOffset || 0)
+    }));
+    const ox = Math.max(Math.floor(x - radius), Math.floor(Math.min(...local.map(scan => scan.x))));
+    const oy = Math.max(Math.floor(y - radius), Math.min(...local.map(scan => scan.y)));
+    const rightEdge = Math.max(...local.map(({scan, x}) => x + scan.width));
+    const bottomEdge = Math.max(...local.map(({scan, y}) => y + scan.height));
+    const w = Math.ceil(Math.min(rightEdge - ox, 2 * radius) * scale);
+    const h = Math.ceil(Math.min(bottomEdge - oy, 2 * radius) * scale);
     const canvas = document.createElement('canvas');
     canvas.width = w;
     canvas.height = h;
     const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    ctx.drawImage(page.cleanImg, -ox * scale, -oy * scale, page.width * scale, page.height * scale);
+    // Fill outside the scans with a barrier. Draw clipped windows in scan order
+    // so a contour can continue across a page boundary.
+    ctx.fillStyle = '#000';
+    ctx.fillRect(0, 0, w, h);
+    for (const {scan, x, y} of local.sort((a, b) => a.y - b.y)) {
+      const top = Math.round((y - oy) * scale);
+      const bottom = Math.round((y + scan.height - oy) * scale);
+      ctx.drawImage(scan.cleanImg, (x - ox) * scale, top, scan.width * scale, bottom - top);
+    }
     const data = ctx.getImageData(0, 0, w, h).data;
     const blocked = new Uint8Array(w * h);
     for (let i = 0, pixel = 0; i < blocked.length; i++, pixel += 4) {

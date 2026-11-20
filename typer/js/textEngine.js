@@ -73,15 +73,10 @@ window.TextEngine = {
     const top=Math.min(...rows.map(r=>r.y-r.ascent)),bottom=Math.max(...rows.map(r=>r.y+r.descent));
     const center = this.contourCenter(item);
     const maxWidth = Math.max(...rows.map(r => r.width));
-    const extra = this.inkMargin(item, size);
-    const pad = item.effectivePadding ?? 0;
     const align = item.style.textAlign === 'left' ? -1 : item.style.textAlign === 'right' ? 1 : 0;
     rows.forEach(r => {
       r.y += center.y - item.h / 2 - (top + bottom) / 2;
-      const y = item.h / 2 + r.y;
-      const band = !align && item.contour && this.contourBand(item, y - r.ascent - extra, y + r.descent + extra, pad);
-      const lineCenter = band ? this.bandCenter(band, center.x) : center.x;
-      r.centerOffset = lineCenter - center.x + align * (maxWidth - r.width) / 2;
+      r.centerOffset = align * (maxWidth - r.width) / 2;
       r.x += center.x - item.w / 2 + r.centerOffset;
     });
     return rows;
@@ -103,10 +98,6 @@ window.TextEngine = {
       right = Math.min(right, rows[i][1]);
     }
     return right - left > 2 * pad ? [left + pad, right - pad] : null;
-  },
-  bandCenter([left, right], center) {
-    const middle = (left + right) / 2;
-    return (Math.max(left, Math.min(right, center)) + 2 * middle) / 3;
   },
   capacity(item, top, bottom, pad, center = this.textCenter(item)) {
     if (top < pad || bottom > item.h - pad) return 0;
@@ -149,14 +140,7 @@ window.TextEngine = {
       return result;
     };
     const center = this.contourCenter(item);
-    const followContour = item.contour && !['left', 'right'].includes(item.style.textAlign);
-    const widthAt = (top, bottom) => {
-      if (!followContour) return this.capacity(item, top, bottom, pad, center.x);
-      const band = this.contourBand(item, top, bottom, pad);
-      if (!band) return 0;
-      const x = this.bandCenter(band, center.x);
-      return 2 * Math.min(x - band[0], band[1] - x);
-    };
+    const widthAt = (top, bottom) => this.capacity(item, top, bottom, pad, center.x);
     const totalWidth = ctx.measureText(this.displayText(item, plain)).width;
     let best=null;
     const maxLines = Math.min(words.length - paragraphs + breaks.filter(offsets => offsets.length).length,
@@ -223,11 +207,14 @@ window.TextEngine = {
   fitFixedSize(item, size) {
     const ctx = this.ctx ||= document.createElement('canvas').getContext('2d');
     ctx.font = this.font(item, size);
-    const padding = item.autoPadding === false ? (item.padding ?? 0) : ctx.measureText('н').width;
-    const solution = this.solve(item, size, padding, item.style.hyphenate !== false);
+    const padding = item.autoPadding === false ? Math.max(0, item.padding ?? 0) : ctx.measureText('н').width;
+    const hyphens = item.style.hyphenate !== false;
+    const solution = this.solve(item, size, padding, hyphens) ||
+      (item.autoPadding !== false && this.solve(item, size, padding * .45, hyphens));
     item.style.fontSize = size;
     item.effectivePadding = padding;
     if (solution) {
+      item.effectivePadding = solution.padding;
       item.lines = solution.lines;
       item.layoutError = null;
       return true;
@@ -263,7 +250,7 @@ window.TextEngine = {
     let solution=null, firstSize=null;
     for(let size=max;size>=Math.min(min,max);size-=Math.max(1,(max-min)/28)) {
       this.ctx ||= document.createElement('canvas').getContext('2d');this.ctx.font=this.font(item,size);
-      const pad=item.autoPadding===false?(item.padding??0):this.ctx.measureText('н').width;
+      const pad=item.autoPadding===false?Math.max(0,item.padding??0):this.ctx.measureText('н').width;
       let candidate=this.solve(item,size,pad,hyphens,prepared);
       if(candidate){
         firstSize ??= size;
@@ -272,13 +259,27 @@ window.TextEngine = {
       }
       if(firstSize && size<=firstSize*.72)break;
     }
+    // Compact automatic padding when standard spacing would cost substantial type size.
+    if (item.autoPadding !== false && (!firstSize || firstSize < max * .8)) {
+      for (let size = max; size >= Math.min(min, max) && (!firstSize || size >= firstSize * 1.2); size -= Math.max(1, (max - min) / 28)) {
+        this.ctx.font = this.font(item, size);
+        const compact = this.solve(item, size, this.ctx.measureText('н').width * .45, hyphens, prepared);
+        if (compact) { solution = compact; break; }
+      }
+    }
     // Minimum font is a preference. Containment takes precedence; never emit an overflowing fallback.
     for(let size=Math.min(min,max)-.5;!solution&&size>=.25;size*=.88) {
-      solution=this.solve(item,size,Math.min(item.padding??12,size*.35),hyphens,prepared);
+      solution=this.solve(item,size,item.autoPadding === false ? Math.max(0, item.padding ?? 0) : size * .25,hyphens,prepared);
     }
     item.lines=solution?.lines||[];
-    item.layoutError=solution?null:'Текст не вміщується: збільште бабл або зменште обведення/сяйво.';
-    if(solution){item.style.fontSize=solution.size;item.effectivePadding=solution.padding;}
-    return !!solution;
+    if (!solution) {
+      this.fitFixedSize(item, Math.max(.25, Math.min(min, max)));
+      item.layoutError = 'Текст не вміщується: збільште бабл або зменште відступ чи обведення.';
+      return false;
+    }
+    item.layoutError = null;
+    item.style.fontSize = solution.size;
+    item.effectivePadding = solution.padding;
+    return true;
   }
 };

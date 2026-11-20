@@ -71,6 +71,43 @@ async function drawExportImage(ctx, source, rect, label) {
 }
 
 Object.assign(CanvasStrip, {
+  exportPageLayers(pages, items) {
+    const stripWidth = pages.reduce((max, page) => Math.max(max, page.width), 0);
+    let y = 0;
+    const positioned = pages.map(page => {
+      const result = { ...page, xOffset: (stripWidth - page.width) / 2, yOffset: y };
+      y += page.height;
+      return result;
+    });
+    const byId = new Map(positioned.map(page => [page.id, page]));
+    const layers = new Map(positioned.map(page => [page.id, []]));
+    const ctx = document.createElement('canvas').getContext('2d');
+    for (const item of items) {
+      const anchor = byId.get(item.pageId);
+      if (!anchor || (!item.lines?.length && item.type !== 'png')) continue;
+      const cx = anchor.xOffset + item.x + item.w / 2;
+      const cy = anchor.yOffset + item.y + item.h / 2;
+      const angle = (item.angle || 0) * Math.PI / 180;
+      const cos = Math.cos(angle);
+      const sin = Math.sin(angle);
+      const radius = item.type === 'png'
+        ? (Math.abs(sin) * item.w + Math.abs(cos) * item.h) / 2
+        : Math.max(...TextEngine.placements(ctx, item).map(row => {
+          const size = item.style.fontSize || 42;
+          const x = row.x + (item.textOffsetX || 0);
+          const y = row.y + (item.textOffsetY || 0);
+          return Math.abs(x * sin + y * cos) + Math.abs(sin) * (ctx.measureText(row.text).width + row.width) +
+            Math.abs(cos) * Math.max(row.ascent, row.descent, size * .5 + 2) +
+            TextEngine.inkMargin(item, size) + 2;
+        }));
+      for (const page of positioned) {
+        if (cy + radius <= page.yOffset || cy - radius >= page.yOffset + page.height) continue;
+        layers.get(page.id).push({ ...item, x: cx - item.w / 2 - page.xOffset, y: cy - item.h / 2 - page.yOffset });
+      }
+    }
+    return layers;
+  },
+
   async renderPageWebp(page, items) {
     // WebP's dimension limit is 16383. Refuse oversized allocations before decoding.
     if(!Number.isInteger(page.width) || !Number.isInteger(page.height) ||
@@ -134,9 +171,10 @@ window.addEventListener('DOMContentLoaded',()=>{
         if(total>128*1024*1024) throw new Error('Архів перевищує 128 МБ. Для запису великого ZIP одразу на диск використайте Chrome або Edge через localhost/HTTPS.');
         parts.push(bytes);
       });
+      const layers = CanvasStrip.exportPageLayers(pages, items);
       for(let n=0;n<pages.length;n++) {
         button.textContent='WebP: '+(n+1)+' / '+pages.length;
-        const blob=await CanvasStrip.renderPageWebp(pages[n],items.filter(i=>i.pageId===pages[n].id));
+        const blob=await CanvasStrip.renderPageWebp(pages[n],layers.get(pages[n].id));
         await zip.add(String(n+1).padStart(5,'0')+'.webp',blob);
         await new Promise(resolve=>setTimeout(resolve,0));
       }
@@ -149,7 +187,8 @@ window.addEventListener('DOMContentLoaded',()=>{
     } finally {
       CanvasStrip.exporting=false; button.disabled=false;
       CanvasStrip.invalidateScanLayer();
-      button.textContent='Сторінки WebP у ZIP';
+      button.innerHTML='<i data-lucide="package-export"></i> Експортувати';
+      if (window.lucide) lucide.createIcons();
       CanvasStrip.requestRender();
     }
   });

@@ -159,7 +159,7 @@ Object.assign(window.CanvasStrip, {
     if (matchedPreset) this.applyPresetObject(matchedPreset, true);
     if (!matchedPreset || (item.type !== 'bubble' && !item.fixedFontSize)) AppState.autoFitItemText(item);
 
-    AppState.activeTransIndex = item.layoutError ? index : AppState.findNextInsertableIndex(index);
+    AppState.activeTransIndex = item.lines?.some(line => line.trim()) ? AppState.findNextInsertableIndex(index) : index;
     this.markProjectChanged();
     this.updateTranslationSelection();
     this.syncUIFromSelection();
@@ -342,6 +342,13 @@ Object.assign(window.CanvasStrip, {
     AppState.useGradient = !!p.useGrad;
     this.renderFontPicker();
 
+    const padding = document.getElementById('prop-padding');
+    if (p.padding !== undefined || p.autoPadding !== undefined) {
+      const auto = p.autoPadding !== false || !Number.isFinite(p.padding);
+      document.getElementById('prop-auto-padding').checked = auto;
+      padding.disabled = auto;
+      padding.value = Number.isFinite(p.padding) ? Math.max(0, p.padding) : 14;
+    }
     document.getElementById('prop-fill-color').value = p.fill || '#000000';
     document.getElementById('prop-grad-color2').value = p.grad2 || '#ffffff';
     document.getElementById('prop-stroke-width').value = p.strokeWidth || 0;

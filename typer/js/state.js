@@ -58,10 +58,12 @@ window.AppState = {
 
   recalcPageOffsets() {
     let y = 0;
+    const width = this.pages.reduce((max, page) => Math.max(max, page.width), 0);
     this.pagesById = new Map();
     for (const p of this.pages) {
       this.pagesById.set(p.id, p);
       p.yOffset = y;
+      p.xOffset = (width - p.width) / 2;
       y += p.height;
     }
     window.CanvasStrip?.invalidateScanLayer?.();
@@ -74,11 +76,29 @@ window.AppState = {
 
   getPageAtGlobalY(globalY) {
     for (const p of this.pages) {
-      if (globalY >= p.yOffset && globalY <= p.yOffset + p.height) {
+      if (globalY >= p.yOffset && globalY < p.yOffset + p.height) {
         return p;
       }
     }
     return this.pages[this.pages.length - 1] || null;
+  },
+
+  getPageAtPoint(x, y) {
+    const page = this.getPageAtGlobalY(y);
+    if (!page) return null;
+    const left = page.xOffset || 0;
+    return x >= left && x < left + page.width && y >= page.yOffset && y < page.yOffset + page.height
+      ? page : null;
+  },
+
+  linkBubbles(item, siblings) {
+    if (!siblings.length) return;
+    const groups = new Set([item, ...siblings].map(bubble => bubble.clusterId).filter(Boolean));
+    const clusterId = groups.values().next().value || this.uid();
+    for (const bubble of this.items) {
+      if (bubble === item || siblings.includes(bubble) || groups.has(bubble.clusterId)) bubble.clusterId = clusterId;
+    }
+    this.autoFitItemText(item);
   },
 
   getSelectedItem() {
@@ -177,7 +197,7 @@ window.AppState = {
         automatic.forEach(i => { if (i !== item) TextEngine.autoFitText(i); });
         if (automatic.length > 1) {
           const size = Math.min(...automatic.map(i => i.style.fontSize));
-          automatic.forEach(i => TextEngine.autoFitText(i, {minFont: size, maxFont: size}));
+          automatic.forEach(i => TextEngine.autoFitText(i, {fixedSize: size}));
         }
       }
     }

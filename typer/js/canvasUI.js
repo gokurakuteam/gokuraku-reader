@@ -76,7 +76,13 @@ Object.assign(window.CanvasStrip, {
 
   updateColorWells() {
     document.getElementById('well-fill').style.background = document.getElementById('prop-fill-color').value;
-    document.getElementById('quick-text-color').value = document.getElementById('prop-fill-color').value;
+    const fill = document.getElementById('prop-fill-color').value;
+    document.getElementById('quick-text-color').value = fill;
+    const hex = document.getElementById('quick-text-hex');
+    if (document.activeElement !== hex) hex.value = fill.toUpperCase();
+    document.querySelectorAll('[data-text-color]').forEach(button => {
+      button.setAttribute('aria-pressed', String(!AppState.useGradient && button.dataset.textColor === fill));
+    });
     document.getElementById('well-grad2').style.background = document.getElementById('prop-grad-color2').value;
     document.getElementById('well-stroke').style.background = document.getElementById('prop-stroke-color').value;
     document.getElementById('well-glow').style.background = document.getElementById('prop-glow-color').value;
@@ -93,7 +99,8 @@ Object.assign(window.CanvasStrip, {
       w,
       h,
       angle: 0,
-      padding: Number(document.getElementById('prop-padding').value) || 14,
+      padding: Number(document.getElementById('prop-padding').value),
+      autoPadding: document.getElementById('prop-auto-padding').checked,
       autoFontLimits: document.getElementById('prop-auto-font-limits').checked,
       manualMinFont: Number(document.getElementById('prop-minfont').value)||24,
       manualMaxFont: Number(document.getElementById('prop-maxfont').value)||68,
@@ -149,6 +156,8 @@ Object.assign(window.CanvasStrip, {
     txtArea.value = item.rawText || '';
     this.showLayoutStatus(item);
     document.getElementById('prop-padding').value = item.padding ?? 14;
+    document.getElementById('prop-padding').disabled = item.autoPadding !== false;
+    document.getElementById('prop-auto-padding').checked = item.autoPadding !== false;
     document.getElementById('prop-angle').value = item.angle ?? 0;
 
     if (item.style) {
@@ -210,9 +219,10 @@ Object.assign(window.CanvasStrip, {
       document.getElementById('prop-fontsize').title = 'Ручний кегль. «Вписати» відновлює автопідбір.';
     }
     item.style = {...item.style, ...st, fontSize: requestedSize ?? item.style.fontSize ?? st.fontSize};
-    item.padding = Number(document.getElementById('prop-padding').value) || 0;
+    item.padding = Math.max(0, Number(document.getElementById('prop-padding').value) || 0);
+    item.autoPadding = document.getElementById('prop-auto-padding').checked;
     item.angle = Number(document.getElementById('prop-angle').value) || 0;
-    if (item.type === 'bubble' || item.fixedFontSize) AppState.autoFitItemText(item);
+    if (this.editingItem !== item && (item.type === 'bubble' || item.fixedFontSize)) AppState.autoFitItemText(item);
     const fontInput = document.getElementById('prop-fontsize');
     if (requestedSize === null || Number(fontInput.value) !== item.style.fontSize) fontInput.value = item.style.fontSize;
     this.showLayoutStatus(item);
@@ -284,6 +294,8 @@ Object.assign(window.CanvasStrip, {
     bindScanInput('input-new-chapter', async files => {
       if ((AppState.pages.length || AppState.items.length) && !await AppDialogs.confirm('Почати новий розділ? Поточні сторінки, об’єкти та переклад буде замінено. Збережіть проєкт, якщо хочете повернутися до нього.')) return;
       await this.loadPageFiles(files, false, true);
+      document.getElementById('project-name').value = '';
+      this.markProjectChanged();
     });
     bindScanInput('input-orig-files', files => this.loadOrigFiles(files));
     bindScanInput('input-insert-page', files => this.loadPageFiles(files, true));
@@ -360,6 +372,7 @@ Object.assign(window.CanvasStrip, {
 
     ['toggle-bold', 'toggle-italic', 'toggle-underline', 'toggle-strike'].forEach(id => {
       document.getElementById(id).addEventListener('click', (e) => {
+        if (AppState.getSelectedItem()) AppState.saveSnapshot();
         e.currentTarget.classList.toggle('active');
         this.applyUIStyleToSelected();
       });
@@ -405,10 +418,15 @@ Object.assign(window.CanvasStrip, {
       if (item) fontSize.value = item.style.fontSize;
     });
 
+    document.getElementById('prop-auto-padding').addEventListener('change', e => {
+      if (AppState.getSelectedItem()) AppState.saveSnapshot();
+      document.getElementById('prop-padding').disabled = e.target.checked;
+      this.applyUIStyleToSelected();
+    });
+
     ['prop-fontsize', 'prop-padding', 'prop-lineheight', 'prop-angle'].forEach(id => {
       document.getElementById(id).addEventListener('input', () => {
-        const item=AppState.getSelectedItem();
-        if(item && id==='prop-padding') item.autoPadding=false;
+
         this.applyUIStyleToSelected(false,id==='prop-fontsize'?Number(document.getElementById(id).value):null);
       });
     });
@@ -437,6 +455,8 @@ Object.assign(window.CanvasStrip, {
       const preset = await AppDialogs.editStyle({
         name: `Мій стиль ${AppState.presets.length + 1}`, autoTypes: [],
         font: s.fontFamily,
+        padding: Number(document.getElementById('prop-padding').value),
+        autoPadding: document.getElementById('prop-auto-padding').checked,
         fill: s.fillColor, useGrad: s.useGradient, grad2: s.gradColor2,
         strokeWidth: s.strokeWidth, strokeRelative: s.strokeRelative, strokeColor: s.strokeColor,
         glowBlur: s.glowBlur, glowColor: s.glowColor, bold: s.bold,
@@ -510,8 +530,25 @@ Object.assign(window.CanvasStrip, {
       const button = event.currentTarget;
       button.disabled = true;
       try {
-        const data = JSON.stringify(await this.exportProjectData());
-        this.downloadBlob(new Blob([data], { type: 'application/json' }), 'project.typer.json');
+        const data = this.draftData();
+        const chunks = [];
+        const zip = new TyperZip(async bytes => chunks.push(bytes));
+        const pages = [];
+        const compressImages = data.pages.reduce((total, page) => total + (page.cleanBlob?.size || 0) + (page.origBlob?.size || 0), 0) > 25 * 1024 * 1024;
+        for (let i = 0; i < data.pages.length; i++) {
+          const { cleanBlob: originalClean, origBlob: originalOrig, ...page } = data.pages[i];
+          const cleanBlob = compressImages ? await this.compactProjectImage(originalClean) : originalClean;
+          const origBlob = compressImages ? await this.compactProjectImage(originalOrig) : originalOrig;
+          const cleanPath = `scans/${i}-clean`;
+          await zip.add(cleanPath, cleanBlob);
+          const origPath = origBlob ? `scans/${i}-original` : null;
+          if (origBlob) await zip.add(origPath, origBlob);
+          pages.push({ ...page, cleanPath, origPath, cleanType: cleanBlob.type, origType: origBlob?.type });
+        }
+        await zip.add('project.json', new Blob([JSON.stringify({ ...data, pages })]));
+        await zip.close();
+        const name = (data.projectName.trim().replace(/[\\/:*?"<>|\x00-\x1f]/g, '_').replace(/\.+$/, '') || 'project');
+        this.downloadBlob(new Blob(chunks, { type: 'application/zip' }), name + '.typer');
       } catch (error) {
         await AppDialogs.alert('Не вдалося зберегти проєкт: ' + error.message);
       } finally {
@@ -524,7 +561,17 @@ Object.assign(window.CanvasStrip, {
       if (!file) return;
       e.target.value = '';
       this.scanImport = (this.scanImport || Promise.resolve())
-        .then(async () => this.loadProject(JSON.parse(await file.text())))
+        .then(async () => {
+          if (!file.name.toLowerCase().endsWith('.typer')) return this.loadProject(JSON.parse(await file.text()));
+          const entries = fflate.unzipSync(new Uint8Array(await file.arrayBuffer()));
+          if (!entries['project.json']) throw new Error('У файлі немає даних проєкту.');
+          const data = JSON.parse(new TextDecoder().decode(entries['project.json']));
+          data.pages = data.pages.map(({ cleanPath, origPath, cleanType, origType, ...page }) => {
+            if (!entries[cleanPath] || (origPath && !entries[origPath])) throw new Error('У файлі бракує скану.');
+            return { ...page, cleanBlob: new Blob([entries[cleanPath]], { type: cleanType }), origBlob: origPath ? new Blob([entries[origPath]], { type: origType }) : null };
+          });
+          return this.loadProject(data, false, true);
+        })
         .catch(error => AppDialogs.alert('Не вдалося відкрити проєкт: ' + error.message));
     });
 
@@ -542,5 +589,45 @@ Object.assign(window.CanvasStrip, {
 
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('project-name').addEventListener('input', () => CanvasStrip.markProjectChanged());
-  document.getElementById('quick-text-color').addEventListener('input', e => { const input = document.getElementById('prop-fill-color'); input.value = e.target.value; input.dispatchEvent(new Event('input', { bubbles: true })); });
+  const picker = document.getElementById('quick-text-color');
+  const hex = document.getElementById('quick-text-hex');
+  const setColor = (value, remember = false) => {
+    const input = document.getElementById('prop-fill-color');
+    AppState.useGradient = false;
+    input.value = value;
+    CanvasStrip.applyUIStyleToSelected(remember);
+  };
+  let picking = false;
+  const startPicking = () => {
+    if (!picking && AppState.getSelectedItem()) AppState.saveSnapshot();
+    picking = true;
+  };
+  picker.addEventListener('input', () => {
+    startPicking();
+    setColor(picker.value);
+  });
+  picker.addEventListener('change', () => {
+    startPicking();
+    setColor(picker.value, true);
+    picking = false;
+  });
+  hex.addEventListener('change', () => {
+    const value = hex.value.trim().replace(/^#/, '');
+    if (/^[0-9a-f]{6}$/i.test(value)) {
+      if (AppState.getSelectedItem()) AppState.saveSnapshot();
+      setColor('#' + value, true);
+    }
+    hex.value = picker.value.toUpperCase();
+  });
+  hex.addEventListener('keydown', event => {
+    if (event.key === 'Enter') hex.blur();
+    if (event.key === 'Escape') {
+      hex.value = picker.value.toUpperCase();
+      hex.blur();
+    }
+  });
+  document.querySelectorAll('[data-text-color]').forEach(button => button.addEventListener('click', () => {
+    if (AppState.getSelectedItem()) AppState.saveSnapshot();
+    setColor(button.dataset.textColor, true);
+  }));
 });

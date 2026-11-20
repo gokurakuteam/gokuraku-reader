@@ -17,13 +17,14 @@ Object.assign(window.CanvasStrip, {
 
   getItemGlobalRect(item) {
     const page = AppState.getPageById(item.pageId);
-    const yOff = page ? page.yOffset : 0;
+    const yOff = page?.yOffset || 0;
+    const x = item.x + (page?.xOffset || 0);
     return {
-      x: item.x,
+      x,
       y: item.y + yOff,
       w: item.w,
       h: item.h,
-      cx: item.x + item.w / 2,
+      cx: x + item.w / 2,
       cy: item.y + yOff + item.h / 2
     };
   },
@@ -51,20 +52,21 @@ Object.assign(window.CanvasStrip, {
       const p = AppState.pages[i];
       if (p.yOffset + p.height < viewTop || p.yOffset > viewBottom) continue;
 
+      const x = p.xOffset || 0;
       const imgToDraw = (AppState.showingOriginal && p.origImg?.complete && p.origImg.naturalWidth) ? p.origImg : p.cleanImg;
       if (imgToDraw?.complete && imgToDraw.naturalWidth) {
-        ctx.drawImage(imgToDraw, 0, p.yOffset, p.width, p.height);
+        ctx.drawImage(imgToDraw, x, p.yOffset, p.width, p.height);
       } else {
         ctx.fillStyle = '#ffffff';
-        ctx.fillRect(0, p.yOffset, p.width, p.height);
+        ctx.fillRect(x, p.yOffset, p.width, p.height);
       }
 
       // Межа між сторінками
       ctx.strokeStyle = 'rgba(180, 197, 255, 0.35)';
       ctx.lineWidth = 1.2 / cam.scale;
       ctx.beginPath();
-      ctx.moveTo(0, p.yOffset);
-      ctx.lineTo(p.width, p.yOffset);
+      ctx.moveTo(x, p.yOffset);
+      ctx.lineTo(x + p.width, p.yOffset);
       ctx.stroke();
 
       // ПЛАШКА НАЗВИ СТОРІНКИ ЗЛІВА ЗА МЕЖАМИ СКАНУ (біля самого початку сторінки)
@@ -75,7 +77,7 @@ Object.assign(window.CanvasStrip, {
       const textW = ctx.measureText(labelText).width;
       const padX = 10 / cam.scale;
       const badgeH = 26 / cam.scale;
-      const badgeX = -14 / cam.scale - textW - padX * 2;
+      const badgeX = x - 14 / cam.scale - textW - padX * 2;
       const badgeY = p.yOffset + 6 / cam.scale;
 
       ctx.fillStyle = '#1e222d';
@@ -139,10 +141,10 @@ Object.assign(window.CanvasStrip, {
         ctx.stroke();
       }
 
-      // Показуємо актуальний результат і під час редагування
-      if (item.lines && item.lines.length > 0 && this.editingItem?.id !== item.id) {
-        this.renderStyledText(ctx, item);
-      }
+      const editing = this.editingItem === item;
+      const textItem = editing ? { ...item, ...this.inlineTextChanges() } : item;
+      if (textItem.lines?.length) this.renderStyledText(ctx, textItem);
+      if (editing) this.renderInlineSelection(ctx, textItem, cam.scale);
 
       if (isSelected && this.editingItem?.id !== item.id) {
         this.renderSelectionHandles(ctx, item.w, item.h, cam.scale);
@@ -239,6 +241,37 @@ Object.assign(window.CanvasStrip, {
       }
     }
     ctx.shadowBlur = 0;
+  },
+
+  renderInlineSelection(ctx, item, scale) {
+    const ed = this.inlineEditor;
+    const lines = ed.value.split('\n');
+    const size = item.style.fontSize || 42;
+    const rows = TextEngine.placements(ctx, item, lines, size);
+    const start = ed.selectionStart;
+    const end = ed.selectionEnd;
+    let offset = 0;
+    ctx.save();
+    ctx.translate(item.textOffsetX || 0, item.textOffsetY || 0);
+    for (const [index, row] of rows.entries()) {
+      const line = lines[index];
+      const last = offset + line.length;
+      if (start <= last && end >= offset) {
+        const left = row.x - ctx.measureText(row.text).width / 2;
+        const advance = position => ctx.measureText(TextEngine.displayText(item, line.slice(0, Math.max(0, position - offset)))).width;
+        const x = left + advance(start);
+        const top = row.y - size * .6;
+        if (start === end) {
+          ctx.fillStyle = '#86a5ff';
+          ctx.fillRect(x, top, 1.5 / scale, size * 1.2);
+        } else {
+          ctx.fillStyle = 'rgba(100, 144, 255, .32)';
+          ctx.fillRect(x, top, Math.max(0, left + advance(end) - x) + (end > last ? size * .25 : 0), size * 1.2);
+        }
+      }
+      offset = last + 1;
+    }
+    ctx.restore();
   },
 
   renderSelectionHandles(ctx, w, h, scale) {

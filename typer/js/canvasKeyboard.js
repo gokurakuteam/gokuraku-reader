@@ -72,16 +72,14 @@ Object.assign(window.CanvasStrip, {
       AppState.autoFitItemText(item);
       AppState.autoFitItemText(clone);
     } else if (action === 'link-cluster') {
-      const idx = AppState.items.indexOf(item);
-      if (idx > 0) {
-        const prev = AppState.items[idx - 1];
-        const cid = prev.clusterId || AppState.uid();
-        prev.clusterId = cid;
-        item.clusterId = cid;
-        AppState.autoFitItemText(item);
-      }
+      if (item.type !== 'bubble') return;
+      const prev = AppState.items.slice(0, AppState.items.indexOf(item)).findLast(entry => entry.type === 'bubble');
+      if (prev) AppState.linkBubbles(item, [prev]);
     } else if (action === 'unlink-cluster') {
+      const sibling = item.clusterId && AppState.items.find(entry => entry !== item && entry.clusterId === item.clusterId);
       item.clusterId = null;
+      AppState.autoFitItemText(item);
+      if (sibling) AppState.autoFitItemText(sibling);
     } else if (action === 'duplicate') {
       const clone = JSON.parse(JSON.stringify({ ...item, pngImg: undefined }));
       clone.id = AppState.uid();
@@ -97,6 +95,22 @@ Object.assign(window.CanvasStrip, {
     this.syncUIFromSelection();
     this.markProjectChanged();
     this.requestRender();
+  },
+
+  handleTextShortcut(e) {
+    if (!(e.ctrlKey || e.metaKey) || e.altKey || AppState.showingOriginal) return false;
+    if (e.target?.matches?.('input, textarea, select, [contenteditable]') &&
+        ![this.inlineEditor, document.getElementById('prop-text')].includes(e.target)) return false;
+    const action = e.shiftKey
+      ? { KeyX: 'strike', KeyK: 'caps' }[e.code]
+      : { KeyB: 'bold', KeyI: 'italic', KeyU: 'underline' }[e.code];
+    const item = AppState.getSelectedItem();
+    if (!action || !item || item.type === 'png') return false;
+    e.preventDefault();
+    if (e.repeat) return true;
+    const button = document.getElementById('toggle-' + action);
+    button.click();
+    return true;
   },
 
   bindKeyboardEvents() {
@@ -117,10 +131,12 @@ Object.assign(window.CanvasStrip, {
         return;
       }
 
+      if (this.handleTextShortcut(e)) return;
+
       const inInput = ['TEXTAREA', 'INPUT', 'SELECT'].includes(document.activeElement?.tagName);
       const matchHk = (hk) => e.code === hk.code && !!e.shiftKey === !!hk.shift && !!(e.ctrlKey || e.metaKey) === !!hk.ctrl;
 
-      if (matchHk(AppState.hotkeys.insertNext)) {
+      if (!inInput && matchHk(AppState.hotkeys.insertNext)) {
         e.preventDefault();
         this.insertCurrentTranslationLine();
         return;

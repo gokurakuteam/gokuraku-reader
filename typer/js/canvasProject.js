@@ -12,6 +12,27 @@ Object.assign(window.CanvasStrip, {
     };
   },
 
+  async compactProjectImage(blob) {
+    if (!blob) return blob;
+    let bitmap;
+    try {
+      bitmap = await createImageBitmap(blob);
+      if (bitmap.width > 16383 || bitmap.height > 16383 || bitmap.width * bitmap.height > 32000000) return blob;
+      const canvas = document.createElement('canvas');
+      canvas.width = bitmap.width;
+      canvas.height = bitmap.height;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return blob;
+      ctx.drawImage(bitmap, 0, 0);
+      const compressed = await new Promise(resolve => canvas.toBlob(resolve, 'image/webp', 0.85));
+      return compressed && compressed.type === 'image/webp' && compressed.size < blob.size ? compressed : blob;
+    } catch (_) {
+      return blob;
+    } finally {
+      bitmap?.close();
+    }
+  },
+
   async exportProjectData() {
     const data = this.draftData();
     // Freeze styles and contours while the scans are being encoded.
@@ -27,16 +48,19 @@ Object.assign(window.CanvasStrip, {
     return data;
   },
 
+  inlineTextChanges() {
+    const rawText = this.inlineEditor.value;
+    if (rawText === this.inlineInitialValue) return {};
+    return {
+      rawText, lines: rawText ? rawText.split('\n') : [], manualTextLayout: true, layoutError: null
+    };
+  },
+
   draftData() {
     const data = this.projectData();
     if (this.editingItem && this.inlineEditor.value !== this.inlineInitialValue) {
       const item = data.items.find(entry => entry.id === this.editingItem.id);
-      if (item) {
-        item.rawText = this.inlineEditor.value;
-        item.lines = item.rawText ? item.rawText.split('\n') : [];
-        item.manualTextLayout = true;
-        item.layoutError = null;
-      }
+      if (item) Object.assign(item, this.inlineTextChanges());
     }
     return data;
   },
@@ -235,7 +259,7 @@ Object.assign(window.CanvasStrip, {
     'Некоректний рядок перекладу.');
     check(presets.every(preset => record(preset) && typeof preset.name === 'string' &&
       optionalStrings(preset, ['font', 'autoType', 'fill', 'grad2', 'strokeColor', 'glowColor']) &&
-      optionalNumbers(preset, ['strokeWidth', 'glowBlur', 'size']) &&
+      optionalNumbers(preset, ['strokeWidth', 'glowBlur', 'size', 'padding']) &&
       (preset.autoTypes === undefined || (Array.isArray(preset.autoTypes) && preset.autoTypes.every(id)))),
     'Некоректний стиль.');
     check(activeTransIndex === undefined || (Number.isInteger(activeTransIndex) &&
@@ -292,8 +316,8 @@ Object.assign(window.CanvasStrip, {
     }
   },
 
-  async loadProject(data, restoringBackup = false) {
-    const project = await this.prepareProjectScans(this.validateProject(data, restoringBackup));
+  async loadProject(data, restoringBackup = false, allowBlobs = false) {
+    const project = await this.prepareProjectScans(this.validateProject(data, restoringBackup || allowBlobs));
     if (!restoringBackup) await this.validateProjectImages(project);
     if (this.hasProjectContent()) {
       const message = restoringBackup ? 'Відновити попередній розділ? Поточний стане резервною копією.' :
