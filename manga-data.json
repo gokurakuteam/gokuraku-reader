@@ -14410,7 +14410,7 @@
       "Фентезі",
       "Магія"
     ],
-    "latestUpdate": "2026-10-31T18:58:28.116322Z",
+    "latestUpdate": "2026-11-21T18:33:10.652787Z",
     "chapters": [
       {
         "id": 153,
@@ -16271,6 +16271,33 @@
           "https://files.catbox.moe/j6xm90.webp",
           "https://files.catbox.moe/nbglou.webp",
           "https://files.catbox.moe/t76vsy.webp"
+        ],
+        "teams": []
+      },
+      {
+        "id": 939,
+        "title": "Зірка світла",
+        "volume": 8,
+        "chapter": 69.0,
+        "date": "2026-11-21",
+        "pages": [
+          "https://files.catbox.moe/by7dt7.webp",
+          "https://files.catbox.moe/y7ajaf.webp",
+          "https://files.catbox.moe/bwg1up.webp",
+          "https://files.catbox.moe/wbcqjr.webp",
+          "https://files.catbox.moe/8nqjk1.webp",
+          "https://files.catbox.moe/1s9oli.webp",
+          "https://files.catbox.moe/rtc1k4.webp",
+          "https://files.catbox.moe/rw352t.webp",
+          "https://files.catbox.moe/fj4t9b.webp",
+          "https://files.catbox.moe/vvwbrt.webp",
+          "https://files.catbox.moe/v4092h.webp",
+          "https://files.catbox.moe/zxenuo.webp",
+          "https://files.catbox.moe/4ea9kb.webp",
+          "https://files.catbox.moe/rbkebv.webp",
+          "https://files.catbox.moe/pc46io.webp",
+          "https://files.catbox.moe/tijr3z.webp",
+          "https://files.catbox.moe/xqxf86.webp"
         ],
         "teams": []
       }
