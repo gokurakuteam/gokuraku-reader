@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="uk">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101b15">
+  <title>Клін — редактор сторінок</title>
+  <link rel="stylesheet" href="./style.css">
+  <script defer src="./vendor/lucide.min.js"></script>
+  <script defer src="./vendor/fflate.min.js"></script>
+  <script defer src="./app.js"></script>
+  <script defer src="./shortcuts.js"></script>
+</head>
+<body>
+  <main class="workspace">
+    <section id="stage" class="stage" aria-label="Робоче полотно">
+      <div id="viewport" class="viewport" tabindex="0" aria-label="Полотно сторінки" hidden>
+        <div class="mat"><div id="sheet" class="sheet">
+          <canvas id="picture"></canvas><div id="processing-region" hidden><div id="processing-tint"></div><span id="processing-time" aria-hidden="true"></span></div><div id="queued-regions" aria-hidden="true"></div><canvas id="mask"></canvas><canvas id="ink"></canvas>
+          <div id="cursor" class="brush-cursor" hidden></div>
+        </div></div>
+      </div>
+      <div id="empty" class="empty">
+        <div class="empty-art" aria-hidden="true">
+          <div class="art-back"></div>
+          <div class="art-paper"><div class="art-frame"><span class="bubble bubble-first"></span><span class="bubble bubble-second"></span></div><div class="art-panels"><span></span><span></span></div></div>
+          <span class="art-spark"><i data-lucide="sparkles"></i></span>
+        </div>
+        <h2>Додай сторінки</h2>
+        <p>Перетягни зображення або ZIP</p>
+        <button id="pick" class="button primary"><i data-lucide="folder-open"></i> Обрати файли</button>
+      </div>
+      <div class="dock" role="group" aria-label="Дії редактора">
+        <div class="dock-group">
+          <button id="add" class="icon tonal" aria-label="Додати сторінки" title="Додати сторінки"><i data-lucide="plus"></i></button>
+          <input id="files" type="file" accept="image/*,.zip,application/zip,application/x-zip-compressed" multiple hidden>
+          <div class="history" role="group" aria-label="Історія">
+            <button id="undo" class="icon" title="Скасувати (Ctrl+Z)" aria-label="Скасувати" disabled><i data-lucide="undo-2"></i></button>
+            <button id="redo" class="icon" title="Повторити (Ctrl+Shift+Z)" aria-label="Повторити" disabled><i data-lucide="redo-2"></i></button>
+          </div>
+          <button id="export" class="icon primary" aria-label="Експорт ZIP" title="Експорт ZIP" disabled><i data-lucide="download"></i></button>
+        </div>
+        <div class="dock-group draw-tools" role="group" aria-label="Інструменти">
+          <button class="tool" data-tool="pan" title="Рука (V)" aria-label="Рука" aria-pressed="false"><i data-lucide="hand"></i></button>
+          <button class="tool" data-tool="paint" title="Однотонний пензель (B)" aria-label="Однотонний пензель" aria-pressed="true"><i data-lucide="paintbrush"></i></button>
+          <button class="tool" data-tool="pick" title="Піпетка (I)" aria-label="Піпетка" aria-pressed="false"><i data-lucide="pipette"></i></button>
+          <button class="tool" data-tool="mask" title="ШІ-маска (X)" aria-label="ШІ-маска" aria-pressed="false"><i data-lucide="scan-line"></i></button>
+          <button id="clean" class="tool clean" title="Очистити маску через Hugging Face (Enter)" aria-label="Очистити маску" disabled><i data-lucide="sparkles"></i><span id="queue-count" hidden></span></button>
+        </div>
+        <div class="zoom" role="group" aria-label="Масштаб">
+          <button id="smaller" class="icon" title="Зменшити" aria-label="Зменшити" disabled><i data-lucide="minus"></i></button>
+          <button id="fit" class="icon" title="Умістити по ширині" aria-label="Умістити по ширині" disabled>—%</button>
+          <button id="larger" class="icon" title="Збільшити" aria-label="Збільшити" disabled><i data-lucide="plus"></i></button>
+        </div>
+        <button id="shortcuts" class="icon" aria-label="Клавіші" title="Клавіші"><i data-lucide="keyboard"></i></button>
+        <button id="toggle-panel" class="icon panel-toggle" aria-label="Бічна панель" aria-controls="side-panel" aria-expanded="true" title="Бічна панель"><i data-lucide="panel-right"></i></button>
+      </div>
+      <div id="loupe" aria-hidden="true" hidden><canvas width="15" height="15"></canvas><span></span></div>
+      <div id="drop" class="drop" hidden><i data-lucide="images"></i> Відпусти файли</div>
+      <div id="notice" class="notice" role="status" hidden></div>
+    </section>
+    <aside id="side-panel" class="panel side-panel" aria-label="Бічна панель">
+      <div id="resize-panel" role="separator" tabindex="0" aria-label="Розмір панелі" aria-controls="side-panel" aria-orientation="vertical"></div>
+      <div class="panel-tabs" role="tablist" aria-label="Вміст панелі">
+        <button id="pages-tab" role="tab" aria-selected="true" aria-controls="pages-panel"><i data-lucide="layers-2"></i><span>Сторінки</span></button>
+        <button id="tools-tab" role="tab" aria-selected="false" aria-controls="tools-panel" tabindex="-1"><i data-lucide="sliders-horizontal"></i><span>Інструменти</span></button>
+      </div>
+      <div id="pages-panel" role="tabpanel" aria-labelledby="pages-tab" class="pages-pane">
+        <div class="paging" role="group" aria-label="Навігація сторінками">
+          <button id="prev" class="icon" title="Попередня (←)" aria-label="Попередня сторінка" disabled><i data-lucide="chevron-left"></i></button>
+          <span id="position" aria-live="polite">0 / 0</span>
+          <button id="next" class="icon" title="Наступна (→)" aria-label="Наступна сторінка" disabled><i data-lucide="chevron-right"></i></button>
+        </div>
+        <ol id="pages" class="page-list"></ol>
+        <div id="no-pages" class="no-pages"><i data-lucide="files"></i><span>Поки порожньо</span></div>
+      </div>
+      <div id="tools-panel" role="tabpanel" aria-labelledby="tools-tab" class="tools-pane" hidden>
+        <div class="settings">
+          <div class="settings-title"><span class="tile"><i data-lucide="paintbrush"></i></span><h3>Пензель</h3><kbd id="paint-key">B</kbd></div>
+          <label class="field" for="size">Розмір <output id="size-value" for="size">48 px</output></label>
+          <input id="size" type="range" min="2" max="240" value="48" aria-label="Розмір пензля">
+          <label class="field color-field" for="color">Колір <span><span id="hex">#FFFFFF</span><input id="color" type="color" value="#ffffff"></span></label>
+        </div>
+        <div class="settings ai">
+          <div class="settings-title"><span class="tile"><i data-lucide="sparkles"></i></span><h3>ШІ-клін</h3><kbd id="mask-key">X</kbd></div>
+          <button id="clear" class="button quiet" title="Скинути маску" disabled><i data-lucide="eraser"></i> Скинути маску</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+  <dialog id="shortcut-dialog" aria-labelledby="shortcut-title">
+    <header class="shortcut-top">
+      <h2 id="shortcut-title">Клавіші</h2>
+      <button id="shortcut-close" class="icon" aria-label="Закрити" title="Закрити"><i data-lucide="x"></i></button>
+    </header>
+    <p id="shortcut-status" role="status">Обери поле й натисни клавішу або комбінацію.</p>
+    <div class="shortcut-scroll">
+      <table class="shortcut-table">
+        <thead><tr><th scope="col">Дія</th><th scope="col">Комбінація 1</th><th scope="col">Комбінація 2</th></tr></thead>
+        <tbody id="shortcut-rows"></tbody>
+      </table>
+    </div>
+    <footer class="shortcut-footer">
+      <button id="shortcut-reset" class="button tonal">Типові клавіші</button>
+    </footer>
+  </dialog>
+</body>
+</html>
