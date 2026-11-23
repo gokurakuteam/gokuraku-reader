@@ -25,6 +25,8 @@ Object.assign(window.CanvasStrip, {
     ed.style.top = `${scrCenter.y - h / 2}px`;
     ed.style.transform = `rotate(${item.angle || 0}deg)`;
     ed.value = this.inlineInitialValue;
+    this.inlinePreviousValue = ed.value;
+    this.inlineFormats = undefined;
     ed.focus();
     ed.setSelectionRange(ed.value.length, ed.value.length);
     this.requestRender();
@@ -50,7 +52,7 @@ Object.assign(window.CanvasStrip, {
   },
 
   inlinePointerOffset(e) {
-    const item = this.editingItem;
+    const item = { ...this.editingItem, ...this.inlineTextChanges() };
     const rect = this.canvas.getBoundingClientRect();
     const point = this.screenToWorld(e.clientX - rect.left, e.clientY - rect.top);
     const local = this.worldToItemLocal(point.x, point.y, this.getItemGlobalRect(item), item.angle || 0);
@@ -62,13 +64,14 @@ Object.assign(window.CanvasStrip, {
     const index = rows.reduce((best, row, i) => Math.abs(row.y - y) < Math.abs(rows[best].y - y) ? i : best, 0);
     const line = lines[index];
     const row = rows[index];
-    const left = row.x - ctx.measureText(row.text).width / 2;
+    const left = TextEngine.lineStart(ctx, item, row, item.style.fontSize || 42);
+    const offsets = row.runs && TextEngine.lineOffsets(item.rawText, lines)[index];
     const start = lines.slice(0, index).reduce((offset, text) => offset + text.length + 1, 0);
     let column = 0;
     let previousX = left;
     for (const character of line) {
       const next = column + character.length;
-      const nextX = left + ctx.measureText(TextEngine.displayText(item, line.slice(0, next))).width;
+      const nextX = left + TextEngine.lineAdvance(ctx, item, line.slice(0, next), item.style.fontSize || 42, offsets);
       if (x < (previousX + nextX) / 2) break;
       column = next;
       previousX = nextX;
@@ -122,8 +125,44 @@ Object.assign(window.CanvasStrip, {
 
   // --- ПОДІЇ ПОЛОТНА ---
   bindCanvasEvents() {
+    this.bindBrushEvents();
+    if (this.viewport) {
+      const brushCursor = document.createElement('div');
+      brushCursor.className = 'brush-cursor';
+      brushCursor.hidden = true;
+      this.viewport.appendChild(brushCursor);
+      const updateBrushCursor = (e) => {
+        if (!e.isPrimary || e.pointerType === 'touch') return;
+        this.brushCursorPoint = { x: e.clientX, y: e.clientY };
+        this.updateBrushCursor();
+      };
+      this.updateBrushCursor = () => {
+        const point = this.brushCursorPoint;
+        if (!point || AppState.activeTool !== 'brush' || AppState.showingOriginal || this.spacePressed) {
+          brushCursor.hidden = true;
+          return;
+        }
+        const rect = this.viewport.getBoundingClientRect();
+        const x = point.x - rect.left;
+        const y = point.y - rect.top;
+        const world = this.screenToWorld(x, y);
+        const page = AppState.getPageAtPoint(world.x, world.y);
+        const stroke = this.dragState?.mode === 'brush' ? this.dragState : null;
+        brushCursor.hidden = x < 0 || y < 0 || x >= rect.width || y >= rect.height ||
+          !page?.cleanImg?.naturalWidth || (stroke && stroke.page !== page);
+        if (brushCursor.hidden) return;
+        const size = (stroke?.size ?? this.getBrushSize()) * AppState.camera.scale;
+        brushCursor.style.width = brushCursor.style.height = `${size}px`;
+        brushCursor.style.left = `${point.x - rect.left}px`;
+        brushCursor.style.top = `${point.y - rect.top}px`;
+      };
+      this.canvas.addEventListener('pointermove', updateBrushCursor);
+      this.canvas.addEventListener('pointerleave', () => { this.brushCursorPoint = null; this.updateBrushCursor(); });
+      document.getElementById('brush-size').addEventListener('input', () => this.updateBrushCursor());
+    }
+
     this.canvas.addEventListener('dblclick', (e) => {
-      if (AppState.showingOriginal || e.altKey) return;
+      if (AppState.showingOriginal || AppState.activeTool === 'brush' || e.altKey) return;
       const rect = this.canvas.getBoundingClientRect();
       const world = this.screenToWorld(e.clientX - rect.left, e.clientY - rect.top);
       const hit = this.hitTest(world.x, world.y, false);
@@ -136,8 +175,18 @@ Object.assign(window.CanvasStrip, {
       }
     });
 
+    let textEdit;
+    this.inlineEditor.addEventListener('beforeinput', e => { textEdit = TextEngine.editAnchor(this.inlineEditor, e); });
     this.inlineEditor.addEventListener('input', () => {
       if (!this.editingItem) return;
+      const value = this.inlineEditor.value;
+      if (this.inlinePreviousValue === this.inlineInitialValue) {
+        const item = this.editingItem;
+        this.inlineFormats = TextEngine.projectFormats(item, this.inlineInitialValue.split('\n'));
+      }
+      this.inlineFormats = TextEngine.editFormats(this.inlineFormats, this.inlinePreviousValue, value, textEdit);
+      textEdit = null;
+      this.inlinePreviousValue = value;
       this.requestRender();
       document.getElementById('prop-text').value = this.inlineEditor.value;
       this.markProjectChanged();
@@ -173,6 +222,7 @@ Object.assign(window.CanvasStrip, {
 
     this.canvas.addEventListener('wheel', (e) => {
       e.preventDefault();
+      if (this.dragState?.mode === 'brush') return;
       if (this.editingItem) this.closeInlineEditor();
       const rect = this.canvas.getBoundingClientRect();
       const mx = e.clientX - rect.left;
@@ -242,6 +292,7 @@ Object.assign(window.CanvasStrip, {
     }, { passive: false });
 
     this.canvas.addEventListener('mousedown', (e) => {
+      if (this.dragState?.mode === 'brush') return;
       if (this.wheelMotion?.frame) {
         cancelAnimationFrame(this.wheelMotion.frame);
         this.wheelMotion = null;
@@ -261,6 +312,8 @@ Object.assign(window.CanvasStrip, {
       }
 
       const tool = AppState.activeTool;
+
+      if (tool === 'brush') return;
 
       if (tool === 'eyedropper') {
         this.pickColorFromCanvas(sx, sy);
@@ -359,7 +412,7 @@ Object.assign(window.CanvasStrip, {
         this.setInlineSelection(this.inlinePointerOffset(e));
         return;
       }
-      if (!this.dragState) return;
+      if (!this.dragState || this.dragState.mode === 'brush') return;
       const rect = this.canvas.getBoundingClientRect();
       const sx = e.clientX - rect.left;
       const sy = e.clientY - rect.top;
@@ -460,7 +513,7 @@ Object.assign(window.CanvasStrip, {
     window.addEventListener('mouseup', (e) => {
       this.inlineMouseAnchor = null;
       const st = this.dragState;
-      if (!st) return;
+      if (!st || st.mode === 'brush') return;
       if (st.mode === 'detect') {
         const rect = this.canvas.getBoundingClientRect();
         const moved = Math.hypot(e.clientX - rect.left - st.startSX, e.clientY - rect.top - st.startSY);

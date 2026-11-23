@@ -66,6 +66,7 @@ Object.assign(window.CanvasStrip, {
       AppState.pages = []; AppState.items = []; AppState.selectedId = null;
       if (this.wheelMotion?.frame) cancelAnimationFrame(this.wheelMotion.frame);
       this.wheelMotion = null;
+      this.cancelBrushStroke?.();
       this.dragState = null;
       this.snapGuideX = null;
       AppState.camera.x = 150;
@@ -136,6 +137,7 @@ Object.assign(window.CanvasStrip, {
   },
 
   updateOriginalView() {
+    if (AppState.showingOriginal) this.cancelBrushStroke?.();
     const button = document.getElementById('btn-peek-orig');
     button.classList.toggle('active', AppState.showingOriginal);
     button.setAttribute('aria-pressed', AppState.showingOriginal);
@@ -155,6 +157,7 @@ Object.assign(window.CanvasStrip, {
 
     const matchedPreset = AppState.presets.find(p => (p.autoTypes || (p.autoType && p.autoType !== 'none' ? [p.autoType] : [])).includes(entry.type));
     item.rawText = entry.text;
+    delete item.textFormats;
     item.manualTextLayout = false;
     if (matchedPreset) this.applyPresetObject(matchedPreset, true);
     if (!matchedPreset || (item.type !== 'bubble' && !item.fixedFontSize)) AppState.autoFitItemText(item);
@@ -276,6 +279,8 @@ Object.assign(window.CanvasStrip, {
   renderPresets() {
     const box = document.getElementById('preset-list');
     box.innerHTML = '';
+    const shortcuts = document.getElementById('style-shortcuts');
+    shortcuts.replaceChildren();
     AppState.presets.forEach((p, idx) => {
       const row = document.createElement('div');
       row.className = 'preset-item';
@@ -289,6 +294,18 @@ Object.assign(window.CanvasStrip, {
       details.className = 'preset-details';
       const name = document.createElement('strong');
       name.textContent = p.name.replace(/^\d+\.\s*/, '');
+      const entry = document.createElement('li');
+      const shortcut = document.createElement('button');
+      shortcut.type = 'button';
+      if (idx < 9) {
+        const key = document.createElement('kbd');
+        key.textContent = idx + 1;
+        shortcut.append(key);
+      }
+      shortcut.append(name.textContent);
+      shortcut.addEventListener('click', () => this.applyPresetObject(p, true));
+      entry.append(shortcut);
+      shortcuts.append(entry);
       const meta = document.createElement('small');
       meta.textContent = `${p.font || 'Arial'} · ${(p.autoTypes || (p.autoType && p.autoType !== 'none' ? [p.autoType] : [])).map(type => ({bubble:'Бабл',panel:'Панель',bg:'Фон',thought:'Думки',sound:'Звук'})[type] || type).join(', ') || 'Вручну'}`;
       details.append(name, meta);

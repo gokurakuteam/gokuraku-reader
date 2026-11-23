@@ -157,10 +157,17 @@ Object.assign(window.CanvasStrip, {
         return;
       }
 
-      if (e.code === 'Space') this.spacePressed = true;
+      if (e.code === 'Escape' && this.dragState?.mode === 'brush') {
+        this.cancelBrushStroke();
+        return;
+      }
+      if (e.code === 'Space') {
+        this.spacePressed = true;
+        this.updateBrushCursor?.();
+      }
 
-      if (e.code.startsWith('Digit')) {
-        const num = parseInt(e.code.replace('Digit', ''), 10) - 1;
+      if (/^Digit[1-9]$/.test(e.code) && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
+        const num = Number(e.code.slice(-1)) - 1;
         if (AppState.presets[num]) {
           e.preventDefault();
           this.applyPresetObject(AppState.presets[num], true);
@@ -168,7 +175,8 @@ Object.assign(window.CanvasStrip, {
         return;
       }
 
-      if (matchHk(AppState.hotkeys.toolPointer)) this.setTool('pointer');
+      if (e.code === 'KeyB' && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) { e.preventDefault(); this.setTool('brush'); }
+      else if (matchHk(AppState.hotkeys.toolPointer)) this.setTool('pointer');
       else if (matchHk(AppState.hotkeys.toolBubble)) this.setTool('bubble');
       else if (matchHk(AppState.hotkeys.toolText)) this.setTool('text');
       else if (matchHk(AppState.hotkeys.toolEyedropper)) this.setTool('eyedropper');
@@ -199,7 +207,10 @@ Object.assign(window.CanvasStrip, {
     });
 
     window.addEventListener('keyup', (e) => {
-      if (e.code === 'Space') this.spacePressed = false;
+      if (e.code === 'Space') {
+        this.spacePressed = false;
+        this.updateBrushCursor?.();
+      }
       if (e.code === AppState.hotkeys.peekOrig.code && AppState.holdOriginal) {
         AppState.holdOriginal = false;
         this.updateOriginalView();

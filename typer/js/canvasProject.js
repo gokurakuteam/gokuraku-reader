@@ -52,7 +52,7 @@ Object.assign(window.CanvasStrip, {
     const rawText = this.inlineEditor.value;
     if (rawText === this.inlineInitialValue) return {};
     return {
-      rawText, lines: rawText ? rawText.split('\n') : [], manualTextLayout: true, layoutError: null
+      rawText, textFormats: this.inlineFormats, lines: rawText ? rawText.split('\n') : [], manualTextLayout: true, layoutError: null
     };
   },
 
@@ -245,6 +245,10 @@ Object.assign(window.CanvasStrip, {
         optionalNumbers(item, ['angle', 'padding', 'effectivePadding', 'textOffsetX', 'textOffsetY',
           'manualMinFont', 'manualMaxFont', 'fixedFontSize', 'fixedFontOrder']) &&
         (item.rawText === undefined || typeof item.rawText === 'string') &&
+        (item.textFormats == null || (Array.isArray(item.textFormats) &&
+          item.textFormats.length <= (item.rawText?.length || 0) && item.textFormats.every(format =>
+            format == null || record(format) && Object.entries(format).every(([key, value]) =>
+              ['bold', 'italic', 'underline', 'strike', 'uppercase'].includes(key) && typeof value === 'boolean')))) &&
         (item.lines === undefined || (Array.isArray(item.lines) && item.lines.every(line => typeof line === 'string'))) &&
         (item.type !== 'png' || image(item.pngDataUrl)), 'Некоректний об’єкт або посилання на сторінку.');
       if (item.contour) {
@@ -337,6 +341,7 @@ Object.assign(window.CanvasStrip, {
     if (this.editingItem) this.closeInlineEditor(true);
     if (this.wheelMotion?.frame) cancelAnimationFrame(this.wheelMotion.frame);
     this.wheelMotion = null;
+    this.cancelBrushStroke?.();
     this.dragState = null;
     this.snapGuideX = null;
     this.releasePageImages?.();

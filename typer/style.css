@@ -689,6 +689,11 @@ textarea:focus, input:focus, select:focus {
   cursor: default;
 }
 
+.trans-item.type-comment > span {
+  user-select: text;
+  cursor: text;
+}
+
 .trans-item.type-sound {
   font-weight: 700;
   color: #ffb4ab;
@@ -948,7 +953,7 @@ body { font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; }
 .canvas-inline-editor::selection { background: transparent; color: transparent; }
 .text-color-field { flex-wrap: wrap; }
 .text-color-controls { display: inline-flex; align-items: center; gap: 6px; }
-.text-color-controls button, #quick-text-color {
+.text-color-controls button, .text-color-controls input[type="color"] {
   width: 26px;
   height: 26px;
   padding: 0;
@@ -956,8 +961,25 @@ body { font-family: 'Trebuchet MS', 'Segoe UI', sans-serif; }
   border-radius: 6px;
   cursor: pointer;
 }
-.text-color-controls button[data-text-color="#000000"] { background: #000; }
-.text-color-controls button[data-text-color="#ffffff"] { background: #fff; }
+.text-color-controls button:is([data-text-color="#000000"], [data-stroke-color="#000000"]) { background: #000; }
+.text-color-controls button:is([data-text-color="#ffffff"], [data-stroke-color="#ffffff"]) { background: #fff; }
 .text-color-controls button[aria-pressed="true"] { outline: 1px solid #b4c5ff; outline-offset: 2px; }
-#quick-text-color { width: 32px; padding: 3px; }
-#quick-text-hex { width: 8ch; padding: 4px 5px; font-family: monospace; }
+.text-color-controls input[type="color"] { width: 32px; padding: 3px; }
+#prop-stroke-width { width: 64px; }
+.style-shortcuts { margin-top: auto; flex-shrink: 0; }
+.style-shortcuts ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; }
+.style-shortcuts button {
+  width: 100%; display: flex; align-items: center; gap: 8px;
+  padding: 4px 6px; font: inherit; text-align: left; color: inherit;
+  background: transparent; border: 0; border-radius: 6px; cursor: pointer;
+}
+.style-shortcuts button:hover { background: var(--m3-surface-high); }
+
+/* Компактніша панель інструментів */
+.topbar { height: 50px; padding-inline: 10px; gap: 6px; }
+.segmented-tools { padding: 3px; }
+.topbar .m3-btn { padding: 6px 10px; }
+
+#main-canvas.brush-active { touch-action: none; }
+.brush-cursor { position: absolute; transform: translate(-50%, -50%); border: 1px solid white; border-radius: 50%; box-shadow: 0 0 0 1px #000; pointer-events: none; z-index: 10; }
+.brush-cursor[hidden] { display: none; }

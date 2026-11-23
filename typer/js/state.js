@@ -219,24 +219,17 @@ window.AppState = {
 
   // --- УНІВЕРСАЛЬНИЙ ПАРСЕР СТОРІНОК ("34 сторінка", "сторінка 34", "Сторінка 34", "Стор. 34") ---
   parseTranslationText(rawContent) {
-    const lines = rawContent.replace(/\r\n/g, '\n').split('\n');
+    const lines = rawContent.split(/\r\n?|\n|\u2028|\u2029/);
     const parsed = [];
     let currentPage = 1;
 
-    // Ловить: "34 сторінка", "сторінка 34", "Сторінка: 34", "стор. 34", "# Сторінка 34" тощо
-    const pageRegex = /^#*\s*[-—=~*]*\s*(?:(\d+)\s*(?:сторінка|стор\.?|page)|(?:сторінка|стор\.?|page)\s*[:№#-]*\s*(\d+))\s*[-—=~*:]*$/i;
+    // Ловить: "34 сторінка", "сторінка 34", "Сторінка: 34", "стор. 34" тощо
+    const pageRegex = /^[-—=~*]*\s*(?:(\d+)\s*(?:сторінка|стор\.?|page)|(?:сторінка|стор\.?|page)\s*[:№#-]*\s*(\d+))\s*[-—=~*:]*$/i;
 
     const unescape = text => text.replace(/\\([!-/:-@\[\\\]\^_`{|}~])/g, '$1');
     for (const rawLine of lines) {
-      let line = rawLine.trim();
+      let line = rawLine.replace(/^[\s\u200b\u200e\u200f]+/u, '').trimEnd();
       if (!line) continue;
-
-      const pageMatch = line.match(pageRegex);
-      if (pageMatch) {
-        currentPage = parseInt(pageMatch[1] || pageMatch[2], 10);
-        parsed.push({ type: 'page_header', page: currentPage, text: `Сторінка ${currentPage}` });
-        continue;
-      }
 
       if (line.startsWith('#')) {
         parsed.push({
@@ -244,6 +237,13 @@ window.AppState = {
           page: currentPage,
           text: unescape(line.replace(/^#+\s*/, ''))
         });
+        continue;
+      }
+
+      const pageMatch = line.match(pageRegex);
+      if (pageMatch) {
+        currentPage = parseInt(pageMatch[1] || pageMatch[2], 10);
+        parsed.push({ type: 'page_header', page: currentPage, text: `Сторінка ${currentPage}` });
         continue;
       }
 

@@ -49,6 +49,8 @@
       <button class="m3-btn tool-btn" data-tool="eyedropper" title="Піпетка — взяти колір зі сторінки (I)">
         <i data-lucide="pipette"></i> Піпетка <kbd>I</kbd>
       </button>
+      <button class="m3-btn tool-btn" data-tool="brush" title="Пензель для кліну (B / И)"><i data-lucide="brush"></i></button>
+      <label title="Розмір пензля"> <input id="brush-size" type="number" min="2" max="200" value="30" style="width:48px" aria-label="Розмір пензля"></label>
       <button class="m3-btn tool-btn" data-tool="eraser" title="Ластик — клік по об'єкту видаляє його (E)">
         <i data-lucide="eraser"></i> Ластик <kbd>E</kbd>
       </button>
@@ -129,9 +131,20 @@
               <button type="button" data-text-color="#000000" aria-label="Чорний" title="Чорний"></button>
               <button type="button" data-text-color="#ffffff" aria-label="Білий" title="Білий"></button>
               <input type="color" id="quick-text-color" value="#000000" aria-label="Палітра кольорів">
-              <input type="text" id="quick-text-hex" value="#000000" maxlength="7" spellcheck="false" aria-label="HEX-код кольору">
             </div>
           </div>
+          <div class="text-align-field text-color-field">
+            <label for="prop-stroke-color">Обведення</label>
+            <div class="text-color-controls" role="group" aria-label="Колір обведення">
+              <button type="button" data-stroke-color="#000000" aria-label="Чорне обведення" title="Чорне обведення"></button>
+              <button type="button" data-stroke-color="#ffffff" aria-label="Біле обведення" title="Біле обведення"></button>
+              <input type="color" id="prop-stroke-color" value="#ffffff" aria-label="Палітра обведення">
+            </div>
+          </div>
+          <label class="text-align-field" data-scrub="prop-stroke-width" data-step="1">Товщина обведення
+            <input type="number" id="prop-stroke-width" min="0" max="150" value="0">
+          </label>
+          <label class="helper-text"><input type="checkbox" id="prop-stroke-relative"> Товщина у % від кегля</label>
           <label class="text-align-field">Вирівнювання
             <select id="prop-text-align">
               <option value="left">Ліворуч</option>
@@ -246,20 +259,7 @@
         </div>
 
         <div class="m3-card">
-          <span class="card-title">Обводка та Світіння</span>
-          <div class="effect-row">
-            <label data-scrub="prop-stroke-width" data-step="1" class="scrub-label">
-              <i data-lucide="move-horizontal"></i> Обводка (px або % кегля)
-            </label>
-            <div class="effect-inputs">
-              <input type="number" id="prop-stroke-width" min="0" max="150" value="0">
-              <label class="color-well" id="well-stroke">
-                <input type="color" id="prop-stroke-color" value="#ffffff">
-              </label>
-            </div>
-          </div>
-
-          <label class="helper-text"><input type="checkbox" id="prop-stroke-relative"> Пропорційно до розміру тексту (%)</label>
+          <span class="card-title">Світіння</span>
           <div class="effect-row">
             <label data-scrub="prop-glow-blur" data-step="1" class="scrub-label">
               <i data-lucide="move-horizontal"></i> Світіння (px)
@@ -279,6 +279,10 @@
         </div>
       </div>
 
+      <section class="m3-card style-shortcuts" aria-label="Гарячі клавіші стилів">
+        <span class="card-title">Клавіші стилів</span>
+        <ul id="style-shortcuts"></ul>
+      </section>
     </aside>
 
     <div class="panel-resizer" data-side="left" role="separator" aria-label="Змінити ширину лівої панелі" tabindex="0"></div>
@@ -373,6 +377,7 @@
   <script src="js/canvasStrip.js"></script>
   <script src="js/canvasProject.js"></script>
   <script src="js/canvasRender.js"></script>
+  <script src="js/canvasBrush.js"></script>
   <script src="js/canvasEvents.js"></script>
   <script src="js/dialogs.js"></script>
   <script src="js/canvasUI.js"></script>

@@ -22,6 +22,96 @@ window.TextEngine = {
   displayText(item, text = item.rawText || '') {
     return item.style.uppercase ? text.toLocaleUpperCase('uk') : text;
   },
+  formatKeys: ['bold', 'italic', 'underline', 'strike', 'uppercase'],
+  formatAt(item, index, key) {
+    return item.textFormats?.[index]?.[key] ?? !!item.style[key];
+  },
+  editAnchor(editor, event) {
+    return { start: editor.selectionStart, end: editor.selectionEnd, type: event.inputType };
+  },
+  editFormats(formats, previous, next, anchor) {
+    if (!formats || previous === next) return formats;
+    let limit = previous.length;
+    if (anchor && /^(insertText|insertFromPaste|insertLineBreak|deleteContentBackward|deleteContentForward|deleteByCut)$/.test(anchor.type)) {
+      limit = anchor.start;
+      if (anchor.start === anchor.end && anchor.type === 'deleteContentBackward') {
+        limit = Math.max(0, limit - (previous.length - next.length));
+      }
+    }
+    let start = 0;
+    while (start < limit && previous[start] === next[start]) start++;
+    let end = previous.length;
+    let nextEnd = next.length;
+    const suffixStart = anchor && limit === anchor.start && anchor.end > anchor.start ? Math.max(start, anchor.end) : start;
+    while (end > suffixStart && nextEnd > start && previous[end - 1] === next[nextEnd - 1]) {
+      end--;
+      nextEnd--;
+    }
+    const before = formats[start - 1];
+    const after = formats[end];
+    const inherited = before && after && this.formatKeys.every(key => before[key] === after[key]) ? before : null;
+    return [...Array.from({ length: start }, (_, index) => formats[index] || null), ...Array.from({ length: nextEnd - start }, () => inherited),
+      ...Array.from({ length: previous.length - end }, (_, index) => formats[end + index] || null)];
+  },
+  // Preserve source positions across whitespace normalization and inserted hyphens.
+  lineOffsets(rawText, lines, start = 0) {
+    let offset = start;
+    return lines.map((line, row) => {
+      if (row && rawText[offset] === '\n') offset++;
+      return line.split('').map((character, column) => {
+        if (character === rawText[offset]) return offset++;
+        while (/\s/u.test(rawText[offset] || '') && rawText[offset] !== '\u00a0') offset++;
+        if (character === rawText[offset]) return offset++;
+        if (character === '-' && column === line.length - 1) return offset - 1;
+        return Math.max(0, offset - 1);
+      });
+    });
+  },
+  projectFormats(item, lines) {
+    if (!item.textFormats) return undefined;
+    return this.lineOffsets(item.rawText, lines).flatMap((row, index) => [
+      ...(index ? [null] : []), ...row.map(offset => item.textFormats[offset] || null)
+    ]);
+  },
+  lineStart(ctx, item, row, size) {
+    if (row.runs) return row.x;
+    ctx.font = this.font(item, size);
+    return row.x - ctx.measureText(row.text).width / 2;
+  },
+  lineAdvance(ctx, item, text, size, offsets) {
+    if (offsets) return this.runs(ctx, item, text, size, offsets).width;
+    ctx.font = this.font(item, size);
+    return ctx.measureText(this.displayText(item, text)).width;
+  },
+  runs(ctx, item, text, size, offsets) {
+    const runs = [];
+    for (let index = 0; index < text.length;) {
+      const character = String.fromCodePoint(text.codePointAt(index));
+      const source = offsets[index];
+      const style = Object.fromEntries(this.formatKeys.map(key => [key, this.formatAt(item, source, key)]));
+      const font = this.font({ style: { ...item.style, ...style } }, size);
+      const last = runs.at(-1);
+      const display = style.uppercase ? character.toLocaleUpperCase('uk') : character;
+      if (last && last.font === font && last.underline === style.underline && last.strike === style.strike) {
+        last.text += display;
+      } else runs.push({ text: display, font, underline: style.underline, strike: style.strike });
+      index += character.length;
+    }
+    let width = 0, left = Infinity, right = -Infinity, ascent = 0, descent = 0;
+    ctx.textAlign = 'left';
+    for (const run of runs) {
+      ctx.font = run.font;
+      const m = ctx.measureText(run.text);
+      run.x = width;
+      run.width = m.width;
+      left = Math.min(left, width - (m.actualBoundingBoxLeft ?? 0));
+      right = Math.max(right, width + (m.actualBoundingBoxRight ?? m.width));
+      ascent = Math.max(ascent, m.actualBoundingBoxAscent ?? size * .5);
+      descent = Math.max(descent, m.actualBoundingBoxDescent ?? size * .5);
+      width += m.width;
+    }
+    return { runs, width, left: runs.length ? left : 0, right: runs.length ? right : 0, ascent, descent };
+  },
   contourCenters: new WeakMap(),
   contourCenter(item) {
     const contour = item.contour;
@@ -64,7 +154,13 @@ window.TextEngine = {
     if (!lines?.length) return [];
     ctx.font=this.font(item,size);ctx.textAlign='center';ctx.textBaseline='middle';
     const lh=size*Math.max(1.1,item.style.lineHeight||1.2);
+    const offsets = item.textFormats?.some(Boolean) ? this.lineOffsets(item.rawText, lines) : null;
     const rows=lines.map((text,i)=>{
+      if (offsets) {
+        const measured = this.runs(ctx, item, text, size, offsets[i]);
+        return { ...measured, text, x: -(measured.left + measured.right) / 2,
+          y: (i-(lines.length-1)/2)*lh, width: measured.right - measured.left };
+      }
       text = this.displayText(item, text);
       const m=ctx.measureText(text),left=m.actualBoundingBoxLeft??m.width/2,right=m.actualBoundingBoxRight??m.width/2;
       return {text,x:(left-right)/2,y:(i-(lines.length-1)/2)*lh,
@@ -115,27 +211,45 @@ window.TextEngine = {
     return Math.max(0, half * 2);
   },
   prepareText(text, hyphens) {
-    const words = text.trim().replace(/\r\n?/g, '\n').replace(/\n+/g, '\n')
-      .split(/[^\S\u00a0\n]+|(?=\n)|(?<=\n)/u).filter(Boolean);
+    const trimmed = text.trim();
+    const start = text.length - text.trimStart().length;
+    const tokens = trimmed.matchAll(/(?:[^\s]|\u00a0)+|\r\n?|\n/gu);
+    const words = [];
+    const positions = [];
+    for (const token of tokens) {
+      const word = /^[\r\n]/.test(token[0]) ? '\n' : token[0];
+      if (word === '\n' && (!words.length || words.at(-1) === '\n')) continue;
+      words.push(word);
+      positions.push(start + token.index);
+    }
+    if (words.at(-1) === '\n') { words.pop(); positions.pop(); }
     const breaks = words.map(word => hyphens ? this.breaks(word) : []);
     const paragraphs = words.filter(word => word === '\n').length;
-    return { words, breaks, paragraphs, plain: words.filter(word => word !== '\n').join(' ') };
+    return { words, positions, breaks, paragraphs, plain: words.filter(word => word !== '\n').join(' ') };
   },
   solve(item,size,pad,hyphens, prepared = this.prepareText(item.rawText, hyphens)) {
     const ctx=this.ctx ||= document.createElement('canvas').getContext('2d');
     ctx.font=this.font(item,size); ctx.textAlign='center';ctx.textBaseline='middle';
-    const { words, breaks, paragraphs, plain } = prepared;
+    const { words, positions, breaks, paragraphs, plain } = prepared;
     const lh = size * Math.max(1.1, item.style.lineHeight || 1.2);
     const extra = this.inkMargin(item, size);
     const measure = new Map();
-    const metrics = text => {
-      let result = measure.get(text);
+    const formatted = item.textFormats?.some(Boolean);
+    const metrics = (text, start = 0) => {
+      const key = formatted ? start + ':' + text : text;
+      let result = measure.get(key);
       if (!result) {
-        const m = ctx.measureText(this.displayText(item, text));
+        let m;
+        if (formatted) {
+          const measured = this.runs(ctx, item, text, size, this.lineOffsets(item.rawText, [text], start)[0]);
+          m = { width: measured.width, actualBoundingBoxLeft: measured.width / 2 - measured.left,
+            actualBoundingBoxRight: measured.right - measured.width / 2,
+            actualBoundingBoxAscent: measured.ascent, actualBoundingBoxDescent: measured.descent };
+        } else m = ctx.measureText(this.displayText(item, text));
         result = { w: 2 * Math.max(m.width / 2, m.actualBoundingBoxLeft || 0, m.actualBoundingBoxRight || 0) + 2 * extra,
           a: Math.max(size * .55, m.actualBoundingBoxAscent || 0) + extra,
           d: Math.max(size * .55, m.actualBoundingBoxDescent || 0) + extra };
-        measure.set(text, result);
+        measure.set(key, result);
       }
       return result;
     };
@@ -158,14 +272,14 @@ window.TextEngine = {
       const rowWidths = baselines.map(() => new Map());
       const memo=new Map();
       const visit=(wi,offset,row)=>{
-        if(row===n) return wi===words.length?{cost:0,lines:[]}:null;
+        if(row===n) return wi===words.length?{cost:0,lines:[],widths:[]}:null;
         if(wi>=words.length) return null;
         const key=`${wi}:${offset}:${row}`;if(memo.has(key))return memo.get(key);
         const y = baselines[row];
         const target=unit*profile[row];
         let line='',answer=null;
         const offer=(t,next,off,penalty)=>{
-          const m = metrics(t);
+          const m = metrics(t, positions[wi] + offset);
           const bandKey = m.a + ':' + m.d;
           const widths = rowWidths[row];
           if (!widths.has(bandKey)) widths.set(bandKey, widthAt(y - m.a, y + m.d));
@@ -174,12 +288,12 @@ window.TextEngine = {
           const rest=visit(next,off,row+1);if(!rest)return;
           // Avoid a narrow middle row between two wider rows, and a tiny
           // isolated word ending on the last row. Neither is an oval profile.
-          const nextWidth=rest.lines.length?metrics(rest.lines[0]).w:0;
-          const afterWidth=rest.lines.length>1?metrics(rest.lines[1]).w:0;
+          const nextWidth=rest.lines.length?rest.widths[0]:0;
+          const afterWidth=rest.lines.length>1?rest.widths[1]:0;
           const valley=afterWidth?Math.max(0,Math.min(m.w,afterWidth)-nextWidth)/Math.max(m.w,afterWidth):0;
           const shortEnding=row===n-1 && offset>0 && t.replace(/[^\p{L}]/gu,'').length<3 ? .5 : 0;
           const cost=rest.cost+3*((m.w-target)/Math.max(size,target))**2+penalty+1.5*valley**2+shortEnding;
-          if(!answer||cost<answer.cost)answer={cost,lines:[t,...rest.lines]};
+          if(!answer||cost<answer.cost)answer={cost,lines:[t,...rest.lines],widths:[m.w,...rest.widths]};
         };
         for(let j=wi;j<words.length;j++) {
           if(words[j]==='\n'){if(line)offer(line,j+1,0,0);break;}
@@ -189,7 +303,7 @@ window.TextEngine = {
           const next=words[j+1]==='\n'?j+2:j+1;
           // Keep short prepositions/conjunctions with the following word when possible.
           offer(line,next,0,/^(і|й|в|у|з|із|зі|до|на|не|та|а)$/i.test(word)&&next<words.length?.4:0);
-          if(metrics(line).w>item.w)break;
+          if(metrics(line, positions[wi] + offset).w>item.w)break;
           if(next===j+2)break;
         }
         memo.set(key,answer);return answer;
@@ -221,14 +335,25 @@ window.TextEngine = {
     }
 
     const width = item.w - 2 * padding - ((item.style.strokeWidth || 0) * (item.style.strokeRelative ? (item.style.fontSize || 42) / 100 : 1));
-    item.lines = item.rawText.trim().split(/\r\n?|\n/).flatMap(paragraph => {
+    const trimmed = item.rawText.trim();
+    let paragraphStart = item.rawText.length - item.rawText.trimStart().length;
+    const formatted = item.textFormats?.some(Boolean);
+    item.lines = trimmed.split(/(\r\n?|\n)/).flatMap((paragraph, index) => {
+      const sourceStart = paragraphStart;
+      paragraphStart += paragraph.length;
+      if (index % 2) return [];
       const lines = [];
       let line = '';
-      for (const word of paragraph.split(/[^\S\u00a0]+/).filter(Boolean)) {
+      let lineStart = sourceStart;
+      for (const match of paragraph.matchAll(/(?:[^\s]|\u00a0)+/gu)) {
+        const word = match[0];
         const next = line ? line + ' ' + word : word;
-        if (line && ctx.measureText(this.displayText(item, next)).width > width) {
+        if (!line) lineStart = sourceStart + match.index;
+        const offsets = formatted && this.lineOffsets(item.rawText, [next], lineStart)[0];
+        if (line && this.lineAdvance(ctx, item, next, size, offsets) > width) {
           lines.push(line);
           line = word;
+          lineStart = sourceStart + match.index;
         } else line = next;
       }
       return [...lines, line];

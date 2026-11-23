@@ -77,6 +77,7 @@ window.CanvasStrip = {
     this.rafId = requestAnimationFrame(() => {
       this.rafId = null;
       if (this.canvasSizeDirty) this.syncCanvasSize();
+      this.updateBrushCursor?.();
       this.render();
     });
   },

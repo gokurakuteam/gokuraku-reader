@@ -78,13 +78,14 @@ Object.assign(window.CanvasStrip, {
     document.getElementById('well-fill').style.background = document.getElementById('prop-fill-color').value;
     const fill = document.getElementById('prop-fill-color').value;
     document.getElementById('quick-text-color').value = fill;
-    const hex = document.getElementById('quick-text-hex');
-    if (document.activeElement !== hex) hex.value = fill.toUpperCase();
-    document.querySelectorAll('[data-text-color]').forEach(button => {
-      button.setAttribute('aria-pressed', String(!AppState.useGradient && button.dataset.textColor === fill));
-    });
+    const stroke = document.getElementById('prop-stroke-color').value;
+    for (const [kind, color] of [['text', fill], ['stroke', stroke]]) {
+      document.querySelectorAll(`[data-${kind}-color]`).forEach(button => {
+        button.setAttribute('aria-pressed', String(button.dataset[kind + 'Color'] === color &&
+          (kind === 'stroke' || !AppState.useGradient)));
+      });
+    }
     document.getElementById('well-grad2').style.background = document.getElementById('prop-grad-color2').value;
-    document.getElementById('well-stroke').style.background = document.getElementById('prop-stroke-color').value;
     document.getElementById('well-glow').style.background = document.getElementById('prop-glow-color').value;
     document.getElementById('chip-use-gradient').classList.toggle('active', AppState.useGradient);
   },
@@ -180,12 +181,67 @@ Object.assign(window.CanvasStrip, {
       document.getElementById('prop-glow-blur').value = s.glowBlur || 0;
       document.getElementById('prop-glow-color').value = s.glowColor || '#00e5ff';
 
-      document.getElementById('toggle-bold').classList.toggle('active', !!s.bold);
-      document.getElementById('toggle-italic').classList.toggle('active', !!s.italic);
-      document.getElementById('toggle-underline').classList.toggle('active', !!s.underline);
-      document.getElementById('toggle-strike').classList.toggle('active', !!s.strike);
+      for (const key of ['bold', 'italic', 'underline', 'strike']) {
+        const button = document.getElementById('toggle-' + key);
+        button.classList.toggle('active', !!s[key]);
+        button.setAttribute('aria-pressed', !!s[key]);
+      }
       this.updateColorWells();
     }
+  },
+
+  toggleTextFormat(key) {
+    const item = AppState.getSelectedItem();
+    const inline = this.editingItem === item && this.inlineEditor === document.activeElement;
+    const editor = inline ? this.inlineEditor : document.getElementById('prop-text');
+    const start = editor.selectionStart;
+    const end = editor.selectionEnd;
+    if (item && item.type !== 'png' && start < end &&
+        (inline || (editor === document.activeElement && editor.value === item.rawText))) {
+      const inlineDraft = inline && editor.value !== this.inlineInitialValue;
+      const target = inlineDraft ? { ...item, ...this.inlineTextChanges() } : item;
+      const positions = inline && !inlineDraft
+        ? TextEngine.lineOffsets(item.rawText, editor.value.split('\n')).flatMap((row, index) => index ? [-1, ...row] : row)
+        : null;
+      const selected = new Set();
+      for (let index = start; index < end; index++) {
+        const source = positions ? positions[index] : index;
+        if (source >= 0 && source < target.rawText.length) selected.add(source);
+      }
+      if (!selected.size) return;
+      const active = ![...selected].every(index => TextEngine.formatAt(target, index, key));
+      AppState.saveSnapshot();
+      const formats = Array.from({ length: target.rawText.length }, (_, index) =>
+        target.textFormats?.[index] || null);
+      for (const index of selected) {
+        formats[index] = { ...formats[index], [key]: active };
+      }
+      if (inlineDraft) this.inlineFormats = formats;
+      else {
+        item.textFormats = formats;
+        if (!inline && (item.type === 'bubble' || item.fixedFontSize)) AppState.autoFitItemText(item);
+      }
+      document.getElementById('prop-fontsize').value = item.style.fontSize;
+      this.showLayoutStatus(item);
+      this.markProjectChanged();
+      this.requestRender();
+      return;
+    }
+
+    if (item) AppState.saveSnapshot();
+    const button = document.getElementById('toggle-' + (key === 'uppercase' ? 'caps' : key));
+    const active = !button.classList.contains('active');
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-pressed', active);
+    if (item) {
+      if (item.textFormats) item.textFormats = item.textFormats.map(format => {
+        if (!format || !(key in format)) return format;
+        const next = { ...format };
+        delete next[key];
+        return Object.keys(next).length ? next : null;
+      });
+      this.applyUIStyleToSelected();
+    } else if (key === 'uppercase') AppState.capsLockOnInsert = active;
   },
 
   setCapsButton(active) {
@@ -230,6 +286,15 @@ Object.assign(window.CanvasStrip, {
     this.requestRender();
   },
 
+  setTextFill(value, previousFill = document.getElementById('quick-text-color').value,
+    previousStroke = document.getElementById('prop-stroke-color').value) {
+    const opposites = { '#000000': '#ffffff', '#ffffff': '#000000' };
+    if (opposites[previousFill] === value && previousStroke === value) {
+      document.getElementById('prop-stroke-color').value = previousFill;
+    }
+    document.getElementById('prop-fill-color').value = value;
+  },
+
   pickColorFromCanvas(sx, sy) {
     const dpr = this.canvasDpr || 1;
     const x = Math.floor(sx * dpr), y = Math.floor(sy * dpr);
@@ -245,13 +310,16 @@ Object.assign(window.CanvasStrip, {
     sample.drawImage(this.canvas, x, y, 1, 1, 0, 0, 1, 1);
     const pixel = sample.getImageData(0, 0, 1, 1).data;
     const hex = '#' + [pixel[0], pixel[1], pixel[2]].map(x => x.toString(16).padStart(2, '0')).join('');
-    document.getElementById('prop-fill-color').value = hex;
+    this.setTextFill(hex);
     this.applyUIStyleToSelected(true);
     this.setTool('pointer');
   },
 
   setTool(toolName) {
+    if (toolName !== 'brush') this.cancelBrushStroke?.();
+    this.canvas?.classList.toggle('brush-active', toolName === 'brush');
     AppState.activeTool = toolName;
+    this.updateBrushCursor?.();
     document.querySelectorAll('.tool-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.tool === toolName);
     });
@@ -348,9 +416,14 @@ Object.assign(window.CanvasStrip, {
       this.applyUIStyleToSelected();
     });
 
-    document.getElementById('prop-text').addEventListener('input', (e) => {
+    const textEditor = document.getElementById('prop-text');
+    let textEdit;
+    textEditor.addEventListener('beforeinput', e => { textEdit = TextEngine.editAnchor(textEditor, e); });
+    textEditor.addEventListener('input', (e) => {
       const item = AppState.getSelectedItem();
       if (!item) return;
+      item.textFormats = TextEngine.editFormats(item.textFormats, item.rawText || '', e.target.value, textEdit);
+      textEdit = null;
       item.rawText = e.target.value;
       item.lines = e.target.value.split('\n');
       if (item.type === 'bubble' || item.fixedFontSize) AppState.autoFitItemText(item);
@@ -370,22 +443,13 @@ Object.assign(window.CanvasStrip, {
       this.requestRender();
     });
 
-    ['toggle-bold', 'toggle-italic', 'toggle-underline', 'toggle-strike'].forEach(id => {
-      document.getElementById(id).addEventListener('click', (e) => {
-        if (AppState.getSelectedItem()) AppState.saveSnapshot();
-        e.currentTarget.classList.toggle('active');
-        this.applyUIStyleToSelected();
+    for (const key of TextEngine.formatKeys) {
+      const button = document.getElementById('toggle-' + (key === 'uppercase' ? 'caps' : key));
+      button.addEventListener('mousedown', e => {
+        if ([this.inlineEditor, document.getElementById('prop-text')].includes(document.activeElement)) e.preventDefault();
       });
-    });
-
-    document.getElementById('toggle-caps').addEventListener('click', (e) => {
-      const active = !e.currentTarget.classList.contains('active');
-      this.setCapsButton(active);
-      if (AppState.getSelectedItem()) {
-        AppState.saveSnapshot();
-        this.applyUIStyleToSelected();
-      } else AppState.capsLockOnInsert = active;
-    });
+      button.addEventListener('click', () => this.toggleTextFormat(key));
+    }
 
     const alignSelect = document.getElementById('prop-text-align');
     const syncAlign = () => document.querySelectorAll('[data-align]').forEach(b => { const active = b.dataset.align === alignSelect.value; b.classList.toggle('active', active); b.setAttribute('aria-pressed', active); });
@@ -431,7 +495,7 @@ Object.assign(window.CanvasStrip, {
       });
     });
 
-    ['prop-fill-color', 'prop-grad-color2', 'prop-stroke-width', 'prop-stroke-color', 'prop-glow-blur', 'prop-glow-color'].forEach(id => {
+    ['prop-grad-color2', 'prop-stroke-width', 'prop-stroke-color', 'prop-glow-blur', 'prop-glow-color'].forEach(id => {
       document.getElementById(id).addEventListener('input', () => this.applyUIStyleToSelected(false));
       document.getElementById(id).addEventListener('change', () => this.applyUIStyleToSelected(true));
     });
@@ -589,45 +653,44 @@ Object.assign(window.CanvasStrip, {
 
 window.addEventListener('DOMContentLoaded', () => {
   document.getElementById('project-name').addEventListener('input', () => CanvasStrip.markProjectChanged());
-  const picker = document.getElementById('quick-text-color');
-  const hex = document.getElementById('quick-text-hex');
-  const setColor = (value, remember = false) => {
-    const input = document.getElementById('prop-fill-color');
+  const fill = document.getElementById('prop-fill-color');
+  const stroke = document.getElementById('prop-stroke-color');
+  const quickFill = document.getElementById('quick-text-color');
+  const bindColor = (picker, setColor) => {
+    let initial;
+    const apply = (remember) => {
+      if (!initial) {
+        initial = [picker === fill ? quickFill.value : fill.value, stroke.value];
+        if (AppState.getSelectedItem()) AppState.saveSnapshot();
+      }
+      setColor(picker.value, initial);
+      CanvasStrip.applyUIStyleToSelected(remember);
+      if (remember) initial = null;
+    };
+    picker.addEventListener('input', () => apply(false));
+    picker.addEventListener('change', () => apply(true));
+    picker.addEventListener('blur', () => { initial = null; });
+  };
+  const setFill = (value, previous = [fill.value, stroke.value]) => {
+    stroke.value = previous[1];
+    CanvasStrip.setTextFill(value, ...previous);
+  };
+  bindColor(fill, setFill);
+  bindColor(quickFill, (value, previous) => {
     AppState.useGradient = false;
-    input.value = value;
-    CanvasStrip.applyUIStyleToSelected(remember);
-  };
-  let picking = false;
-  const startPicking = () => {
-    if (!picking && AppState.getSelectedItem()) AppState.saveSnapshot();
-    picking = true;
-  };
-  picker.addEventListener('input', () => {
-    startPicking();
-    setColor(picker.value);
+    setFill(value, previous);
   });
-  picker.addEventListener('change', () => {
-    startPicking();
-    setColor(picker.value, true);
-    picking = false;
-  });
-  hex.addEventListener('change', () => {
-    const value = hex.value.trim().replace(/^#/, '');
-    if (/^[0-9a-f]{6}$/i.test(value)) {
+  bindColor(stroke, () => {});
+  for (const kind of ['text', 'stroke']) {
+    document.querySelectorAll(`[data-${kind}-color]`).forEach(button => button.addEventListener('click', () => {
       if (AppState.getSelectedItem()) AppState.saveSnapshot();
-      setColor('#' + value, true);
-    }
-    hex.value = picker.value.toUpperCase();
-  });
-  hex.addEventListener('keydown', event => {
-    if (event.key === 'Enter') hex.blur();
-    if (event.key === 'Escape') {
-      hex.value = picker.value.toUpperCase();
-      hex.blur();
-    }
-  });
-  document.querySelectorAll('[data-text-color]').forEach(button => button.addEventListener('click', () => {
-    if (AppState.getSelectedItem()) AppState.saveSnapshot();
-    setColor(button.dataset.textColor, true);
-  }));
+      const value = button.dataset[kind + 'Color'];
+      if (kind === 'stroke') stroke.value = value;
+      else {
+        AppState.useGradient = false;
+        setFill(value);
+      }
+      CanvasStrip.applyUIStyleToSelected(true);
+    }));
+  }
 });

@@ -111,8 +111,14 @@ Object.assign(window.CanvasStrip, {
     ctx.translate(cam.x, cam.y);
     ctx.scale(cam.scale, cam.scale);
 
+    let brushPreview = !AppState.showingOriginal && this.dragState?.mode === 'brush'
+      ? this.dragState : null;
     // 2. Малюємо об'єкти
     for (const item of AppState.showingOriginal ? [] : AppState.items) {
+      if (brushPreview && !item.brushStroke) {
+        this.drawBrushPreview(ctx, brushPreview);
+        brushPreview = null;
+      }
       const g = this.getItemGlobalRect(item);
       if (g.y + g.h < viewTop || g.y > viewBottom) continue;
 
@@ -153,6 +159,8 @@ Object.assign(window.CanvasStrip, {
       ctx.restore();
     }
 
+    if (brushPreview) this.drawBrushPreview(ctx, brushPreview);
+
     // 3. Лінія магнітного снапу по центру
     if (!AppState.showingOriginal && this.snapGuideX !== null) {
       ctx.strokeStyle = '#b4c5ff';
@@ -183,8 +191,8 @@ Object.assign(window.CanvasStrip, {
     const key = [fontSize, lh, st.fontFamily, st.bold, st.italic, st.uppercase, st.textAlign,
       st.strokeWidth, st.strokeRelative, st.glowBlur, item.w, item.h, item.effectivePadding].join('|');
     let layout = cache.get(item);
-    if (layout?.key !== key || layout.lines !== lines || layout.contour !== item.contour) {
-      layout = { key, lines, contour: item.contour, rows: TextEngine.placements(ctx, item, lines, fontSize) };
+    if (layout?.key !== key || layout.lines !== lines || layout.formats !== item.textFormats || layout.contour !== item.contour) {
+      layout = { key, lines, formats: item.textFormats, contour: item.contour, rows: TextEngine.placements(ctx, item, lines, fontSize) };
       cache.set(item, layout);
     }
     const placements = layout.rows;
@@ -212,31 +220,34 @@ Object.assign(window.CanvasStrip, {
       const y = placements[i].y + (item.textOffsetY || 0);
       const lineX = offsetX + placements[i].x;
 
+      const runs = placements[i].runs;
+      ctx.textAlign = runs ? 'left' : 'center';
+      const segments = runs || [{ text: line, x: 0, font: TextEngine.font(item, fontSize),
+        underline: st.underline, strike: st.strike }];
       if (st.strokeWidth > 0) {
         ctx.strokeStyle = st.strokeColor || '#ffffff';
         ctx.lineWidth = st.strokeRelative ? st.strokeWidth * fontSize / 100 : st.strokeWidth;
-        ctx.strokeText(line, lineX, y);
+        for (const run of segments) {
+          ctx.font = run.font;
+          ctx.strokeText(run.text, lineX + run.x, y);
+        }
       }
-
-      ctx.fillText(line, lineX, y);
-
-      if (st.underline || st.strike) {
-        const w = ctx.measureText(line).width;
+      for (const run of segments) {
+        ctx.font = run.font;
+        ctx.fillText(run.text, lineX + run.x, y);
+        if (!run.underline && !run.strike) continue;
+        const width = run.width ?? ctx.measureText(line).width;
+        const left = runs ? lineX + run.x : lineX - width / 2;
         ctx.save();
-        ctx.strokeStyle = st.fillColor || '#000000';
+        ctx.strokeStyle = ctx.fillStyle;
         ctx.lineWidth = Math.max(2, fontSize * 0.07);
-        if (st.underline) {
-          ctx.beginPath();
-          ctx.moveTo(lineX - w / 2, y + fontSize * 0.42);
-          ctx.lineTo(lineX + w / 2, y + fontSize * 0.42);
-          ctx.stroke();
+        ctx.beginPath();
+        for (const offset of [run.underline ? fontSize * .42 : null, run.strike ? 0 : null]) {
+          if (offset === null) continue;
+          ctx.moveTo(left, y + offset);
+          ctx.lineTo(left + width, y + offset);
         }
-        if (st.strike) {
-          ctx.beginPath();
-          ctx.moveTo(lineX - w / 2, y);
-          ctx.lineTo(lineX + w / 2, y);
-          ctx.stroke();
-        }
+        ctx.stroke();
         ctx.restore();
       }
     }
@@ -248,6 +259,7 @@ Object.assign(window.CanvasStrip, {
     const lines = ed.value.split('\n');
     const size = item.style.fontSize || 42;
     const rows = TextEngine.placements(ctx, item, lines, size);
+    const positions = rows[0]?.runs && TextEngine.lineOffsets(item.rawText, lines);
     const start = ed.selectionStart;
     const end = ed.selectionEnd;
     let offset = 0;
@@ -257,8 +269,8 @@ Object.assign(window.CanvasStrip, {
       const line = lines[index];
       const last = offset + line.length;
       if (start <= last && end >= offset) {
-        const left = row.x - ctx.measureText(row.text).width / 2;
-        const advance = position => ctx.measureText(TextEngine.displayText(item, line.slice(0, Math.max(0, position - offset)))).width;
+        const left = TextEngine.lineStart(ctx, item, row, size);
+        const advance = position => TextEngine.lineAdvance(ctx, item, line.slice(0, Math.max(0, position - offset)), size, positions?.[index]);
         const x = left + advance(start);
         const top = row.y - size * .6;
         if (start === end) {
@@ -336,7 +348,7 @@ Object.assign(window.CanvasStrip, {
 
     for (let i = AppState.items.length - 1; i >= 0; i--) {
       const it = AppState.items[i];
-      if (ignoreExistingText && it.type === 'text') continue;
+      if (it.brushStroke || (ignoreExistingText && it.type === 'text')) continue;
 
       const g = this.getItemGlobalRect(it);
       const local = this.worldToItemLocal(wx, wy, g, it.angle || 0);
