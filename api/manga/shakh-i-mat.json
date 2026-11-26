@@ -14,7 +14,7 @@
     "Яой",
     "Буденність"
   ],
-  "latestUpdate": "2026-10-24T19:19:27.721205Z",
+  "latestUpdate": "2026-11-26T19:34:00.315898Z",
   "chapters": [
     {
       "id": 628,
@@ -1295,6 +1295,37 @@
         "https://files.catbox.moe/hiqsa9.webp",
         "https://files.catbox.moe/ahffx0.webp"
       ]
+    },
+    {
+      "id": 946,
+      "title": "",
+      "volume": 2,
+      "chapter": 61.0,
+      "date": "2026-11-26",
+      "pages": [
+        "https://files.catbox.moe/8ws6jt.webp",
+        "https://files.catbox.moe/4b2tu0.webp",
+        "https://files.catbox.moe/2lmlfq.webp",
+        "https://files.catbox.moe/h3a9ig.webp",
+        "https://files.catbox.moe/h8fh2f.webp",
+        "https://files.catbox.moe/pnx2hk.webp",
+        "https://files.catbox.moe/uwhuuu.webp",
+        "https://files.catbox.moe/7b122b.webp",
+        "https://files.catbox.moe/m4yplf.webp",
+        "https://files.catbox.moe/mme806.webp",
+        "https://files.catbox.moe/9w5cv7.webp",
+        "https://files.catbox.moe/e2o582.webp",
+        "https://files.catbox.moe/5r11h6.webp",
+        "https://files.catbox.moe/yaqo02.webp",
+        "https://files.catbox.moe/y1uuch.webp",
+        "https://files.catbox.moe/e2flpr.webp",
+        "https://files.catbox.moe/dljkfz.webp",
+        "https://files.catbox.moe/ngc0bx.webp",
+        "https://files.catbox.moe/1zcviy.webp",
+        "https://files.catbox.moe/a82vor.webp",
+        "https://files.catbox.moe/qwwptj.webp"
+      ],
+      "teams": []
     }
   ],
   "slug": "shakh-i-mat",

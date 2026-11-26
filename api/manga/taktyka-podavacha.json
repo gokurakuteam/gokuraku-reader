@@ -14,7 +14,7 @@
     "Яой",
     "Школа"
   ],
-  "latestUpdate": "2026-11-20T19:53:38.756545Z",
+  "latestUpdate": "2026-11-26T19:35:20.151807Z",
   "chapters": [
     {
       "id": 360,
@@ -1780,6 +1780,53 @@
         "https://files.catbox.moe/bn105g.webp",
         "https://files.catbox.moe/rktpc4.webp",
         "https://files.catbox.moe/f2wref.webp"
+      ],
+      "teams": []
+    },
+    {
+      "id": 947,
+      "title": "",
+      "volume": 2,
+      "chapter": 37.0,
+      "date": "2026-11-26",
+      "pages": [
+        "https://files.catbox.moe/005pk8.webp",
+        "https://files.catbox.moe/7wv102.webp",
+        "https://files.catbox.moe/gqyatz.webp",
+        "https://files.catbox.moe/zt45x2.webp",
+        "https://files.catbox.moe/s3r3su.webp",
+        "https://files.catbox.moe/bojcom.webp",
+        "https://files.catbox.moe/h6u22p.webp",
+        "https://files.catbox.moe/8fuepp.webp",
+        "https://files.catbox.moe/wmb446.webp",
+        "https://files.catbox.moe/ixbx35.webp",
+        "https://files.catbox.moe/afflfg.webp",
+        "https://files.catbox.moe/srbk2c.webp",
+        "https://files.catbox.moe/xdrfti.webp",
+        "https://files.catbox.moe/puzvep.webp",
+        "https://files.catbox.moe/xwxjhj.webp",
+        "https://files.catbox.moe/vfvzug.webp",
+        "https://files.catbox.moe/igm5wy.webp",
+        "https://files.catbox.moe/v6s67d.webp",
+        "https://files.catbox.moe/j8jt76.webp",
+        "https://files.catbox.moe/1c8wit.webp",
+        "https://files.catbox.moe/cy379g.webp",
+        "https://files.catbox.moe/lghj64.webp",
+        "https://files.catbox.moe/gsngy1.webp",
+        "https://files.catbox.moe/p9o55s.webp",
+        "https://files.catbox.moe/q1ub2x.webp",
+        "https://files.catbox.moe/8ekac7.webp",
+        "https://files.catbox.moe/5cutvq.webp",
+        "https://files.catbox.moe/5n58p2.webp",
+        "https://files.catbox.moe/972w7b.webp",
+        "https://files.catbox.moe/56towc.webp",
+        "https://files.catbox.moe/avajm2.webp",
+        "https://files.catbox.moe/i6ka4b.webp",
+        "https://files.catbox.moe/ls9t4b.webp",
+        "https://files.catbox.moe/uit1p4.webp",
+        "https://files.catbox.moe/pw2ag0.webp",
+        "https://files.catbox.moe/j53xeb.webp",
+        "https://files.catbox.moe/16r7r0.webp"
       ],
       "teams": []
     }
